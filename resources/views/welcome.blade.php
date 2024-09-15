@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Planify</title>
+    <!-- Balise title claire et descriptive avec mots-clés pertinents -->
+    <title>Simplifiez la Gestion de Projets avec Planify - Outil de Collaboration et de Productivité</title>
+
+    <!-- Balise meta description pour améliorer le référencement -->
+    <meta name="description" content="Planify est l'outil ultime pour planifier, collaborer et suivre vos projets avec facilité. Accédez à des fonctionnalités avancées pour optimiser la productivité de votre équipe. Commencez gratuitement.">
 
     <!-- Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -54,10 +58,8 @@
     <section class="bg-gray-900 text-white py-20">
         <div class="max-w-6xl mx-auto text-center">
             <h1 class="text-5xl font-bold mb-4">Simplifiez la Gestion de Vos Projets avec Planify</h1>
-            <p class="text-lg mb-6">Planifiez, collaborez et exécutez vos projets avec facilité. Optimisez la
-                productivité de votre équipe grâce à des outils de gestion avancés.</p>
-            <a href="{{ route('register') }}" class="btn-primary px-8 py-4 text-lg font-bold rounded">Commencer
-                gratuitement</a>
+            <p class="text-lg mb-6">Planifiez, collaborez et exécutez vos projets avec facilité. Optimisez la productivité de votre équipe grâce à des outils de gestion avancés.</p>
+            <a href="{{ route('register') }}" class="btn-primary px-8 py-4 text-lg font-bold rounded">Commencer gratuitement</a>
         </div>
     </section>
 
@@ -68,18 +70,15 @@
             <div class="grid gap-8 md:grid-cols-3">
                 <div class="p-6 border rounded-lg shadow-lg">
                     <h3 class="text-xl font-semibold mb-4">Gestion Intuitive des Projets</h3>
-                    <p class="text-gray-600">Créez, assignez et suivez facilement vos tâches et projets grâce à notre
-                        interface conviviale.</p>
+                    <p class="text-gray-600">Créez, assignez et suivez facilement vos tâches et projets grâce à notre interface conviviale.</p>
                 </div>
                 <div class="p-6 border rounded-lg shadow-lg">
                     <h3 class="text-xl font-semibold mb-4">Collaboration d'Équipe Efficace</h3>
-                    <p class="text-gray-600">Travaillez en équipe, partagez des tâches et communiquez facilement pour
-                        rester synchronisés.</p>
+                    <p class="text-gray-600">Travaillez en équipe, partagez des tâches et communiquez facilement pour rester synchronisés.</p>
                 </div>
                 <div class="p-6 border rounded-lg shadow-lg">
                     <h3 class="text-xl font-semibold mb-4">Suivi en Temps Réel</h3>
-                    <p class="text-gray-600">Gardez un œil sur les progrès de chaque projet en temps réel pour ne jamais
-                        manquer une échéance.</p>
+                    <p class="text-gray-600">Gardez un œil sur les progrès de chaque projet en temps réel pour ne jamais manquer une échéance.</p>
                 </div>
             </div>
         </div>
@@ -89,10 +88,8 @@
     <section class="bg-gray-900 text-white py-20">
         <div class="max-w-6xl mx-auto text-center">
             <h2 class="text-4xl font-bold mb-6">Passez à la Version Premium</h2>
-            <p class="text-lg mb-6">Accédez à des fonctionnalités exclusives et offrez à votre équipe l'outil ultime
-                pour la gestion de projets.</p>
-            <a href="{{ route('premium.show') }}" class="btn-primary px-8 py-4 text-lg font-bold rounded">Découvrir
-                l'offre Premium</a>
+            <p class="text-lg mb-6">Accédez à des fonctionnalités exclusives et offrez à votre équipe l'outil ultime pour la gestion de projets.</p>
+            <a href="{{ route('premium.show') }}" class="btn-primary px-8 py-4 text-lg font-bold rounded">Découvrir l'offre Premium</a>
         </div>
     </section>
 
