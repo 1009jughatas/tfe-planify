@@ -59,7 +59,7 @@
             <div class="col-md-12 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Task Calendar</h5>
+                        <h5 class="card-title">Calendrier</h5>
                         <div id="taskCalendar" style="height: 500px;"></div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
             <div class="col-md-12 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Project Status</h5>
+                        <h5 class="card-title">Status des projets</h5>
                         <canvas id="projectStatusChart" style="max-height: 200px;"></canvas>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
         const projectStatusChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: ['Active', 'Completed'],
+                labels: ['Actif', 'Completé'],
                 datasets: [{
                     data: [{{ $activeProjectsCount }}, {{ $completedProjectsCount }}],
                     backgroundColor: ['#007bff', '#28a745'],
