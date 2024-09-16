@@ -28,10 +28,10 @@ class ProjectController extends Controller
     public function create()
     {
         $user = auth()->user();
-
         $limit = $this->getLimits();
-        if (!$user->is_premium && $user->projects()->count() == $limit) {
-            return redirect()->route('projects.index')->with('error', 'Les utilisateurs non premium ne peuvent créer que ' . self::PROJECT_LIMIT . ' projets maximum.');
+
+        if (!$user->is_premium && $user->projects()->count() >= $limit) {
+            return redirect()->route('projects.index')->with('error', 'Les utilisateurs non premium ne peuvent créer que ' . $limit . ' projets maximum.');
         }
 
         $users = User::all();
@@ -44,7 +44,7 @@ class ProjectController extends Controller
         $limit = $this->getLimits();
 
         if (!$user->is_premium && $user->projects()->count() == $limit) {
-            return redirect()->route('projects.index')->with('error', 'Les utilisateurs non premium ne peuvent créer que ' . self::PROJECT_LIMIT . ' projets maximum.');
+            return redirect()->route('projects.index')->with('error', 'Les utilisateurs non premium ne peuvent créer que ' . $limit . ' projets maximum.');
         }
 
         $request->validate([
@@ -126,6 +126,6 @@ class ProjectController extends Controller
 
     public function getLimits()
     {
-        return self::PROJECT_LIMIT - 1;
+        return self::PROJECT_LIMIT;
     }
 }
