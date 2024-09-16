@@ -21,23 +21,23 @@
             </div>
 
             <div class="col-md-3 mb-4">
-                <div class="card text-white bg-success">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            Projets terminés</h5>
-                        <p class="card-text">{{ $completedProjectsCount }}
-                            Projets terminés</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-4">
                 <div class="card text-white bg-warning">
                     <div class="card-body">
                         <h5 class="card-title">
                             Tâches ouvertes</h5>
                         <p class="card-text">{{ $openTasksCount }}
                             Tâches ouvertes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Projets terminés</h5>
+                        <p class="card-text">{{ $completedProjectsCount }}
+                            Projets terminés</p>
                     </div>
                 </div>
             </div>
