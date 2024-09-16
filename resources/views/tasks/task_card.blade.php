@@ -16,7 +16,7 @@
             </p>
             <p class="card-text">
                 <strong>Assigned To:</strong>
-                {{ $task->assigned_to ? $users->find($task->assigned_to)->name : 'Unassigned' }}
+                {{ $task->assignedUser ? $task->assignedUser->name : 'Unassigned' }}
             </p>
             <p class="card-text">
                 <strong>Priority:</strong>
