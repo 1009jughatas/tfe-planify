@@ -65,7 +65,7 @@
                                         les tâches</a>
                                     @if (Auth::user()->is_admin())
                                         <a href="{{ route('projects.edit', $project->id) }}"
-                                            class="btn btn-sm btn-warning">Editer</a>
+                                            class="btn btn-sm btn-warning">Modifier</a>
                                         <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
