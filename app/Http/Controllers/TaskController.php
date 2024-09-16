@@ -76,4 +76,17 @@ class TaskController extends Controller
 
         return redirect()->route('projects.tasks', $task->project_id)->with('success', 'Tâche supprimée avec succès.');
     }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        $request->validate([
+            'status' => 'required|in:todo,in-progress,done,blocked',
+        ]);
+
+        $task->update([
+            'status' => $request->status,
+        ]);
+
+        return response()->json(['message' => 'Le statut de la tâche a été mis à jour avec succès.']);
+    }
 }
