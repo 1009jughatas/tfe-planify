@@ -45,4 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+    Route::view('/mentions-legales', 'legal')->name('mentions.legales');
+
+
 require __DIR__.'/auth.php';

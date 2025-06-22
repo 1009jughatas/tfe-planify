@@ -37,6 +37,22 @@
             {{ $slot }}
         </main>
     </div>
+    <footer class="bg-gray-800 text-white text-center py-6 mt-12">
+        <p class="text-sm mt-2">
+            <a href="{{ route('mentions.legales') }}" class="underline text-blue-400 hover:text-blue-200">Mentions légales</a>
+        </p>
+
+        <p>&copy; 2024 Planify - Tous droits réservés.</p>
+        <p>
+            Planify<br>
+            Siège social : Boulevard de l'Empereur 10, 1000 Bruxelles<br>
+            Contact : <a href="mailto:info@mcedia.com" class="underline text-blue-300">info@mcedia.com</a>
+        </p>
+        <p class="mt-4 text-sm text-gray-400">
+            Hébergeur : OVH – 2 rue Kellermann, 59100 Roubaix, France – Tél : +33 9 72 10 10 07
+        </p>
+    </footer>
+
 </body>
 
 </html>
