@@ -36,11 +36,26 @@
     }
 </style>
 
-<nav x-data="{ collapsed: JSON.parse(localStorage.getItem('collapsed')) ?? false }"
+<nav x-data="{ collapsed: JSON.parse(localStorage.getItem('collapsed')) ?? false, mobileMenuOpen: false }"
     @click.away="localStorage.setItem('collapsed', JSON.stringify(collapsed))"
-    class="h-screen bg-white border-r border-gray-200 shadow-md flex flex-col">
-    <!-- Toggle Button -->
-    <button @click="collapsed = !collapsed; localStorage.setItem('collapsed', JSON.stringify(collapsed));" class="p-4">
+    class="h-screen bg-white border-r border-gray-200 shadow-md flex flex-col lg:block hidden lg:block"
+    :class="{ 'hidden': !mobileMenuOpen && window.innerWidth < 1024 }">
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden flex justify-between items-center p-4 bg-gray-50">
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <div class="circle">
+            <span class="text-2xl font-bold">P</span>
+        </div>
+    </div>
+
+    <!-- Desktop Toggle Button -->
+    <button @click="collapsed = !collapsed; localStorage.setItem('collapsed', JSON.stringify(collapsed));" 
+            class="p-4 hidden lg:block">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
