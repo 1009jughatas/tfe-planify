@@ -71,8 +71,8 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('view', $task)) {
             abort(403, 'Accès non autorisé à cette tâche.');
         }
 
@@ -83,9 +83,9 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
-            abort(403, 'Accès non autorisé à cette tâche.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('update', $task)) {
+            abort(403, 'Accès non autorisé. Seuls l\'auteur ou l\'utilisateur assigné (premium) peuvent modifier cette tâche.');
         }
 
         $participants = $task->project->participants;
@@ -96,15 +96,15 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
-            abort(403, 'Accès non autorisé à cette tâche.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('update', $task)) {
+            abort(403, 'Accès non autorisé. Seuls l\'auteur ou l\'utilisateur assigné (premium) peuvent modifier cette tâche.');
         }
 
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:5000',
-            'due_date' => 'nullable|date|after_or_equal:today',
+            'due_date' => 'nullable|date',
             'priority' => 'nullable|integer|min:0|max:3',
             'assigned_to' => 'nullable|integer|exists:users,id',
         ]);
@@ -114,12 +114,19 @@ class TaskController extends Controller
             return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
         }
 
+        // Vérifier la permission d'assigner (uniquement premium)
+        if ($request->has('assigned_to') && $request->assigned_to != $task->assigned_to) {
+            if (!$user->can('assign', $task)) {
+                return back()->with('warning', 'La fonctionnalité d\'assignation de tâches est réservée aux utilisateurs premium.');
+            }
+        }
+
         $task->update([
             'title' => htmlspecialchars($request->title, ENT_QUOTES, 'UTF-8'),
             'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'due_date' => $request->due_date,
             'priority' => $request->priority,
-            'assigned_to' => $request->assigned_to,
+            'assigned_to' => ($user->can('assign', $task) && $request->has('assigned_to')) ? $request->assigned_to : $task->assigned_to,
         ]);
 
         return redirect()->route('projects.tasks', $task->project_id)->with('success', 'Tâche mise à jour avec succès.');
@@ -129,8 +136,8 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation (seuls les admins ou l'auteur peuvent supprimer)
-        if (!$user->is_admin() && $task->author_id !== $user->id) {
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('delete', $task)) {
             abort(403, 'Accès non autorisé. Seuls les administrateurs ou l\'auteur peuvent supprimer cette tâche.');
         }
 
@@ -143,9 +150,9 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
-            return response()->json(['error' => 'Accès non autorisé.'], 403);
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('updateStatus', $task)) {
+            return response()->json(['error' => 'Accès non autorisé. Seuls l\'auteur, l\'utilisateur assigné ou les participants premium peuvent modifier le statut.'], 403);
         }
 
         $request->validate([

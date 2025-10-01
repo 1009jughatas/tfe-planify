@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    const PROJECT_LIMIT = 2;
+    const PROJECT_LIMIT = 3; // Limite pour les utilisateurs gratuits
 
     public function index()
     {
@@ -28,10 +28,11 @@ class ProjectController extends Controller
     public function create()
     {
         $user = auth()->user();
-        $limit = $this->getLimits();
 
-        if (!$user->is_premium && $user->projects()->count() >= $limit) {
-            return redirect()->route('projects.index')->with('error', 'Les utilisateurs non premium ne peuvent créer que ' . $limit . ' projets maximum.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('create', Project::class)) {
+            $limit = $user->is_premium ? 'illimité' : '3';
+            return redirect()->route('projects.index')->with('error', 'Vous avez atteint la limite de projets (' . $limit . '). Les utilisateurs gratuits sont limités à 3 projets. Passez en premium pour créer plus de projets.');
         }
 
         $users = User::all();
@@ -41,30 +42,35 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-        $limit = $this->getLimits();
 
-        if (!$user->is_premium && $user->projects()->count() == $limit) {
-            return redirect()->route('projects.index')->with('error', 'Les utilisateurs non premium ne peuvent créer que ' . $limit . ' projets maximum.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('create', Project::class)) {
+            return redirect()->route('projects.index')->with('error', 'Vous avez atteint la limite de projets. Les utilisateurs gratuits sont limités à 3 projets. Passez en premium pour créer plus de projets.');
         }
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:5000',
             'participants' => 'nullable|array',
+            'participants.*' => 'exists:users,id',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
         $project = Project::create([
-            'name' => $request->name,
-            'description' => $request->description,
+            'name' => htmlspecialchars($request->name, ENT_QUOTES, 'UTF-8'),
+            'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'author_id' => $user->id,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
         ]);
 
-        // Sync participants via the pivot table
-        $project->participants()->sync($request->participants);
+        // Sync participants via the pivot table (uniquement pour les utilisateurs premium)
+        if ($request->has('participants') && $user->can('inviteCollaborators', $project)) {
+            $project->participants()->sync($request->participants);
+        } elseif ($request->has('participants') && !$user->is_premium) {
+            return redirect()->route('projects.show', $project->id)->with('warning', 'Projet créé avec succès. Note : La fonctionnalité d\'invitation de collaborateurs est réservée aux utilisateurs premium.');
+        }
 
         return redirect()->route('projects.index')->with('success', 'Projet créé avec succès.');
     }
@@ -73,7 +79,8 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user->is_admin() && !$project->participants->contains($user->id)) {
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('view', $project)) {
             abort(403, 'Accès non autorisé à ce projet.');
         }
 
@@ -99,9 +106,9 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation (seuls les admins peuvent éditer)
-        if (!$user->is_admin()) {
-            abort(403, 'Accès non autorisé. Seuls les administrateurs peuvent modifier les projets.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('update', $project)) {
+            abort(403, 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent le modifier.');
         }
 
         $users = User::all();
@@ -112,9 +119,9 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation (seuls les admins peuvent modifier)
-        if (!$user->is_admin()) {
-            abort(403, 'Accès non autorisé. Seuls les administrateurs peuvent modifier les projets.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('update', $project)) {
+            abort(403, 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent le modifier.');
         }
 
         $request->validate([
@@ -122,7 +129,7 @@ class ProjectController extends Controller
             'description' => 'nullable|string|max:5000',
             'participants' => 'nullable|array',
             'participants.*' => 'exists:users,id',
-            'start_date' => 'nullable|date|after_or_equal:today',
+            'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
@@ -133,9 +140,11 @@ class ProjectController extends Controller
             'end_date' => $request->end_date,
         ]);
 
-        // Sync participants via the pivot table
-        if ($request->has('participants')) {
+        // Sync participants via the pivot table (uniquement pour les utilisateurs premium)
+        if ($request->has('participants') && $user->can('inviteCollaborators', $project)) {
             $project->participants()->sync($request->participants);
+        } elseif ($request->has('participants') && !$user->is_premium) {
+            return redirect()->route('projects.show', $project->id)->with('warning', 'Projet mis à jour. Note : La fonctionnalité d\'invitation de collaborateurs est réservée aux utilisateurs premium.');
         }
 
         return redirect()->route('projects.index')->with('success', 'Projet mis à jour avec succès.');
@@ -145,9 +154,9 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation (seuls les admins peuvent supprimer)
-        if (!$user->is_admin()) {
-            abort(403, 'Accès non autorisé. Seuls les administrateurs peuvent supprimer les projets.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('delete', $project)) {
+            abort(403, 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent le supprimer.');
         }
 
         $project->delete();
