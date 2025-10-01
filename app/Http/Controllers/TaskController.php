@@ -16,6 +16,13 @@ class TaskController extends Controller
 
     public function create(Project $project, Request $request)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation
+        if (!$user->is_admin() && !$project->participants->contains($user->id)) {
+            abort(403, 'Accès non autorisé à ce projet.');
+        }
+
         $participants = $project->participants;
         $parent_id = $request->get('parent_id');
 
@@ -24,18 +31,30 @@ class TaskController extends Controller
 
     public function store(Request $request, Project $project)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation
+        if (!$user->is_admin() && !$project->participants->contains($user->id)) {
+            abort(403, 'Accès non autorisé à ce projet.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
-            'priority' => 'nullable|integer',
+            'description' => 'nullable|string|max:5000',
+            'due_date' => 'nullable|date|after_or_equal:today',
+            'priority' => 'nullable|integer|min:0|max:3',
             'assigned_to' => 'nullable|integer|exists:users,id',
             'parent_id' => 'nullable|integer|exists:tasks,id',
         ]);
 
+        // Vérifier que l'utilisateur assigné fait partie du projet
+        if ($request->assigned_to && !$project->participants->contains($request->assigned_to)) {
+            return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
+        }
+
         $taskData = [
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => htmlspecialchars($request->title, ENT_QUOTES, 'UTF-8'),
+            'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'due_date' => $request->due_date,
             'priority' => $request->priority ?? 0,
             'project_id' => $project->id,
@@ -50,28 +69,71 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation
+        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
+            abort(403, 'Accès non autorisé à cette tâche.');
+        }
+
         return view('tasks.show', compact('task'));
     }
 
     public function edit(Task $task)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation
+        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
+            abort(403, 'Accès non autorisé à cette tâche.');
+        }
+
         $participants = $task->project->participants;
         return view('tasks.edit', compact('task', 'participants'));
     }
 
     public function update(Request $request, Task $task)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation
+        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
+            abort(403, 'Accès non autorisé à cette tâche.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:5000',
+            'due_date' => 'nullable|date|after_or_equal:today',
+            'priority' => 'nullable|integer|min:0|max:3',
+            'assigned_to' => 'nullable|integer|exists:users,id',
         ]);
 
-        $task->update($request->only(['title', 'description', 'due_date', 'priority', 'assigned_to']));
+        // Vérifier que l'utilisateur assigné fait partie du projet
+        if ($request->assigned_to && !$task->project->participants->contains($request->assigned_to)) {
+            return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
+        }
+
+        $task->update([
+            'title' => htmlspecialchars($request->title, ENT_QUOTES, 'UTF-8'),
+            'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
+            'due_date' => $request->due_date,
+            'priority' => $request->priority,
+            'assigned_to' => $request->assigned_to,
+        ]);
 
         return redirect()->route('projects.tasks', $task->project_id)->with('success', 'Tâche mise à jour avec succès.');
     }
 
     public function destroy(Task $task)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation (seuls les admins ou l'auteur peuvent supprimer)
+        if (!$user->is_admin() && $task->author_id !== $user->id) {
+            abort(403, 'Accès non autorisé. Seuls les administrateurs ou l\'auteur peuvent supprimer cette tâche.');
+        }
+
         $task->delete();
 
         return redirect()->route('projects.tasks', $task->project_id)->with('success', 'Tâche supprimée avec succès.');
@@ -79,6 +141,13 @@ class TaskController extends Controller
 
     public function updateStatus(Request $request, Task $task)
     {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation
+        if (!$user->is_admin() && !$task->project->participants->contains($user->id)) {
+            return response()->json(['error' => 'Accès non autorisé.'], 403);
+        }
+
         $request->validate([
             'status' => 'required|in:todo,in-progress,done,blocked',
         ]);
