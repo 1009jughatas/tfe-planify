@@ -9,13 +9,33 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $totalProjectsCount = Project::count();
-        $activeProjectsCount = Project::where('status', '!=', 'finished')
-            ->orWhereNull('status')
-            ->count();
-        $completedProjectsCount = Project::where('status', 'finished')->count();
-        $openTasksCount = Task::where('status', '!=', 'completed')->count();
-        $tasks = Task::all();
+        $user = auth()->user();
+
+        if ($user->is_admin()) {
+            // Admin voit tout
+            $activeProjectsCount = Project::where('status', 'active')->count();
+            $completedProjectsCount = Project::where('status', 'completed')->count();
+            $openTasksCount = Task::whereIn('status', ['pending', 'in-progress'])->count();
+            $tasks = Task::all();
+        } else {
+            // Utilisateur voit ses projets + ceux où il participe
+            $ownProjectIds = $user->projects()->pluck('id');
+            $participatingProjectIds = $user->participatingProjects()->pluck('id');
+            $allProjectIds = $ownProjectIds->merge($participatingProjectIds)->unique();
+
+            $activeProjectsCount = Project::whereIn('id', $allProjectIds)
+                ->where('status', 'active')
+                ->count();
+            $completedProjectsCount = Project::whereIn('id', $allProjectIds)
+                ->where('status', 'completed')
+                ->count();
+            $openTasksCount = Task::whereIn('project_id', $allProjectIds)
+                ->whereIn('status', ['pending', 'in-progress'])
+                ->count();
+            $tasks = Task::whereIn('project_id', $allProjectIds)->get();
+        }
+
+        $totalProjectsCount = $activeProjectsCount + $completedProjectsCount;
 
         return view('dashboard', compact('activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount', 'openTasksCount', 'tasks'));
     }

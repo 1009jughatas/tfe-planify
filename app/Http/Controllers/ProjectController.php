@@ -18,8 +18,10 @@ class ProjectController extends Controller
             // Admins see all projects
             $projects = Project::all();
         } else {
-            // Users only see the projects they participate in
-            $projects = $user->participatingProjects()->get();
+            // Users see their own projects + projects they participate in
+            $ownProjects = $user->projects()->get();
+            $participatingProjects = $user->participatingProjects()->get();
+            $projects = $ownProjects->merge($participatingProjects)->unique('id');
         }
 
         return view('projects.index', compact('projects'));
