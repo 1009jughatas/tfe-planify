@@ -6,17 +6,52 @@
     </x-slot>
 
     <div class="container py-6 lg:py-12 px-4">
+        <!-- Alertes de limitation -->
+        @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
+            @php
+                $projectCount = Auth::user()->projects()->count();
+                $projectLimit = 3;
+            @endphp
+            @if ($projectCount >= $projectLimit)
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Vous avez atteint la limite de <strong>{{ $projectLimit }} projets</strong> pour les utilisateurs gratuits.
+                    <a href="{{ route('premium.show') }}" class="alert-link">Passez à Premium</a> pour créer des projets illimités.
+                </div>
+            @else
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Vous avez <strong>{{ $projectCount }}/{{ $projectLimit }} projets</strong>.
+                    <a href="{{ route('premium.show') }}" class="alert-link">Passez à Premium</a> pour des projets illimités et plus de fonctionnalités.
+                </div>
+            @endif
+        @endif
+
         <div class="row mb-4">
             <div class="col-12 col-md-8">
-                <h1 class="h2 mb-3 mb-md-0">Tous les projets</h1>
+                <h1 class="h2 mb-3 mb-md-0">
+                    Tous les projets
+                    @if (Auth::user()->is_premium || Auth::user()->is_admin())
+                        <span class="badge bg-warning text-dark"><i class="fas fa-crown me-1"></i>Premium</span>
+                    @endif
+                </h1>
             </div>
-            @if (Auth::user()->is_admin())
-                <div class="col-12 col-md-4 text-md-end">
+            <div class="col-12 col-md-4 text-md-end">
+                @php
+                    $canCreate = Auth::user()->is_admin() || 
+                                 Auth::user()->is_premium || 
+                                 Auth::user()->projects()->count() < 3;
+                @endphp
+                @if ($canCreate)
                     <a href="{{ route('projects.create') }}" class="btn btn-primary w-100 w-md-auto">
                         <i class="fas fa-plus me-2"></i>Créer un nouveau projet
                     </a>
-                </div>
-            @endif
+                @else
+                    <button class="btn btn-secondary w-100 w-md-auto" disabled title="Limite atteinte">
+                        <i class="fas fa-lock me-2"></i>Limite atteinte ({{ Auth::user()->projects()->count() }}/3)
+                    </button>
+                @endif
+            </div>
         </div>
 
         @if (session('error'))
@@ -68,11 +103,25 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-lg-4 mt-3 mt-lg-0">
+                                    <!-- Badges -->
+                                    <div class="mb-2">
+                                        @if ($project->author_id === Auth::id())
+                                            <span class="badge bg-primary"><i class="fas fa-user me-1"></i>Votre projet</span>
+                                        @endif
+                                        @if (Auth::user()->is_admin())
+                                            <span class="badge bg-danger"><i class="fas fa-shield-alt me-1"></i>Admin</span>
+                                        @endif
+                                        @if (Auth::user()->is_premium || Auth::user()->is_admin())
+                                            <span class="badge bg-warning text-dark"><i class="fas fa-crown me-1"></i>Premium</span>
+                                        @endif
+                                    </div>
+
+                                    <!-- Actions -->
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                         <a href="{{ route('projects.tasks', $project->id) }}" class="btn btn-success btn-sm">
                                             <i class="fas fa-tasks me-1"></i>Tâches
                                         </a>
-                                        @if (Auth::user()->is_admin())
+                                        @if (Auth::user()->is_admin() || $project->author_id === Auth::id())
                                             <a href="{{ route('projects.edit', $project->id) }}" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit me-1"></i>Modifier
                                             </a>

@@ -104,15 +104,39 @@
             </x-nav-link>
         @endauth
 
-        @if (!Auth::user()->is_premium)
+        @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
             <x-nav-link :href="route('premium.show')" :active="request()->routeIs('premium.show')"
+                class="flex items-center p-4">
+                <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 3v4M3 5h4m10-2l-.867 12.142A2 2 0 0116.138 17H7.862a2 2 0 01-1.995-1.858L5 3m5 4v10m4-10v10" />
+                </svg>
+                <span x-show="!collapsed" class="ml-3">{{ __('Premium') }}</span>
+            </x-nav-link>
+        @endif
+
+        @if (Auth::user()->is_premium || Auth::user()->is_admin())
+            <x-nav-link :href="route('preferences.edit')" :active="request()->routeIs('preferences.edit')"
                 class="flex items-center p-4">
                 <svg class="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 7H7v6h6V7zM21 7h-6v6h6V7zM13 13v6H7v-6h6zM21 13v6h-6v-6z" />
+                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                 </svg>
-                <span x-show="!collapsed" class="ml-3">{{ __('Premium') }}</span>
+                <span x-show="!collapsed" class="ml-3">{{ __('Préférences') }}</span>
+            </x-nav-link>
+        @endif
+
+        @if (Auth::user()->is_admin())
+            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
+                class="flex items-center p-4 bg-red-50 border-l-4 border-red-500">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span x-show="!collapsed" class="ml-3 font-bold text-red-600">{{ __('Admin') }}</span>
             </x-nav-link>
         @endif
 

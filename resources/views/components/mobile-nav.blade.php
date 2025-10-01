@@ -59,11 +59,28 @@
                 </x-nav-link>
             @endauth
 
-            @if (!Auth::user()->is_premium)
+            @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
                 <x-nav-link :href="route('premium.show')" :active="request()->routeIs('premium.show')"
                            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100">
                     <i class="fas fa-crown w-5 h-5 mr-3 text-yellow-500"></i>
                     <span>Premium</span>
+                </x-nav-link>
+            @endif
+
+            @if (Auth::user()->is_premium || Auth::user()->is_admin())
+                <x-nav-link :href="route('preferences.edit')" :active="request()->routeIs('preferences.edit')"
+                           class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                    <span>Préférences</span>
+                </x-nav-link>
+            @endif
+
+            @if (Auth::user()->is_admin())
+                <div class="border-t border-gray-200 my-2"></div>
+                <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
+                           class="flex items-center px-4 py-3 bg-red-50 text-red-700 hover:bg-red-100">
+                    <i class="fas fa-shield-alt w-5 h-5 mr-3 text-red-600"></i>
+                    <span class="font-bold">Administration</span>
                 </x-nav-link>
             @endif
 
