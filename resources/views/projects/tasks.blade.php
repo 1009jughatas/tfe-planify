@@ -36,7 +36,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title"><b>Auteur</b></h5>
-                        <p class="card-text">{{ $project->author->name }}</p>
+                        <p class="card-text">{{ $project->author->name ?? 'N/A' }}</p>
                     </div>
                 </div>
             </div>

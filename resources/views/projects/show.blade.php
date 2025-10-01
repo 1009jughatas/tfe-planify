@@ -31,7 +31,7 @@
 
         <div class="mt-4">
             <h3>Tasks</h3>
-            <a href="{{ route('tasks.create', ['project_id' => $project->id]) }}" class="btn btn-primary mb-3">Add
+            <a href="{{ route('tasks.create', $project->id) }}" class="btn btn-primary mb-3">Add
                 Task</a>
             @if ($project->tasks->isEmpty())
                 <p>No tasks found for this project.</p>
