@@ -95,9 +95,9 @@ class ProjectController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$project->participants->contains($user->id)) {
-            abort(403, 'Accès non autorisé à ce projet.');
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('view', $project)) {
+            abort(403, 'Accès non autorisé à ce projet. Vous devez être l\'auteur ou participant.');
         }
 
         $tasks = $project->tasks()->whereNull('parent_id')->get();
