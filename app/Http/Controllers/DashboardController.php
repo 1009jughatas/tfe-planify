@@ -37,7 +37,16 @@ class DashboardController extends Controller
 
         $totalProjectsCount = $activeProjectsCount + $completedProjectsCount;
 
-        return view('dashboard', compact('activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount', 'openTasksCount', 'tasks'));
+        // Récupérer les projets pour le calendrier
+        if ($user->is_admin()) {
+            $projects = Project::all();
+        } else {
+            $ownProjects = $user->projects()->get();
+            $participatingProjects = $user->participatingProjects()->select('projects.*')->get();
+            $projects = $ownProjects->merge($participatingProjects)->unique('id');
+        }
+
+        return view('dashboard', compact('activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount', 'openTasksCount', 'tasks', 'projects'));
     }
 
     public function exportReport()
