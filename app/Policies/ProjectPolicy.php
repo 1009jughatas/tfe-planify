@@ -120,4 +120,61 @@ class ProjectPolicy
         // L'utilisateur doit être l'auteur ou participant
         return $project->author_id === $user->id || $project->participants->contains($user->id);
     }
+
+    /**
+     * Determine if the user can access Kanban board.
+     */
+    public function viewKanban(User $user, Project $project): bool
+    {
+        // Les admins ont toujours accès
+        if ($user->is_admin()) {
+            return true;
+        }
+
+        // Seuls les utilisateurs premium ont accès au Kanban
+        if (!$user->is_premium) {
+            return false;
+        }
+
+        // L'utilisateur doit être l'auteur ou participant
+        return $project->author_id === $user->id || $project->participants->contains($user->id);
+    }
+
+    /**
+     * Determine if the user can upload files to the project.
+     */
+    public function uploadFiles(User $user, Project $project): bool
+    {
+        // Les admins peuvent toujours uploader
+        if ($user->is_admin()) {
+            return true;
+        }
+
+        // Seuls les utilisateurs premium peuvent uploader des fichiers
+        if (!$user->is_premium) {
+            return false;
+        }
+
+        // L'utilisateur doit être l'auteur ou participant
+        return $project->author_id === $user->id || $project->participants->contains($user->id);
+    }
+
+    /**
+     * Determine if the user can export reports.
+     */
+    public function exportReport(User $user, Project $project): bool
+    {
+        // Les admins peuvent toujours exporter
+        if ($user->is_admin()) {
+            return true;
+        }
+
+        // Seuls les utilisateurs premium peuvent exporter
+        if (!$user->is_premium) {
+            return false;
+        }
+
+        // L'utilisateur doit être l'auteur ou participant
+        return $project->author_id === $user->id || $project->participants->contains($user->id);
+    }
 }

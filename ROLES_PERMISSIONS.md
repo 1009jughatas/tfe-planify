@@ -45,7 +45,7 @@ Planify implémente un système de permissions à trois niveaux :
 
 ---
 
-## 💎 Utilisateur Premium (Payant)
+## 💎 Utilisateur Premium (Abonné SaaS via Stripe)
 
 ### ✅ Permissions Accordées
 
@@ -54,8 +54,9 @@ Planify implémente un système de permissions à trois niveaux :
 - ✅ **Voir** ses projets et les projets où il est participant
 - ✅ **Modifier** ses propres projets
 - ✅ **Supprimer** ses propres projets
-- ✅ **Inviter** des collaborateurs à ses projets
+- ✅ **Inviter** plusieurs collaborateurs par projet
 - ✅ **Voir** les statistiques avancées de ses projets
+- ✅ **Stocker et partager** des fichiers dans les projets
 
 #### Tâches
 - ✅ **Créer** des tâches illimitées
@@ -64,18 +65,34 @@ Planify implémente un système de permissions à trois niveaux :
 - ✅ **Supprimer** ses propres tâches
 - ✅ **Assigner** des tâches aux collaborateurs
 - ✅ **Changer le statut** des tâches du projet
-- ✅ **Voir** les tâches des projets où il est participant
+- ✅ **Définir des priorités** sur les tâches
+- ✅ **Stocker et partager** des fichiers dans les tâches
 
 #### Fonctionnalités Avancées
-- ✅ **Statistiques** : Graphiques et analyses
-- ✅ **Export PDF** : Rapports de projets
-- ✅ **Collaboration** : Travail en équipe
-- ✅ **Calendrier** : Vue calendrier avancée
-- ✅ **Notifications** : Alertes sur les tâches
+- ✅ **Tableau Kanban** : Organisation visuelle par glisser-déposer
+- ✅ **Statistiques** : Progression, pourcentage de tâches accomplies
+- ✅ **Rapports** : Deadlines, temps moyen de réalisation
+- ✅ **Export PDF** : Rapports de projets professionnels
+- ✅ **Collaboration** : Travail en équipe avec plusieurs collaborateurs
+- ✅ **Calendrier** : Vue calendrier complète
+- ✅ **Notifications** : Alertes par email
+- ✅ **Rappels automatiques** : Email avant les deadlines
+- ✅ **Stockage de fichiers** : Upload et partage de documents
+- ✅ **Personnalisation** : Mode sombre, choix de couleurs, thème
+
+#### Personnalisation de l'Interface
+- ✅ **Mode sombre** : Activation/désactivation
+- ✅ **Choix de couleurs** : 8 thèmes de couleurs disponibles
+- ✅ **Langue** : Français, English, Nederlands
+- ✅ **Format de date** : Personnalisable
+- ✅ **Fuseau horaire** : Configurable
+- ✅ **Notifications email** : Activable/désactivable
+- ✅ **Rappels automatiques** : Configurable (1-168 heures avant)
 
 #### Profil
 - ✅ **Badge Premium** : Affichage du statut premium
 - ✅ Toutes les permissions utilisateur standard
+- ✅ **Préférences** : Interface personnalisée
 
 ### 🎯 Avantages
 

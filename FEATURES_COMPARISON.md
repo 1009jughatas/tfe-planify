@@ -70,13 +70,17 @@
 **Inclus** :
 - ✅ **Tout du plan gratuit**
 - ✅ Projets **illimités**
-- ✅ **Collaboration** en équipe
+- ✅ **Collaboration** en équipe (collaborateurs illimités)
 - ✅ **Assignation** de tâches
-- ✅ **Statistiques** avancées
+- ✅ **Statistiques** avancées (progression, pourcentage, temps moyen)
 - ✅ **Export PDF** des rapports
-- ✅ **Calendrier** complet
+- ✅ **Tableau Kanban** : Organisation visuelle par glisser-déposer
+- ✅ **Calendrier** complet avec deadlines
 - ✅ **Support prioritaire**
-- ✅ **Notifications** avancées
+- ✅ **Notifications** et rappels automatiques par email
+- ✅ **Stockage de fichiers** : Upload et partage (10 MB max par fichier)
+- ✅ **Personnalisation interface** : Mode sombre, 8 couleurs de thème
+- ✅ **Configuration avancée** : Langue, fuseau horaire, format de date
 
 **Avantages** :
 - 🚀 Productivité maximale

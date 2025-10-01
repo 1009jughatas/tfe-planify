@@ -48,6 +48,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/test-responsive', function () {
         return view('test-responsive');
     })->name('test.responsive');
+
+    // User Preferences Routes (Premium uniquement)
+    Route::get('/preferences', [App\Http\Controllers\UserPreferenceController::class, 'edit'])->name('preferences.edit');
+    Route::patch('/preferences', [App\Http\Controllers\UserPreferenceController::class, 'update'])->name('preferences.update');
+
+    // Attachment Routes (Premium uniquement)
+    Route::post('/attachments', [App\Http\Controllers\AttachmentController::class, 'store'])->name('attachments.store');
+    Route::get('/attachments/{attachment}/download', [App\Http\Controllers\AttachmentController::class, 'download'])->name('attachments.download');
+    Route::delete('/attachments/{attachment}', [App\Http\Controllers\AttachmentController::class, 'destroy'])->name('attachments.destroy');
 });
 
     Route::view('/mentions-legales', 'legal')->name('mentions.legales');

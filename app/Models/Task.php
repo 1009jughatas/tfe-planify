@@ -62,4 +62,31 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
+
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    /**
+     * Check if task is overdue.
+     */
+    public function isOverdue()
+    {
+        if (!$this->due_date || $this->status === 'completed') {
+            return false;
+        }
+        return now()->gt($this->due_date);
+    }
+
+    /**
+     * Get days until due date.
+     */
+    public function getDaysUntilDueAttribute()
+    {
+        if (!$this->due_date) {
+            return null;
+        }
+        return now()->diffInDays($this->due_date, false);
+    }
 }

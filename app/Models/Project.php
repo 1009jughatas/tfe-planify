@@ -40,4 +40,42 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class, 'project_user');
     }
+
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    /**
+     * Get project completion percentage.
+     */
+    public function getCompletionPercentageAttribute()
+    {
+        $totalTasks = $this->tasks()->count();
+        if ($totalTasks === 0) {
+            return 0;
+        }
+        $completedTasks = $this->tasks()->where('status', 'completed')->count();
+        return round(($completedTasks / $totalTasks) * 100, 2);
+    }
+
+    /**
+     * Get average task completion time in days.
+     */
+    public function getAverageCompletionTimeAttribute()
+    {
+        $completedTasks = $this->tasks()->where('status', 'completed')->get();
+        if ($completedTasks->isEmpty()) {
+            return 0;
+        }
+        
+        $totalDays = 0;
+        foreach ($completedTasks as $task) {
+            if ($task->created_at && $task->updated_at) {
+                $totalDays += $task->created_at->diffInDays($task->updated_at);
+            }
+        }
+        
+        return round($totalDays / $completedTasks->count(), 2);
+    }
 }

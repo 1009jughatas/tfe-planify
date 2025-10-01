@@ -62,4 +62,25 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class, 'project_user');
     }
+
+    public function preferences()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
+    /**
+     * Get or create user preferences.
+     */
+    public function getPreferences()
+    {
+        if (!$this->preferences) {
+            return UserPreference::create(['user_id' => $this->id]);
+        }
+        return $this->preferences;
+    }
 }
