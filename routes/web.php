@@ -15,6 +15,25 @@ Route::get('/', function () {
 // Routes for Admin (only admins can create, edit, and delete projects)
 Route::middleware(['auth', 'verified', IsAdmin::class])->group(function () {
     Route::resource('projects', ProjectController::class)->except(['index', 'show']);
+
+    // Admin Dashboard
+    Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('admin.logs');
+    Route::get('/admin/statistics', [App\Http\Controllers\Admin\DashboardController::class, 'statistics'])->name('admin.statistics');
+
+    // User Management
+    Route::get('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/create', [App\Http\Controllers\Admin\UserManagementController::class, 'create'])->name('admin.users.create');
+    Route::post('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'store'])->name('admin.users.store');
+    Route::get('/admin/users/{user}/edit', [App\Http\Controllers\Admin\UserManagementController::class, 'edit'])->name('admin.users.edit');
+    Route::patch('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'update'])->name('admin.users.update');
+    Route::delete('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/admin/users/{user}/toggle-premium', [App\Http\Controllers\Admin\UserManagementController::class, 'togglePremium'])->name('admin.users.toggle-premium');
+    Route::post('/admin/users/{user}/change-role', [App\Http\Controllers\Admin\UserManagementController::class, 'changeRole'])->name('admin.users.change-role');
+
+    // Legal Content Management
+    Route::get('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'index'])->name('admin.legal.index');
+    Route::post('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'update'])->name('admin.legal.update');
 });
 
 // Routes pour tous les users connecte

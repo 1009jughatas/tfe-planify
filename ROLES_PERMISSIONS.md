@@ -108,13 +108,19 @@ Planify implémente un système de permissions à trois niveaux :
 
 ### ✅ Permissions Accordées
 
+#### Toutes les Fonctionnalités Premium
+- ✅ **Dispose de toutes** les permissions Premium
+- ✅ **Projets illimités** et fonctionnalités avancées
+- ✅ **Tableau Kanban**, statistiques, export PDF
+- ✅ **Personnalisation** complète de l'interface
+
 #### Projets
 - ✅ **Créer** tous types de projets (**illimités**)
 - ✅ **Voir** TOUS les projets (système entier)
 - ✅ **Modifier** TOUS les projets
-- ✅ **Supprimer** TOUS les projets
+- ✅ **Supprimer** TOUS les projets (si nécessaire)
 - ✅ **Gérer** les collaborateurs de tous les projets
-- ✅ **Accès total** aux statistiques
+- ✅ **Accès total** aux statistiques de tous les projets
 
 #### Tâches
 - ✅ **Créer** des tâches dans tous les projets
@@ -124,16 +130,43 @@ Planify implémente un système de permissions à trois niveaux :
 - ✅ **Assigner** des tâches à n'importe qui
 - ✅ **Changer** le statut de toutes les tâches
 
-#### Gestion Utilisateurs
-- ✅ **Voir** tous les utilisateurs
-- ✅ **Gérer** les rôles
-- ✅ **Activer/Désactiver** des comptes
-- ✅ **Voir** toutes les activités
+#### Gestion des Utilisateurs
+- ✅ **Créer** de nouveaux utilisateurs
+- ✅ **Voir** tous les utilisateurs (liste complète)
+- ✅ **Modifier** les informations de tous les utilisateurs
+- ✅ **Supprimer** des utilisateurs
+- ✅ **Changer les rôles** : user/premium/admin
+- ✅ **Activer/Désactiver** le statut premium
+- ✅ **Réinitialiser** les mots de passe
+- ✅ **Voir** l'historique d'activité des utilisateurs
 
-#### Système
-- ✅ **Accès complet** à toutes les fonctionnalités
-- ✅ **Configuration** système
-- ✅ **Monitoring** de l'application
+#### Logs et Monitoring
+- ✅ **Accès aux logs** système (laravel.log)
+- ✅ **Statistiques globales** de la plateforme
+- ✅ **Monitoring** de l'activité
+- ✅ **Analyse** des performances
+- ✅ **Surveillance** de la sécurité
+
+#### Contenus Légaux
+- ✅ **Gérer** les mentions légales
+- ✅ **Gérer** les CGU (Conditions Générales d'Utilisation)
+- ✅ **Gérer** la politique de confidentialité
+- ✅ **Modifier** les contenus via l'interface admin
+- ✅ **Publier** les mises à jour légales
+
+#### Panneau d'Administration
+- ✅ **Dashboard admin** complet
+- ✅ **Vue d'ensemble** du système
+- ✅ **Statistiques** en temps réel
+- ✅ **Gestion centralisée** de toutes les ressources
+- ✅ **Outils de supervision**
+
+#### Sécurité et Maintenance
+- ✅ **Surveiller** la sécurité de l'application
+- ✅ **Appliquer** des mises à jour
+- ✅ **Gérer** les sauvegardes
+- ✅ **Résoudre** les problèmes techniques
+- ✅ **Configuration** avancée du système
 
 ---
 
