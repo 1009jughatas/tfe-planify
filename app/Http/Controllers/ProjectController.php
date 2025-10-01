@@ -20,7 +20,9 @@ class ProjectController extends Controller
         } else {
             // Users see their own projects + projects they participate in
             $ownProjects = $user->projects()->get();
-            $participatingProjects = $user->participatingProjects()->get();
+            $participatingProjects = $user->participatingProjects()
+                ->select('projects.*') // Spécifier explicitement les colonnes de projects
+                ->get();
             $projects = $ownProjects->merge($participatingProjects)->unique('id');
         }
 

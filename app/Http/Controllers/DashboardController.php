@@ -19,8 +19,8 @@ class DashboardController extends Controller
             $tasks = Task::all();
         } else {
             // Utilisateur voit ses projets + ceux où il participe
-            $ownProjectIds = $user->projects()->pluck('id');
-            $participatingProjectIds = $user->participatingProjects()->pluck('id');
+            $ownProjectIds = $user->projects()->pluck('projects.id');
+            $participatingProjectIds = $user->participatingProjects()->pluck('projects.id');
             $allProjectIds = $ownProjectIds->merge($participatingProjectIds)->unique();
 
             $activeProjectsCount = Project::whereIn('id', $allProjectIds)
