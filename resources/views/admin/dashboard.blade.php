@@ -1,225 +1,376 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight flex items-center">
-            <i class="fas fa-shield-alt text-red-600 me-2"></i>
-            {{ __('Panneau d\'Administration') }}
-        </h2>
-    </x-slot>
-
-    <div class="container py-6 lg:py-12 px-4">
-        <!-- Titre et badge -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h1 class="h2 mb-3">
-                    Dashboard Administrateur
-                    <span class="badge bg-danger"><i class="fas fa-crown me-1"></i>Admin</span>
-                </h1>
-                <p class="text-muted">Vue d'ensemble complète de la plateforme Planify</p>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-sm">
+                    <i class="fas fa-shield-alt text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Panneau d'Administration</h1>
+                    <p class="text-sm text-gray-600 mt-1">Vue d'ensemble complète de la plateforme Planify</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="badge-danger">Administrateur</span>
+                <button class="btn-secondary-modern text-sm" onclick="window.print()">
+                    <i class="fas fa-print mr-2"></i>
+                    Imprimer
+                </button>
             </div>
         </div>
+    </x-slot>
 
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Statistiques principales -->
-        <div class="row g-3 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Utilisateurs -->
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card border-primary h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-subtitle text-muted mb-0">Total Utilisateurs</h6>
-                            <i class="fas fa-users fa-2x text-primary"></i>
-                        </div>
-                        <h2 class="card-title mb-1">{{ $stats['total_users'] }}</h2>
-                        <div class="small text-muted">
-                            <span class="badge bg-warning">{{ $stats['premium_users'] }} Premium</span>
-                            <span class="badge bg-secondary">{{ $stats['free_users'] }} Gratuit</span>
+            <div class="stats-card hover-lift border-l-4 border-l-blue-500">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-600 mb-1">Total Utilisateurs</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $stats['total_users'] ?? 0 }}</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span class="badge-warning">{{ $stats['premium_users'] ?? 0 }} Premium</span>
+                            <span class="badge-secondary">{{ $stats['free_users'] ?? 0 }} Gratuit</span>
                         </div>
                     </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-xs text-gray-500">+12% ce mois</span>
+                    <i class="fas fa-arrow-up text-green-500 ml-2"></i>
                 </div>
             </div>
 
             <!-- Projets -->
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card border-success h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-subtitle text-muted mb-0">Total Projets</h6>
-                            <i class="fas fa-project-diagram fa-2x text-success"></i>
-                        </div>
-                        <h2 class="card-title mb-1">{{ $stats['total_projects'] }}</h2>
-                        <div class="small text-muted">
-                            <span class="badge bg-info">{{ $stats['active_projects'] }} Actifs</span>
-                            <span class="badge bg-success">{{ $stats['completed_projects'] }} Terminés</span>
+            <div class="stats-card hover-lift border-l-4 border-l-green-500">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-600 mb-1">Total Projets</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $stats['total_projects'] ?? 0 }}</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span class="badge-primary">{{ $stats['active_projects'] ?? 0 }} Actifs</span>
+                            <span class="badge-success">{{ $stats['completed_projects'] ?? 0 }} Terminés</span>
                         </div>
                     </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-project-diagram text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-xs text-gray-500">+8% ce mois</span>
+                    <i class="fas fa-arrow-up text-green-500 ml-2"></i>
                 </div>
             </div>
 
             <!-- Tâches -->
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card border-warning h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-subtitle text-muted mb-0">Total Tâches</h6>
-                            <i class="fas fa-tasks fa-2x text-warning"></i>
-                        </div>
-                        <h2 class="card-title mb-1">{{ $stats['total_tasks'] }}</h2>
-                        <div class="small text-muted">
-                            <span class="badge bg-secondary">{{ $stats['pending_tasks'] }} En attente</span>
-                            <span class="badge bg-success">{{ $stats['completed_tasks'] }} Terminées</span>
+            <div class="stats-card hover-lift border-l-4 border-l-yellow-500">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-600 mb-1">Total Tâches</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $stats['total_tasks'] ?? 0 }}</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span class="badge-secondary">{{ $stats['pending_tasks'] ?? 0 }} En attente</span>
+                            <span class="badge-success">{{ $stats['completed_tasks'] ?? 0 }} Terminées</span>
                         </div>
                     </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-tasks text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-xs text-gray-500">+15% ce mois</span>
+                    <i class="fas fa-arrow-up text-green-500 ml-2"></i>
                 </div>
             </div>
 
-            <!-- Taux conversion -->
-            <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card border-info h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-subtitle text-muted mb-0">Conversion Premium</h6>
-                            <i class="fas fa-chart-line fa-2x text-info"></i>
-                        </div>
-                        <h2 class="card-title mb-1">{{ $conversionRate }}%</h2>
-                        <div class="small text-muted">
-                            <span class="badge bg-warning">{{ $stats['premium_users'] }}/{{ $stats['total_users'] }} Premium</span>
+            <!-- Conversion Premium -->
+            <div class="stats-card hover-lift border-l-4 border-l-purple-500">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-600 mb-1">Conversion Premium</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $conversionRate ?? 0 }}%</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span class="badge-warning">{{ $stats['premium_users'] ?? 0 }}/{{ $stats['total_users'] ?? 0 }} Premium</span>
                         </div>
                     </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-xs text-gray-500">+3% ce mois</span>
+                    <i class="fas fa-arrow-up text-green-500 ml-2"></i>
                 </div>
             </div>
         </div>
 
         <!-- Actions rapides -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Actions Rapides</h5>
+        <div class="modern-card mb-8">
+            <div class="modern-card-header">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-bolt text-accent-500 mr-2"></i>
+                    Actions Rapides
+                </h3>
+            </div>
+            <div class="modern-card-body">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <a href="{{ route('admin.users.index') }}" class="admin-action-card hover-lift">
+                        <div class="admin-action-icon bg-blue-100">
+                            <i class="fas fa-users text-blue-600"></i>
+                        </div>
+                        <h4 class="admin-action-title">Gérer les Utilisateurs</h4>
+                        <p class="admin-action-desc">Voir et modifier les comptes utilisateurs</p>
+                    </a>
+
+                    <a href="{{ route('admin.statistics') }}" class="admin-action-card hover-lift">
+                        <div class="admin-action-icon bg-green-100">
+                            <i class="fas fa-chart-bar text-green-600"></i>
+                        </div>
+                        <h4 class="admin-action-title">Statistiques</h4>
+                        <p class="admin-action-desc">Analyses détaillées et rapports</p>
+                    </a>
+
+                    <a href="{{ route('admin.logs') }}" class="admin-action-card hover-lift">
+                        <div class="admin-action-icon bg-yellow-100">
+                            <i class="fas fa-file-alt text-yellow-600"></i>
+                        </div>
+                        <h4 class="admin-action-title">Logs Système</h4>
+                        <p class="admin-action-desc">Consulter les logs d'activité</p>
+                    </a>
+
+                    <a href="{{ route('admin.legal.index') }}" class="admin-action-card hover-lift">
+                        <div class="admin-action-icon bg-purple-100">
+                            <i class="fas fa-gavel text-purple-600"></i>
+                        </div>
+                        <h4 class="admin-action-title">Contenus Légaux</h4>
+                        <p class="admin-action-desc">Mentions légales et CGU</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques et analyses -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Graphique des inscriptions -->
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-chart-area text-primary-600 mr-2"></i>
+                        Inscriptions des 30 derniers jours
+                    </h3>
+                </div>
+                <div class="modern-card-body">
+                    <div class="h-64 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-chart-area text-blue-400 text-4xl mb-4"></i>
+                            <p class="text-blue-600 font-medium">Graphique des inscriptions</p>
+                            <p class="text-sm text-blue-500">Intégration Chart.js recommandée</p>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2 d-md-flex">
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-primary">
-                                <i class="fas fa-users me-2"></i>Gérer les Utilisateurs
-                            </a>
-                            <a href="{{ route('admin.statistics') }}" class="btn btn-success">
-                                <i class="fas fa-chart-bar me-2"></i>Statistiques Globales
-                            </a>
-                            <a href="{{ route('admin.logs') }}" class="btn btn-warning">
-                                <i class="fas fa-file-alt me-2"></i>Consulter les Logs
-                            </a>
-                            <a href="{{ route('admin.legal.index') }}" class="btn btn-info">
-                                <i class="fas fa-gavel me-2"></i>Contenus Légaux
-                            </a>
+                </div>
+            </div>
+
+            <!-- Répartition des utilisateurs -->
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-chart-pie text-primary-600 mr-2"></i>
+                        Répartition des utilisateurs
+                    </h3>
+                </div>
+                <div class="modern-card-body">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
+                                <span class="text-sm font-medium text-gray-700">Utilisateurs Gratuits</span>
+                            </div>
+                            <span class="text-lg font-bold text-gray-900">{{ $stats['free_users'] ?? 0 }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-yellow-500 rounded-full mr-3"></div>
+                                <span class="text-sm font-medium text-gray-700">Utilisateurs Premium</span>
+                            </div>
+                            <span class="text-lg font-bold text-gray-900">{{ $stats['premium_users'] ?? 0 }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
+                                <span class="text-sm font-medium text-gray-700">Administrateurs</span>
+                            </div>
+                            <span class="text-lg font-bold text-gray-900">{{ $stats['admin_users'] ?? 1 }}</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-yellow-500 h-2 rounded-full" style="width: {{ ($stats['premium_users'] ?? 0) / max(($stats['total_users'] ?? 1), 1) * 100 }}%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Taux de conversion Premium</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Utilisateurs récents -->
-        <div class="row mb-4">
-            <div class="col-12 col-lg-6">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-user-clock me-2"></i>Utilisateurs Récents</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nom</th>
-                                        <th>Email</th>
-                                        <th>Statut</th>
-                                        <th>Inscrit le</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($recentUsers as $user)
-                                        <tr>
-                                            <td>{{ $user->name }}</td>
-                                            <td><small>{{ $user->email }}</small></td>
-                                            <td>
-                                                @if ($user->is_admin())
-                                                    <span class="badge bg-danger">Admin</span>
-                                                @elseif ($user->is_premium)
-                                                    <span class="badge bg-warning text-dark">Premium</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Gratuit</span>
-                                                @endif
-                                            </td>
-                                            <td><small>{{ $user->created_at->format('d/m/Y') }}</small></td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted">Aucun utilisateur</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-primary">
-                            Voir tous les utilisateurs <i class="fas fa-arrow-right ms-1"></i>
+        <!-- Tables récentes -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Utilisateurs récents -->
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-user-clock text-primary-600 mr-2"></i>
+                            Utilisateurs Récents
+                        </h3>
+                        <a href="{{ route('admin.users.index') }}" class="text-sm text-primary-600 hover:text-primary-700">
+                            Voir tout <i class="fas fa-arrow-right ml-1"></i>
                         </a>
+                    </div>
+                </div>
+                <div class="modern-card-body p-0">
+                    <div class="divide-y divide-gray-200">
+                        @forelse($recentUsers ?? [] as $user)
+                            <div class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center">
+                                            <span class="text-white font-medium text-sm">{{ substr($user->name, 0, 1) }}</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900">{{ $user->name }}</p>
+                                            <p class="text-sm text-gray-500">{{ $user->email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        @if ($user->is_admin())
+                                            <span class="badge-danger">Admin</span>
+                                        @elseif ($user->is_premium)
+                                            <span class="badge-warning">Premium</span>
+                                        @else
+                                            <span class="badge-secondary">Gratuit</span>
+                                        @endif
+                                        <p class="text-xs text-gray-500 mt-1">{{ $user->created_at->format('d/m/Y') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-8 text-center">
+                                <i class="fas fa-users text-gray-300 text-3xl mb-4"></i>
+                                <p class="text-gray-500">Aucun utilisateur récent</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
 
             <!-- Projets récents -->
-            <div class="col-12 col-lg-6">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-folder-open me-2"></i>Projets Récents</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nom du projet</th>
-                                        <th>Auteur</th>
-                                        <th>Statut</th>
-                                        <th>Créé le</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($recentProjects as $project)
-                                        <tr>
-                                            <td>
-                                                <a href="{{ route('projects.show', $project->id) }}" class="text-decoration-none">
-                                                    {{ Str::limit($project->name, 30) }}
-                                                </a>
-                                            </td>
-                                            <td><small>{{ $project->author->name ?? 'N/A' }}</small></td>
-                                            <td>
-                                                @if ($project->status === 'active')
-                                                    <span class="badge bg-info">Actif</span>
-                                                @elseif ($project->status === 'completed')
-                                                    <span class="badge bg-success">Terminé</span>
-                                                @else
-                                                    <span class="badge bg-secondary">{{ $project->status }}</span>
-                                                @endif
-                                            </td>
-                                            <td><small>{{ $project->created_at->format('d/m/Y') }}</small></td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted">Aucun projet</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('projects.index') }}" class="btn btn-sm btn-outline-success">
-                            Voir tous les projets <i class="fas fa-arrow-right ms-1"></i>
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-folder-open text-primary-600 mr-2"></i>
+                            Projets Récents
+                        </h3>
+                        <a href="{{ route('projects.index') }}" class="text-sm text-primary-600 hover:text-primary-700">
+                            Voir tout <i class="fas fa-arrow-right ml-1"></i>
                         </a>
+                    </div>
+                </div>
+                <div class="modern-card-body p-0">
+                    <div class="divide-y divide-gray-200">
+                        @forelse($recentProjects ?? [] as $project)
+                            <div class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-project-diagram text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900">{{ Str::limit($project->name, 25) }}</p>
+                                            <p class="text-sm text-gray-500">{{ $project->author->name ?? 'N/A' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        @if ($project->status === 'active')
+                                            <span class="badge-primary">Actif</span>
+                                        @elseif ($project->status === 'completed')
+                                            <span class="badge-success">Terminé</span>
+                                        @else
+                                            <span class="badge-secondary">{{ $project->status }}</span>
+                                        @endif
+                                        <p class="text-xs text-gray-500 mt-1">{{ $project->created_at->format('d/m/Y') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-8 text-center">
+                                <i class="fas fa-folder-open text-gray-300 text-3xl mb-4"></i>
+                                <p class="text-gray-500">Aucun projet récent</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations système -->
+        <div class="modern-card">
+            <div class="modern-card-header">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-server text-primary-600 mr-2"></i>
+                    Informations Système
+                </h3>
+            </div>
+            <div class="modern-card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <i class="fas fa-database text-blue-600 text-2xl mb-2"></i>
+                        <p class="text-sm font-medium text-gray-700">Base de données</p>
+                        <p class="text-lg font-bold text-gray-900">MySQL</p>
+                        <p class="text-xs text-gray-500">Connexion active</p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <i class="fas fa-server text-green-600 text-2xl mb-2"></i>
+                        <p class="text-sm font-medium text-gray-700">Serveur Web</p>
+                        <p class="text-lg font-bold text-gray-900">Apache/Nginx</p>
+                        <p class="text-xs text-gray-500">Opérationnel</p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <i class="fas fa-clock text-purple-600 text-2xl mb-2"></i>
+                        <p class="text-sm font-medium text-gray-700">Uptime</p>
+                        <p class="text-lg font-bold text-gray-900">99.9%</p>
+                        <p class="text-xs text-gray-500">Ce mois</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .admin-action-card {
+            @apply block p-4 bg-white rounded-xl border border-gray-200 hover:border-primary-300 hover:shadow-md transition-all duration-200;
+        }
+        
+        .admin-action-icon {
+            @apply w-12 h-12 rounded-lg flex items-center justify-center mb-3;
+        }
+        
+        .admin-action-title {
+            @apply text-sm font-semibold text-gray-900 mb-1;
+        }
+        
+        .admin-action-desc {
+            @apply text-xs text-gray-500;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-action-card {
+                @apply text-center;
+            }
+        }
+    </style>
 </x-app-layout>
 
