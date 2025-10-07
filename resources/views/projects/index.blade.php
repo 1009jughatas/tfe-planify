@@ -24,126 +24,8 @@
         </div>
     </x-slot>
 
-    <div class="flex h-screen bg-gray-50">
-        <!-- Sidebar -->
-        <div class="w-80 bg-white shadow-lg border-r border-gray-200 overflow-y-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900">Filtres & Statistiques</h2>
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
-                
-                <!-- Statistiques -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium text-gray-700 mb-3">Vue d'ensemble</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
-                                <span class="text-sm text-gray-600">En Planification</span>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-900">
-                                @php $planningProjects = $projects->where('status', 'planning') @endphp
-                                {{ $planningProjects->count() }}
-                            </span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">Actifs</span>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-900">
-                                @php $activeProjects = $projects->where('status', 'active') @endphp
-                                {{ $activeProjects->count() }}
-                            </span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">En Pause</span>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-900">
-                                @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
-                                {{ $onHoldProjects->count() }}
-                            </span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <span class="text-sm text-gray-600">Terminés</span>
-                            </div>
-                            <span class="text-sm font-semibold text-gray-900">
-                                @php $completedProjects = $projects->where('status', 'completed') @endphp
-                                {{ $completedProjects->count() }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Filtres -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium text-gray-700 mb-3">Filtres</h3>
-                    <div class="space-y-2">
-                        <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <i class="fas fa-user mr-2"></i>Mes projets
-                        </button>
-                        <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <i class="fas fa-users mr-2"></i>Projets partagés
-                        </button>
-                        <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <i class="fas fa-star mr-2"></i>Favoris
-                        </button>
-                        <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <i class="fas fa-clock mr-2"></i>Échéances proches
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Actions rapides -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium text-gray-700 mb-3">Actions rapides</h3>
-                    <div class="space-y-2">
-                        @if ($canCreate)
-                            <a href="{{ route('projects.create') }}" class="block w-full text-left px-3 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Nouveau projet
-                            </a>
-                        @endif
-                        <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <i class="fas fa-download mr-2"></i>Exporter
-                        </button>
-                        <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                            <i class="fas fa-search mr-2"></i>Rechercher
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Projets récents -->
-                <div>
-                    <h3 class="text-sm font-medium text-gray-700 mb-3">Projets récents</h3>
-                    <div class="space-y-2">
-                        @foreach($projects->take(3) as $project)
-                            <div class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
-                                <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-                                    <span class="text-xs font-semibold text-white">{{ substr($project->name, 0, 1) }}</span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate">{{ $project->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ $project->updated_at->diffForHumans() }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Contenu principal -->
-        <div class="flex-1 overflow-y-auto">
+    <!-- Contenu principal -->
+    <div class="min-h-screen bg-gray-50">
             <div class="p-6">
                 <!-- Alertes de limitation -->
                 @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
@@ -454,10 +336,6 @@
     </div>
 
     <style>
-        /* Sidebar et Layout Principal */
-        .h-screen {
-            height: 100vh;
-        }
         
         /* Colonnes Kanban */
         .kanban-column {
@@ -586,14 +464,6 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .flex.h-screen {
-                @apply flex-col h-auto;
-            }
-            
-            .w-80 {
-                @apply w-full;
-            }
-            
             .kanban-content {
                 @apply min-h-64;
             }
