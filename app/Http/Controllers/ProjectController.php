@@ -204,4 +204,39 @@ class ProjectController extends Controller
     {
         return self::PROJECT_LIMIT;
     }
+
+    /**
+     * Déplacer un projet d'une colonne à une autre (drag & drop)
+     */
+    public function moveProject(Request $request, Project $project)
+    {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('update', $project)) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent déplacer le projet.'], 403);
+            }
+            abort(403, 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent déplacer le projet.');
+        }
+
+        $request->validate([
+            'status' => 'required|in:todo,in_progress,blocked,done',
+            'position' => 'nullable|integer|min:0',
+        ]);
+
+        $project->update([
+            'status' => $request->status,
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Le projet a été déplacé avec succès.',
+                'status' => $project->status,
+                'project_id' => $project->id
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Projet déplacé avec succès.');
+    }
 }
