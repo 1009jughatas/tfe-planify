@@ -95,226 +95,459 @@
                 @endif
             </div>
         @else
-            <!-- Tableau Kanban des projets -->
-            <div class="kanban-board">
-                <div class="kanban-grid">
-                    @php
-                        $statusColumns = [
-                            'planning' => [
-                                'title' => 'En Planification',
-                                'icon' => 'fas fa-clipboard-list',
-                                'emoji' => '📋',
-                                'color' => 'gray',
-                                'bgColor' => 'bg-gray-50',
-                                'borderColor' => 'border-gray-200',
-                                'headerColor' => 'bg-gray-100'
-                            ],
-                            'active' => [
-                                'title' => 'Actif',
-                                'icon' => 'fas fa-play-circle',
-                                'emoji' => '🚀',
-                                'color' => 'blue',
-                                'bgColor' => 'bg-blue-50',
-                                'borderColor' => 'border-blue-200',
-                                'headerColor' => 'bg-blue-100'
-                            ],
-                            'on-hold' => [
-                                'title' => 'En Pause',
-                                'icon' => 'fas fa-pause-circle',
-                                'emoji' => '⏸️',
-                                'color' => 'yellow',
-                                'bgColor' => 'bg-yellow-50',
-                                'borderColor' => 'border-yellow-200',
-                                'headerColor' => 'bg-yellow-100'
-                            ],
-                            'completed' => [
-                                'title' => 'Terminé',
-                                'icon' => 'fas fa-check-circle',
-                                'emoji' => '✅',
-                                'color' => 'green',
-                                'bgColor' => 'bg-green-50',
-                                'borderColor' => 'border-green-200',
-                                'headerColor' => 'bg-green-100'
-                            ],
-                            'cancelled' => [
-                                'title' => 'Annulé',
-                                'icon' => 'fas fa-times-circle',
-                                'emoji' => '❌',
-                                'color' => 'red',
-                                'bgColor' => 'bg-red-50',
-                                'borderColor' => 'border-red-200',
-                                'headerColor' => 'bg-red-100'
-                            ]
-                        ];
-                    @endphp
-
-                    @foreach($statusColumns as $status => $config)
-                        @php
-                            $projectsInStatus = $projects->where('status', $status);
-                            $projectCount = $projectsInStatus->count();
-                        @endphp
-                        
-                        <div class="kanban-column">
-                            <div class="kanban-header {{ $config['headerColor'] }} {{ $config['borderColor'] }}">
-                                <div class="kanban-header-content">
-                                    <div class="kanban-header-icon">
-                                        <i class="{{ $config['icon'] }} text-{{ $config['color'] }}-600"></i>
+            <!-- Kanban Board des Projets -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- En Planification -->
+                <div class="kanban-column">
+                    <div class="kanban-header bg-gray-100">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-semibold text-gray-700">
+                                <i class="fas fa-clipboard-list text-gray-500 mr-2"></i>
+                                📋 En Planification
+                            </h4>
+                            <span class="badge-secondary">
+                                @php $planningProjects = $projects->where('status', 'planning') @endphp
+                                {{ $planningProjects->count() }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="kanban-content">
+                        @if ($planningProjects->isEmpty())
+                            <div class="empty-column">
+                                <i class="fas fa-clipboard-list text-gray-300 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Aucun projet</p>
+                            </div>
+                        @else
+                            @foreach ($planningProjects as $project)
+                                <div class="project-card hover-lift group">
+                                    <div class="project-card-header">
+                                        <h5 class="project-title">{{ $project->name }}</h5>
+                                        <div class="project-status-badge">
+                                            <span class="project-status project-status-planning">
+                                                <i class="fas fa-clipboard-list mr-1"></i>
+                                                📋 En Planification
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="kanban-header-text">
-                                        <h3 class="kanban-column-title">{{ $config['emoji'] }} {{ $config['title'] }}</h3>
-                                        <span class="kanban-count">{{ $projectCount }}</span>
+                                    
+                                    <div class="project-card-body">
+                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description' }}</p>
+                                        
+                                        <div class="project-meta">
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-users text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->participants->count() }} participants</span>
+                                            </div>
+                                            
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-tasks text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->tasks->count() }} tâches</span>
+                                            </div>
+                                            
+                                            @if($project->start_date)
+                                                <div class="project-meta-item">
+                                                    <i class="fas fa-calendar text-gray-400"></i>
+                                                    <span class="text-xs text-gray-600">{{ $project->start_date->format('d/m/Y') }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-footer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                @if ($project->author_id === Auth::id())
+                                                    <span class="text-xs text-gray-500 bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                                                        Votre projet
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            
+                                            <a href="{{ route('projects.show', $project->id) }}" class="project-view-btn group-hover:bg-primary-50">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Voir
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Actif -->
+                <div class="kanban-column">
+                    <div class="kanban-header bg-blue-100">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-semibold text-blue-700">
+                                <i class="fas fa-play-circle text-blue-500 mr-2"></i>
+                                🚀 Actif
+                            </h4>
+                            <span class="badge-primary">
+                                @php $activeProjects = $projects->where('status', 'active') @endphp
+                                {{ $activeProjects->count() }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="kanban-content">
+                        @if ($activeProjects->isEmpty())
+                            <div class="empty-column">
+                                <i class="fas fa-play-circle text-gray-300 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Aucun projet</p>
                             </div>
-                            
-                            <div class="kanban-content {{ $config['bgColor'] }}">
-                                @if($projectCount > 0)
-                                    @foreach($projectsInStatus as $project)
-                                        <div class="project-card">
-                                            <div class="project-card-header">
-                                                <h4 class="project-title">
-                                                    <a href="{{ route('projects.show', $project->id) }}" class="hover:text-primary-600 transition-colors">
-                                                        {{ $project->name }}
-                                                    </a>
-                                                </h4>
-                                                <div class="project-badges">
-                                                    @if ($project->author_id === Auth::id())
-                                                        <span class="badge-primary text-xs">Votre projet</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="project-card-body">
-                                                @if($project->description)
-                                                    <p class="project-description">{{ Str::limit($project->description, 80) }}</p>
-                                                @endif
-                                                
-                                                <div class="project-meta">
-                                                    <div class="project-meta-item">
-                                                        <i class="fas fa-users text-gray-400"></i>
-                                                        <span class="text-xs text-gray-600">{{ $project->participants->count() }} participants</span>
-                                                    </div>
-                                                    <div class="project-meta-item">
-                                                        <i class="fas fa-tasks text-gray-400"></i>
-                                                        <span class="text-xs text-gray-600">{{ $project->tasks->count() }} tâches</span>
-                                                    </div>
-                                                </div>
-                                                
-                                                @if($project->start_date || $project->end_date)
-                                                    <div class="project-dates">
-                                                        @if($project->start_date)
-                                                            <div class="project-date">
-                                                                <i class="fas fa-calendar-plus text-gray-400"></i>
-                                                                <span class="text-xs text-gray-600">{{ \Carbon\Carbon::parse($project->start_date)->format('d/m/Y') }}</span>
-                                                            </div>
-                                                        @endif
-                                                        @if($project->end_date)
-                                                            <div class="project-date">
-                                                                <i class="fas fa-calendar-check text-gray-400"></i>
-                                                                <span class="text-xs text-gray-600">{{ \Carbon\Carbon::parse($project->end_date)->format('d/m/Y') }}</span>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            
-                                            <div class="project-card-footer">
-                                                <div class="project-actions">
-                                                    <a href="{{ route('projects.tasks', $project->id) }}" class="project-action-btn project-action-primary">
-                                                        <i class="fas fa-tasks"></i>
-                                                        Tâches
-                                                    </a>
-                                                    <a href="{{ route('projects.show', $project->id) }}" class="project-action-btn project-action-secondary">
-                                                        <i class="fas fa-eye"></i>
-                                                        Voir
-                                                    </a>
-                                                    @if (Auth::user()->is_admin() || $project->author_id === Auth::id())
-                                                        <a href="{{ route('projects.edit', $project->id) }}" class="project-action-btn project-action-accent">
-                                                            <i class="fas fa-edit"></i>
-                                                            Modifier
-                                                        </a>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="empty-column">
-                                        <div class="empty-column-content">
-                                            <i class="{{ $config['icon'] }} text-gray-300 text-2xl mb-2"></i>
-                                            <p class="text-sm text-gray-500">Aucun projet</p>
+                        @else
+                            @foreach ($activeProjects as $project)
+                                <div class="project-card hover-lift group">
+                                    <div class="project-card-header">
+                                        <h5 class="project-title">{{ $project->name }}</h5>
+                                        <div class="project-status-badge">
+                                            <span class="project-status project-status-active">
+                                                <i class="fas fa-play-circle mr-1"></i>
+                                                🚀 Actif
+                                            </span>
                                         </div>
                                     </div>
-                                @endif
-                            </div>
+                                    
+                                    <div class="project-card-body">
+                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description' }}</p>
+                                        
+                                        <div class="project-meta">
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-users text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->participants->count() }} participants</span>
+                                            </div>
+                                            
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-tasks text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->tasks->count() }} tâches</span>
+                                            </div>
+                                            
+                                            @if($project->start_date)
+                                                <div class="project-meta-item">
+                                                    <i class="fas fa-calendar text-gray-400"></i>
+                                                    <span class="text-xs text-gray-600">{{ $project->start_date->format('d/m/Y') }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-footer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                @if ($project->author_id === Auth::id())
+                                                    <span class="text-xs text-gray-500 bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                                                        Votre projet
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            
+                                            <a href="{{ route('projects.show', $project->id) }}" class="project-view-btn group-hover:bg-primary-50">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Voir
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
+                <!-- En Pause -->
+                <div class="kanban-column">
+                    <div class="kanban-header bg-yellow-100">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-semibold text-yellow-700">
+                                <i class="fas fa-pause-circle text-yellow-500 mr-2"></i>
+                                ⏸️ En Pause
+                            </h4>
+                            <span class="badge-warning">
+                                @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
+                                {{ $onHoldProjects->count() }}
+                            </span>
                         </div>
-                    @endforeach
+                    </div>
+                    <div class="kanban-content">
+                        @if ($onHoldProjects->isEmpty())
+                            <div class="empty-column">
+                                <i class="fas fa-pause-circle text-gray-300 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Aucun projet</p>
+                            </div>
+                        @else
+                            @foreach ($onHoldProjects as $project)
+                                <div class="project-card hover-lift group">
+                                    <div class="project-card-header">
+                                        <h5 class="project-title">{{ $project->name }}</h5>
+                                        <div class="project-status-badge">
+                                            <span class="project-status project-status-on-hold">
+                                                <i class="fas fa-pause-circle mr-1"></i>
+                                                ⏸️ En Pause
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-body">
+                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description' }}</p>
+                                        
+                                        <div class="project-meta">
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-users text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->participants->count() }} participants</span>
+                                            </div>
+                                            
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-tasks text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->tasks->count() }} tâches</span>
+                                            </div>
+                                            
+                                            @if($project->start_date)
+                                                <div class="project-meta-item">
+                                                    <i class="fas fa-calendar text-gray-400"></i>
+                                                    <span class="text-xs text-gray-600">{{ $project->start_date->format('d/m/Y') }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-footer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                @if ($project->author_id === Auth::id())
+                                                    <span class="text-xs text-gray-500 bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                                                        Votre projet
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            
+                                            <a href="{{ route('projects.show', $project->id) }}" class="project-view-btn group-hover:bg-primary-50">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Voir
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Terminé -->
+                <div class="kanban-column">
+                    <div class="kanban-header bg-green-100">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-semibold text-green-700">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                ✅ Terminé
+                            </h4>
+                            <span class="badge-success">
+                                @php $completedProjects = $projects->where('status', 'completed') @endphp
+                                {{ $completedProjects->count() }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="kanban-content">
+                        @if ($completedProjects->isEmpty())
+                            <div class="empty-column">
+                                <i class="fas fa-check-circle text-gray-300 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Aucun projet</p>
+                            </div>
+                        @else
+                            @foreach ($completedProjects as $project)
+                                <div class="project-card hover-lift group">
+                                    <div class="project-card-header">
+                                        <h5 class="project-title">{{ $project->name }}</h5>
+                                        <div class="project-status-badge">
+                                            <span class="project-status project-status-completed">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                ✅ Terminé
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-body">
+                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description' }}</p>
+                                        
+                                        <div class="project-meta">
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-users text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->participants->count() }} participants</span>
+                                            </div>
+                                            
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-tasks text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->tasks->count() }} tâches</span>
+                                            </div>
+                                            
+                                            @if($project->end_date)
+                                                <div class="project-meta-item">
+                                                    <i class="fas fa-calendar text-gray-400"></i>
+                                                    <span class="text-xs text-gray-600">{{ $project->end_date->format('d/m/Y') }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-footer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                @if ($project->author_id === Auth::id())
+                                                    <span class="text-xs text-gray-500 bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                                                        Votre projet
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            
+                                            <a href="{{ route('projects.show', $project->id) }}" class="project-view-btn group-hover:bg-primary-50">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Voir
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Annulé -->
+                <div class="kanban-column">
+                    <div class="kanban-header bg-red-100">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-semibold text-red-700">
+                                <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                ❌ Annulé
+                            </h4>
+                            <span class="badge-danger">
+                                @php $cancelledProjects = $projects->where('status', 'cancelled') @endphp
+                                {{ $cancelledProjects->count() }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="kanban-content">
+                        @if ($cancelledProjects->isEmpty())
+                            <div class="empty-column">
+                                <i class="fas fa-times-circle text-gray-300 text-2xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Aucun projet</p>
+                            </div>
+                        @else
+                            @foreach ($cancelledProjects as $project)
+                                <div class="project-card hover-lift group">
+                                    <div class="project-card-header">
+                                        <h5 class="project-title">{{ $project->name }}</h5>
+                                        <div class="project-status-badge">
+                                            <span class="project-status project-status-cancelled">
+                                                <i class="fas fa-times-circle mr-1"></i>
+                                                ❌ Annulé
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-body">
+                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description' }}</p>
+                                        
+                                        <div class="project-meta">
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-users text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->participants->count() }} participants</span>
+                                            </div>
+                                            
+                                            <div class="project-meta-item">
+                                                <i class="fas fa-tasks text-gray-400"></i>
+                                                <span class="text-xs text-gray-600">{{ $project->tasks->count() }} tâches</span>
+                                            </div>
+                                            
+                                            @if($project->start_date)
+                                                <div class="project-meta-item">
+                                                    <i class="fas fa-calendar text-gray-400"></i>
+                                                    <span class="text-xs text-gray-600">{{ $project->start_date->format('d/m/Y') }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="project-card-footer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                @if ($project->author_id === Auth::id())
+                                                    <span class="text-xs text-gray-500 bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                                                        Votre projet
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            
+                                            <a href="{{ route('projects.show', $project->id) }}" class="project-view-btn group-hover:bg-primary-50">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Voir
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
             </div>
         @endif
     </div>
 
     <style>
-        /* Styles pour le tableau Kanban des projets */
-        .kanban-board {
-            @apply w-full;
-        }
-        
-        .kanban-grid {
-            @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6;
-        }
-        
+        /* Styles identiques au Kanban des tâches */
         .kanban-column {
-            @apply flex flex-col min-h-96;
+            @apply bg-white rounded-xl border border-gray-200 shadow-sm;
         }
         
         .kanban-header {
-            @apply px-4 py-3 border-b rounded-t-xl;
-        }
-        
-        .kanban-header-content {
-            @apply flex items-center space-x-3;
-        }
-        
-        .kanban-header-icon {
-            @apply w-8 h-8 rounded-full flex items-center justify-center;
-        }
-        
-        .kanban-header-text {
-            @apply flex-1;
-        }
-        
-        .kanban-column-title {
-            @apply text-sm font-semibold text-gray-900 mb-1;
-        }
-        
-        .kanban-count {
-            @apply text-xs text-gray-500 bg-white px-2 py-1 rounded-full;
+            @apply px-4 py-3 border-b border-gray-200 rounded-t-xl;
         }
         
         .kanban-content {
-            @apply flex-1 p-4 space-y-4 rounded-b-xl min-h-80;
+            @apply p-4 space-y-4 min-h-80;
         }
         
-        /* Cartes de projet */
+        /* Cartes de projet - style identique aux tâches */
         .project-card {
-            @apply bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 p-4;
+            @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-primary-200 transition-all duration-200;
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
         }
         
         .project-card-header {
-            @apply mb-3;
+            @apply p-4 border-b border-gray-100;
         }
         
         .project-title {
-            @apply text-sm font-semibold text-gray-900 mb-2 line-clamp-2;
+            @apply text-sm font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight;
         }
         
-        .project-badges {
-            @apply flex flex-wrap gap-1;
+        .project-status-badge {
+            @apply flex justify-end;
+        }
+        
+        .project-status {
+            @apply text-xs font-medium px-2 py-1 rounded-full flex items-center;
+        }
+        
+        .project-status-planning {
+            @apply bg-gray-100 text-gray-700;
+        }
+        
+        .project-status-active {
+            @apply bg-blue-100 text-blue-700;
+        }
+        
+        .project-status-on-hold {
+            @apply bg-yellow-100 text-yellow-700;
+        }
+        
+        .project-status-completed {
+            @apply bg-green-100 text-green-700;
+        }
+        
+        .project-status-cancelled {
+            @apply bg-red-100 text-red-700;
         }
         
         .project-card-body {
-            @apply mb-4;
+            @apply p-4 flex-1;
         }
         
         .project-description {
@@ -322,92 +555,50 @@
         }
         
         .project-meta {
-            @apply space-y-2 mb-3;
+            @apply space-y-2;
         }
         
         .project-meta-item {
             @apply flex items-center space-x-2;
         }
         
-        .project-dates {
-            @apply space-y-1;
-        }
-        
-        .project-date {
-            @apply flex items-center space-x-2;
-        }
-        
         .project-card-footer {
-            @apply border-t border-gray-100 pt-3;
+            @apply p-4 border-t border-gray-100;
         }
         
-        .project-actions {
-            @apply flex flex-wrap gap-2;
-        }
-        
-        .project-action-btn {
-            @apply text-xs px-2 py-1 rounded-md font-medium transition-all duration-200 flex items-center space-x-1;
-        }
-        
-        .project-action-primary {
-            @apply bg-primary-100 text-primary-700 hover:bg-primary-200;
-        }
-        
-        .project-action-secondary {
-            @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
-        }
-        
-        .project-action-accent {
-            @apply bg-accent-100 text-accent-700 hover:bg-accent-200;
+        .project-view-btn {
+            @apply text-xs text-primary-600 hover:text-primary-700 font-medium px-2 py-1 rounded-md transition-all duration-200;
         }
         
         /* Colonne vide */
         .empty-column {
-            @apply flex items-center justify-center h-40;
-        }
-        
-        .empty-column-content {
-            @apply text-center;
+            @apply flex items-center justify-center h-40 text-center;
         }
         
         /* Responsive */
-        @media (max-width: 768px) {
-            .kanban-grid {
-                @apply grid-cols-1;
-            }
-            
-            .kanban-column {
-                @apply min-h-64;
-            }
-            
+        @media (max-width: 640px) {
             .project-card {
                 @apply p-3;
             }
             
-            .project-actions {
-                @apply flex-col;
+            .project-card-header {
+                @apply p-3;
             }
             
-            .project-action-btn {
-                @apply w-full justify-center;
+            .project-card-body {
+                @apply p-3;
             }
-        }
-        
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .kanban-grid {
-                @apply grid-cols-2;
+            
+            .project-card-footer {
+                @apply p-3;
             }
-        }
-        
-        @media (min-width: 1025px) and (max-width: 1280px) {
-            .kanban-grid {
-                @apply grid-cols-3;
+            
+            .project-title {
+                @apply text-xs;
             }
-        }
-        
-        @media (min-width: 1281px) {
-            .kanban-grid {
-                @apply grid-cols-5;
+            
+            .project-status {
+                @apply text-xs px-1.5 py-0.5;
             }
         }
         
