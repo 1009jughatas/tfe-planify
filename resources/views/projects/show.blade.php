@@ -229,6 +229,39 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Changer le Statut -->
+                <div class="modern-card">
+                    <div class="modern-card-header">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-exchange-alt text-primary-600 mr-2"></i>
+                            Changer le Statut
+                        </h3>
+                    </div>
+                    <div class="modern-card-body">
+                        <form id="statusForm" action="{{ route('projects.updateStatus', $project->id) }}" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PATCH')
+                            
+                            <div>
+                                <label for="status" class="form-label-modern">Nouveau Statut</label>
+                                <select name="status" id="status" class="input-modern" required>
+                                    <option value="">Sélectionner un statut</option>
+                                    <option value="planning" {{ $project->status == 'planning' ? 'selected' : '' }}>📋 En planification</option>
+                                    <option value="active" {{ $project->status == 'active' ? 'selected' : '' }}>🚀 Actif</option>
+                                    <option value="on-hold" {{ $project->status == 'on-hold' ? 'selected' : '' }}>⏸️ En pause</option>
+                                    <option value="completed" {{ $project->status == 'completed' ? 'selected' : '' }}>✅ Terminé</option>
+                                    <option value="cancelled" {{ $project->status == 'cancelled' ? 'selected' : '' }}>❌ Annulé</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary-modern w-full">
+                                <i class="fas fa-save mr-2"></i>
+                                Mettre à Jour le Statut
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 

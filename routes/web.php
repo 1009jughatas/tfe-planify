@@ -53,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
+    Route::patch('/projects/{project}/update-status', [ProjectController::class, 'updateStatus'])->name('projects.updateStatus');
 
     // Task Routes
     Route::get('/projects/{project}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');

@@ -135,6 +135,7 @@ class ProjectController extends Controller
             'participants.*' => 'exists:users,id',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'status' => 'nullable|string|in:planning,active,on-hold,completed,cancelled',
         ]);
 
         $project->update([
@@ -142,6 +143,7 @@ class ProjectController extends Controller
             'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
+            'status' => $request->status ?? $project->status,
         ]);
 
         // Sync participants via the pivot table (uniquement pour les utilisateurs premium)
@@ -166,6 +168,36 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Projet supprimé avec succès.');
+    }
+
+    public function updateStatus(Request $request, Project $project)
+    {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation via Policy
+        if (!$user->can('update', $project)) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent modifier le statut.'], 403);
+            }
+            abort(403, 'Accès non autorisé. Seuls les administrateurs et l\'auteur du projet peuvent modifier le statut.');
+        }
+
+        $request->validate([
+            'status' => 'required|in:planning,active,on-hold,completed,cancelled',
+        ]);
+
+        $project->update([
+            'status' => $request->status,
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Le statut du projet a été mis à jour avec succès.',
+                'status' => $project->status
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Statut du projet mis à jour avec succès.');
     }
 
     public function getLimits()
