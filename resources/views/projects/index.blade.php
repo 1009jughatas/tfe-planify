@@ -131,46 +131,6 @@
                 <div class="modern-card-body">
                     <!-- Kanban Board -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        @else
-            <!-- État vide -->
-                    <div class="text-center py-12">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-project-diagram text-gray-400 text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun projet</h3>
-                        <p class="text-gray-600 mb-6">Commencez par créer votre premier projet pour organiser vos tâches.</p>
-                        @if ($canCreate)
-                            <a href="{{ route('projects.create') }}" class="btn-primary-modern">
-                                <i class="fas fa-plus mr-2"></i>
-                                Créer mon premier projet
-                            </a>
-                        @endif
-                    </div>
-                @else
-                    <!-- Kanban Board des Projets - Cohérent avec le design des tâches -->
-                    <div class="modern-card">
-                        <div class="modern-card-header">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-gray-900">
-                                    <i class="fas fa-project-diagram text-primary-600 mr-2"></i>
-                                    Tableau Kanban des Projets
-                                </h3>
-                                <div class="flex items-center space-x-3">
-                                    <span class="text-sm text-gray-600">
-                                        {{ $projects->count() }} projet(s) au total
-                                    </span>
-                                    @if ($canCreate)
-                                        <a href="{{ route('projects.create') }}" class="btn-primary-modern">
-                                            <i class="fas fa-plus mr-2"></i>
-                                            Nouveau projet
-                                        </a>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modern-card-body">
-                            <!-- Kanban Board -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <!-- En Planification -->
                                 <div class="kanban-column">
                                     <div class="kanban-header bg-gray-100">
