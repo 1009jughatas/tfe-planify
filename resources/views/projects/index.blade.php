@@ -25,35 +25,114 @@
     </x-slot>
 
     <!-- Contenu principal -->
-    <div class="min-h-screen bg-gray-50">
-            <div class="p-6">
-                <!-- Alertes de limitation -->
-                @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
-                    @php
-                        $projectCount = Auth::user()->projects()->count();
-                        $projectLimit = 3;
-                    @endphp
-                    @if ($projectCount >= $projectLimit)
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                            <div class="flex items-center">
-                                <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
-                                <div>
-                                    <h3 class="text-sm font-medium text-yellow-800">Limite de projets atteinte</h3>
-                                    <p class="text-sm text-yellow-700 mt-1">
-                                        Vous avez atteint la limite de {{ $projectLimit }} projets pour les utilisateurs gratuits.
-                                        <a href="{{ route('premium.show') }}" class="font-medium underline hover:text-yellow-600">
-                                            Passez en premium
-                                        </a>
-                                        pour créer plus de projets.
-                                    </p>
-                                </div>
-                            </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Alertes de limitation -->
+        @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
+            @php
+                $projectCount = Auth::user()->projects()->count();
+                $projectLimit = 3;
+            @endphp
+            @if ($projectCount >= $projectLimit)
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
+                        <div>
+                            <h3 class="text-sm font-medium text-yellow-800">Limite de projets atteinte</h3>
+                            <p class="text-sm text-yellow-700 mt-1">
+                                Vous avez atteint la limite de {{ $projectLimit }} projets pour les utilisateurs gratuits.
+                                <a href="{{ route('premium.show') }}" class="font-medium underline hover:text-yellow-600">
+                                    Passez en premium
+                                </a>
+                                pour créer plus de projets.
+                            </p>
                         </div>
-                    @endif
-                @endif
+                    </div>
+                </div>
+            @endif
+        @endif
 
-                @if ($projects->isEmpty())
-                    <!-- État vide -->
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- En Planification -->
+            <div class="stats-card hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">En Planification</p>
+                        @php $planningProjects = $projects->where('status', 'planning') @endphp
+                        <p class="text-3xl font-bold text-gray-900">{{ $planningProjects->count() }}</p>
+                        <p class="text-xs text-gray-500 mt-1">À démarrer</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clipboard-list text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actifs -->
+            <div class="stats-card hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Actifs</p>
+                        @php $activeProjects = $projects->where('status', 'active') @endphp
+                        <p class="text-3xl font-bold text-gray-900">{{ $activeProjects->count() }}</p>
+                        <p class="text-xs text-gray-500 mt-1">En cours</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-play-circle text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- En Pause -->
+            <div class="stats-card hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">En Pause</p>
+                        @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
+                        <p class="text-3xl font-bold text-gray-900">{{ $onHoldProjects->count() }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Suspendus</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-pause-circle text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminés -->
+            <div class="stats-card hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Terminés</p>
+                        @php $completedProjects = $projects->where('status', 'completed') @endphp
+                        <p class="text-3xl font-bold text-gray-900">{{ $completedProjects->count() }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Finalisés</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-check-circle text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        @if ($projects->count() > 0)
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Tableau Kanban</h2>
+                            <p class="text-sm text-gray-600 mt-1">Gérez vos projets par statut</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500">{{ $projects->count() }} projet(s)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modern-card-body">
+                    <!-- Kanban Board -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        @else
+            <!-- État vide -->
                     <div class="text-center py-12">
                         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-project-diagram text-gray-400 text-2xl"></i>
@@ -115,9 +194,6 @@
                                         @else
                                             @foreach ($planningProjects as $project)
                                                 <div class="project-block-card hover-lift group">
-                                                    <!-- Barre de couleur en haut -->
-                                                    <div class="project-color-bar planning"></div>
-                                                    
                                                     <!-- Contenu du bloc -->
                                                     <div class="project-block-content">
                                                         <!-- Header avec titre -->
@@ -180,7 +256,6 @@
                                         @else
                                             @foreach ($activeProjects as $project)
                                                 <div class="project-block-card hover-lift group">
-                                                    <div class="project-color-bar active"></div>
                                                     <div class="project-block-content">
                                                         <div class="project-block-header">
                                                             <h5 class="project-block-title">{{ $project->name }}</h5>
@@ -237,7 +312,6 @@
                                         @else
                                             @foreach ($onHoldProjects as $project)
                                                 <div class="project-block-card hover-lift group">
-                                                    <div class="project-color-bar on-hold"></div>
                                                     <div class="project-block-content">
                                                         <div class="project-block-header">
                                                             <h5 class="project-block-title">{{ $project->name }}</h5>
@@ -294,7 +368,6 @@
                                         @else
                                             @foreach ($completedProjects as $project)
                                                 <div class="project-block-card hover-lift group">
-                                                    <div class="project-color-bar completed"></div>
                                                     <div class="project-block-content">
                                                         <div class="project-block-header">
                                                             <h5 class="project-block-title">{{ $project->name }}</h5>
@@ -330,24 +403,24 @@
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 
     <style>
         
         /* Colonnes Kanban */
         .kanban-column {
-            @apply bg-gray-50 rounded-xl border border-gray-200;
+            @apply bg-white rounded-xl border border-gray-200 shadow-sm;
         }
         
         .kanban-header {
-            @apply p-4 rounded-t-xl border-b border-gray-200;
+            @apply p-4 rounded-t-xl border-b border-gray-200 bg-gray-50;
         }
         
         .kanban-content {
-            @apply p-4 space-y-4 min-h-96;
+            @apply p-4 space-y-4 min-h-96 bg-gray-50/30;
         }
         
         .empty-column {
@@ -356,14 +429,19 @@
         
         /* Blocs de projet avec actions */
         .project-block-card {
-            @apply bg-white rounded-xl border border-gray-200 shadow-md cursor-pointer transition-all duration-300;
+            @apply bg-white rounded-xl border border-gray-200 shadow-sm cursor-pointer transition-all duration-300;
             position: relative;
             overflow: hidden;
             min-height: 140px;
         }
         
         .project-block-card:hover {
-            @apply shadow-lg border-primary-300 transform translate-y-2 scale-105;
+            @apply shadow-md border-primary-300 transform translate-y-1;
+        }
+        
+        .project-block-card::before {
+            content: '';
+            @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-accent-500;
         }
         
         .project-block-content {
@@ -441,26 +519,6 @@
             @apply text-sm;
         }
         
-        /* Barre de couleur en haut */
-        .project-color-bar {
-            @apply absolute top-0 left-0 right-0 h-1;
-        }
-        
-        .project-color-bar.planning {
-            background: linear-gradient(90deg, #6b7280, #9ca3af);
-        }
-        
-        .project-color-bar.active {
-            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-        }
-        
-        .project-color-bar.on-hold {
-            background: linear-gradient(90deg, #f59e0b, #d97706);
-        }
-        
-        .project-color-bar.completed {
-            background: linear-gradient(90deg, #10b981, #059669);
-        }
         
         /* Responsive */
         @media (max-width: 768px) {
