@@ -96,7 +96,7 @@
             </div>
         @else
             <!-- Kanban Board des Projets -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 <!-- En Planification -->
                 <div class="kanban-column">
                     <div class="kanban-header bg-gray-100">
@@ -491,7 +491,7 @@
     </div>
 
     <style>
-        /* Styles identiques au Kanban des tâches */
+        /* Tableau Kanban des projets - Design cohérent avec l'application */
         .kanban-column {
             @apply bg-white rounded-xl border border-gray-200 shadow-sm;
         }
@@ -504,7 +504,7 @@
             @apply p-4 space-y-4 min-h-80;
         }
         
-        /* Cartes de projet - style identique aux tâches */
+        /* Cartes de projet - Style moderne et cohérent */
         .project-card {
             @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-primary-200 transition-all duration-200;
             background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
@@ -575,7 +575,7 @@
             @apply flex items-center justify-center h-40 text-center;
         }
         
-        /* Responsive */
+        /* Responsive design */
         @media (max-width: 640px) {
             .project-card {
                 @apply p-3;
