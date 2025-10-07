@@ -232,108 +232,25 @@
                                             </div>
                                         @else
                                             @foreach ($planningProjects as $project)
-                                                <div class="enhanced-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
                                                     <!-- Barre de couleur en haut -->
                                                     <div class="project-color-bar planning"></div>
                                                     
-                                                    <!-- Header avec icône et titre -->
-                                                    <div class="project-card-header">
-                                                        <div class="flex items-start justify-between">
-                                                            <div class="flex items-center space-x-3">
-                                                                <div class="project-icon planning">
-                                                                    <i class="fas fa-clipboard-list"></i>
-                                                                </div>
-                                                                <div>
-                                                                    <h5 class="project-title">{{ $project->name }}</h5>
-                                                                    <div class="project-subtitle">
-                                                                        <span class="project-status-badge planning">
-                                                                            En Planification
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
+                                                    <!-- Contenu simplifié -->
+                                                    <div class="simple-card-content">
+                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
+                                                        
+                                                        <!-- Progression -->
+                                                        <div class="simple-progress-section">
+                                                            @php
+                                                                $totalTasks = $project->tasks->count();
+                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
+                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+                                                            @endphp
+                                                            <div class="simple-progress-bar">
+                                                                <div class="simple-progress-fill planning" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <div class="project-actions-dropdown">
-                                                                <button class="action-btn" onclick="event.stopPropagation()">
-                                                                    <i class="fas fa-ellipsis-v"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Description -->
-                                                    <div class="project-description-section">
-                                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description disponible' }}</p>
-                                                    </div>
-                                                    
-                                                    <!-- Progression -->
-                                                    <div class="project-progress-section">
-                                                        <div class="flex items-center justify-between mb-2">
-                                                            <span class="text-xs font-medium text-gray-600">Progression</span>
-                                                            <span class="text-xs font-semibold text-gray-900">
-                                                                @php
-                                                                    $totalTasks = $project->tasks->count();
-                                                                    $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                    $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
-                                                                @endphp
-                                                                {{ $progress }}%
-                                                            </span>
-                                                        </div>
-                                                        <div class="progress-bar">
-                                                            <div class="progress-fill planning" style="width: {{ $progress }}%"></div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Métadonnées -->
-                                                    <div class="project-meta-section">
-                                                        <div class="meta-grid">
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-users"></i>
-                                                                <span>{{ $project->participants->count() }}</span>
-                                                            </div>
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-tasks"></i>
-                                                                <span>{{ $project->tasks->count() }}</span>
-                                                            </div>
-                                                            @if($project->start_date)
-                                                                <div class="meta-item">
-                                                                    <i class="fas fa-calendar"></i>
-                                                                    <span>{{ $project->start_date->format('d/m') }}</span>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Footer avec avatars et actions -->
-                                                    <div class="project-card-footer">
-                                                        <div class="flex items-center justify-between">
-                                                            <div class="project-team">
-                                                                @if($project->author)
-                                                                    <div class="team-avatar" title="{{ $project->author->name }}">
-                                                                        {{ substr($project->author->name, 0, 1) }}
-                                                                    </div>
-                                                                @endif
-                                                                @if($project->participants->count() > 0)
-                                                                    @foreach($project->participants->take(2) as $participant)
-                                                                        <div class="team-avatar" title="{{ $participant->name }}">
-                                                                            {{ substr($participant->name, 0, 1) }}
-                                                                        </div>
-                                                                    @endforeach
-                                                                @endif
-                                                                @if($project->participants->count() > 2)
-                                                                    <div class="team-avatar-more">
-                                                                        +{{ $project->participants->count() - 2 }}
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            
-                                                            <div class="project-footer-actions">
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Ajouter aux favoris">
-                                                                    <i class="fas fa-heart"></i>
-                                                                </button>
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Partager">
-                                                                    <i class="fas fa-share"></i>
-                                                                </button>
-                                                            </div>
+                                                            <span class="simple-progress-text">{{ $progress }}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -364,94 +281,20 @@
                                             </div>
                                         @else
                                             @foreach ($activeProjects as $project)
-                                                <div class="enhanced-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
                                                     <div class="project-color-bar active"></div>
-                                                    <div class="project-card-header">
-                                                        <div class="flex items-start justify-between">
-                                                            <div class="flex items-center space-x-3">
-                                                                <div class="project-icon active">
-                                                                    <i class="fas fa-play-circle"></i>
-                                                                </div>
-                                                                <div>
-                                                                    <h5 class="project-title">{{ $project->name }}</h5>
-                                                                    <div class="project-subtitle">
-                                                                        <span class="project-status-badge active">Actif</span>
-                                                                    </div>
-                                                                </div>
+                                                    <div class="simple-card-content">
+                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
+                                                        <div class="simple-progress-section">
+                                                            @php
+                                                                $totalTasks = $project->tasks->count();
+                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
+                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+                                                            @endphp
+                                                            <div class="simple-progress-bar">
+                                                                <div class="simple-progress-fill active" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <div class="project-actions-dropdown">
-                                                                <button class="action-btn" onclick="event.stopPropagation()">
-                                                                    <i class="fas fa-ellipsis-v"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-description-section">
-                                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description disponible' }}</p>
-                                                    </div>
-                                                    <div class="project-progress-section">
-                                                        <div class="flex items-center justify-between mb-2">
-                                                            <span class="text-xs font-medium text-gray-600">Progression</span>
-                                                            <span class="text-xs font-semibold text-gray-900">
-                                                                @php
-                                                                    $totalTasks = $project->tasks->count();
-                                                                    $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                    $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
-                                                                @endphp
-                                                                {{ $progress }}%
-                                                            </span>
-                                                        </div>
-                                                        <div class="progress-bar">
-                                                            <div class="progress-fill active" style="width: {{ $progress }}%"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-meta-section">
-                                                        <div class="meta-grid">
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-users"></i>
-                                                                <span>{{ $project->participants->count() }}</span>
-                                                            </div>
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-tasks"></i>
-                                                                <span>{{ $project->tasks->count() }}</span>
-                                                            </div>
-                                                            @if($project->start_date)
-                                                                <div class="meta-item">
-                                                                    <i class="fas fa-calendar"></i>
-                                                                    <span>{{ $project->start_date->format('d/m') }}</span>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-card-footer">
-                                                        <div class="flex items-center justify-between">
-                                                            <div class="project-team">
-                                                                @if($project->author)
-                                                                    <div class="team-avatar" title="{{ $project->author->name }}">
-                                                                        {{ substr($project->author->name, 0, 1) }}
-                                                                    </div>
-                                                                @endif
-                                                                @if($project->participants->count() > 0)
-                                                                    @foreach($project->participants->take(2) as $participant)
-                                                                        <div class="team-avatar" title="{{ $participant->name }}">
-                                                                            {{ substr($participant->name, 0, 1) }}
-                                                                        </div>
-                                                                    @endforeach
-                                                                @endif
-                                                                @if($project->participants->count() > 2)
-                                                                    <div class="team-avatar-more">
-                                                                        +{{ $project->participants->count() - 2 }}
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="project-footer-actions">
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Ajouter aux favoris">
-                                                                    <i class="fas fa-heart"></i>
-                                                                </button>
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Partager">
-                                                                    <i class="fas fa-share"></i>
-                                                                </button>
-                                                            </div>
+                                                            <span class="simple-progress-text">{{ $progress }}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -482,94 +325,20 @@
                                             </div>
                                         @else
                                             @foreach ($onHoldProjects as $project)
-                                                <div class="enhanced-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
                                                     <div class="project-color-bar on-hold"></div>
-                                                    <div class="project-card-header">
-                                                        <div class="flex items-start justify-between">
-                                                            <div class="flex items-center space-x-3">
-                                                                <div class="project-icon on-hold">
-                                                                    <i class="fas fa-pause-circle"></i>
-                                                                </div>
-                                                                <div>
-                                                                    <h5 class="project-title">{{ $project->name }}</h5>
-                                                                    <div class="project-subtitle">
-                                                                        <span class="project-status-badge on-hold">En Pause</span>
-                                                                    </div>
-                                                                </div>
+                                                    <div class="simple-card-content">
+                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
+                                                        <div class="simple-progress-section">
+                                                            @php
+                                                                $totalTasks = $project->tasks->count();
+                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
+                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+                                                            @endphp
+                                                            <div class="simple-progress-bar">
+                                                                <div class="simple-progress-fill on-hold" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <div class="project-actions-dropdown">
-                                                                <button class="action-btn" onclick="event.stopPropagation()">
-                                                                    <i class="fas fa-ellipsis-v"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-description-section">
-                                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description disponible' }}</p>
-                                                    </div>
-                                                    <div class="project-progress-section">
-                                                        <div class="flex items-center justify-between mb-2">
-                                                            <span class="text-xs font-medium text-gray-600">Progression</span>
-                                                            <span class="text-xs font-semibold text-gray-900">
-                                                                @php
-                                                                    $totalTasks = $project->tasks->count();
-                                                                    $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                    $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
-                                                                @endphp
-                                                                {{ $progress }}%
-                                                            </span>
-                                                        </div>
-                                                        <div class="progress-bar">
-                                                            <div class="progress-fill on-hold" style="width: {{ $progress }}%"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-meta-section">
-                                                        <div class="meta-grid">
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-users"></i>
-                                                                <span>{{ $project->participants->count() }}</span>
-                                                            </div>
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-tasks"></i>
-                                                                <span>{{ $project->tasks->count() }}</span>
-                                                            </div>
-                                                            @if($project->start_date)
-                                                                <div class="meta-item">
-                                                                    <i class="fas fa-calendar"></i>
-                                                                    <span>{{ $project->start_date->format('d/m') }}</span>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-card-footer">
-                                                        <div class="flex items-center justify-between">
-                                                            <div class="project-team">
-                                                                @if($project->author)
-                                                                    <div class="team-avatar" title="{{ $project->author->name }}">
-                                                                        {{ substr($project->author->name, 0, 1) }}
-                                                                    </div>
-                                                                @endif
-                                                                @if($project->participants->count() > 0)
-                                                                    @foreach($project->participants->take(2) as $participant)
-                                                                        <div class="team-avatar" title="{{ $participant->name }}">
-                                                                            {{ substr($participant->name, 0, 1) }}
-                                                                        </div>
-                                                                    @endforeach
-                                                                @endif
-                                                                @if($project->participants->count() > 2)
-                                                                    <div class="team-avatar-more">
-                                                                        +{{ $project->participants->count() - 2 }}
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="project-footer-actions">
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Ajouter aux favoris">
-                                                                    <i class="fas fa-heart"></i>
-                                                                </button>
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Partager">
-                                                                    <i class="fas fa-share"></i>
-                                                                </button>
-                                                            </div>
+                                                            <span class="simple-progress-text">{{ $progress }}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -600,94 +369,20 @@
                                             </div>
                                         @else
                                             @foreach ($completedProjects as $project)
-                                                <div class="enhanced-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
                                                     <div class="project-color-bar completed"></div>
-                                                    <div class="project-card-header">
-                                                        <div class="flex items-start justify-between">
-                                                            <div class="flex items-center space-x-3">
-                                                                <div class="project-icon completed">
-                                                                    <i class="fas fa-check-circle"></i>
-                                                                </div>
-                                                                <div>
-                                                                    <h5 class="project-title">{{ $project->name }}</h5>
-                                                                    <div class="project-subtitle">
-                                                                        <span class="project-status-badge completed">Terminé</span>
-                                                                    </div>
-                                                                </div>
+                                                    <div class="simple-card-content">
+                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
+                                                        <div class="simple-progress-section">
+                                                            @php
+                                                                $totalTasks = $project->tasks->count();
+                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
+                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 100;
+                                                            @endphp
+                                                            <div class="simple-progress-bar">
+                                                                <div class="simple-progress-fill completed" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <div class="project-actions-dropdown">
-                                                                <button class="action-btn" onclick="event.stopPropagation()">
-                                                                    <i class="fas fa-ellipsis-v"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-description-section">
-                                                        <p class="project-description">{{ Str::limit($project->description, 80, '...') ?: 'Aucune description disponible' }}</p>
-                                                    </div>
-                                                    <div class="project-progress-section">
-                                                        <div class="flex items-center justify-between mb-2">
-                                                            <span class="text-xs font-medium text-gray-600">Progression</span>
-                                                            <span class="text-xs font-semibold text-gray-900">
-                                                                @php
-                                                                    $totalTasks = $project->tasks->count();
-                                                                    $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                    $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 100;
-                                                                @endphp
-                                                                {{ $progress }}%
-                                                            </span>
-                                                        </div>
-                                                        <div class="progress-bar">
-                                                            <div class="progress-fill completed" style="width: {{ $progress }}%"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-meta-section">
-                                                        <div class="meta-grid">
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-users"></i>
-                                                                <span>{{ $project->participants->count() }}</span>
-                                                            </div>
-                                                            <div class="meta-item">
-                                                                <i class="fas fa-tasks"></i>
-                                                                <span>{{ $project->tasks->count() }}</span>
-                                                            </div>
-                                                            @if($project->end_date)
-                                                                <div class="meta-item">
-                                                                    <i class="fas fa-calendar"></i>
-                                                                    <span>{{ $project->end_date->format('d/m') }}</span>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="project-card-footer">
-                                                        <div class="flex items-center justify-between">
-                                                            <div class="project-team">
-                                                                @if($project->author)
-                                                                    <div class="team-avatar" title="{{ $project->author->name }}">
-                                                                        {{ substr($project->author->name, 0, 1) }}
-                                                                    </div>
-                                                                @endif
-                                                                @if($project->participants->count() > 0)
-                                                                    @foreach($project->participants->take(2) as $participant)
-                                                                        <div class="team-avatar" title="{{ $participant->name }}">
-                                                                            {{ substr($participant->name, 0, 1) }}
-                                                                        </div>
-                                                                    @endforeach
-                                                                @endif
-                                                                @if($project->participants->count() > 2)
-                                                                    <div class="team-avatar-more">
-                                                                        +{{ $project->participants->count() - 2 }}
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="project-footer-actions">
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Ajouter aux favoris">
-                                                                    <i class="fas fa-heart"></i>
-                                                                </button>
-                                                                <button class="action-btn-small" onclick="event.stopPropagation()" title="Partager">
-                                                                    <i class="fas fa-share"></i>
-                                                                </button>
-                                                            </div>
+                                                            <span class="simple-progress-text">{{ $progress }}%</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -726,15 +421,56 @@
             @apply flex flex-col items-center justify-center py-8 text-center;
         }
         
-        /* Cartes de projet améliorées */
-        .enhanced-project-card {
-            @apply bg-white rounded-xl border border-gray-200 shadow-sm cursor-pointer transition-all duration-300;
+        /* Cartes de projet simplifiées */
+        .simple-project-card {
+            @apply bg-white rounded-lg border border-gray-200 shadow-sm cursor-pointer transition-all duration-200;
             position: relative;
             overflow: hidden;
         }
         
-        .enhanced-project-card:hover {
-            @apply shadow-lg border-primary-300 transform translate-y-2 scale-105;
+        .simple-project-card:hover {
+            @apply shadow-md border-primary-300 transform translate-y-1;
+        }
+        
+        .simple-card-content {
+            @apply p-4;
+        }
+        
+        .simple-project-title {
+            @apply text-sm font-semibold text-gray-900 mb-3 leading-tight;
+            margin: 0;
+        }
+        
+        .simple-progress-section {
+            @apply flex items-center justify-between;
+        }
+        
+        .simple-progress-bar {
+            @apply flex-1 h-2 bg-gray-200 rounded-full overflow-hidden mr-3;
+        }
+        
+        .simple-progress-fill {
+            @apply h-full rounded-full transition-all duration-300;
+        }
+        
+        .simple-progress-fill.planning {
+            @apply bg-gradient-to-r from-gray-400 to-gray-500;
+        }
+        
+        .simple-progress-fill.active {
+            @apply bg-gradient-to-r from-blue-400 to-blue-500;
+        }
+        
+        .simple-progress-fill.on-hold {
+            @apply bg-gradient-to-r from-yellow-400 to-yellow-500;
+        }
+        
+        .simple-progress-fill.completed {
+            @apply bg-gradient-to-r from-green-400 to-green-500;
+        }
+        
+        .simple-progress-text {
+            @apply text-xs font-semibold text-gray-700;
         }
         
         /* Barre de couleur en haut */
@@ -758,149 +494,6 @@
             background: linear-gradient(90deg, #10b981, #059669);
         }
         
-        /* Header des cartes */
-        .project-card-header {
-            @apply p-4 pt-6;
-        }
-        
-        .project-icon {
-            @apply w-10 h-10 rounded-lg flex items-center justify-center text-white;
-        }
-        
-        .project-icon.planning {
-            @apply bg-gradient-to-br from-gray-500 to-gray-600;
-        }
-        
-        .project-icon.active {
-            @apply bg-gradient-to-br from-blue-500 to-blue-600;
-        }
-        
-        .project-icon.on-hold {
-            @apply bg-gradient-to-br from-yellow-500 to-yellow-600;
-        }
-        
-        .project-icon.completed {
-            @apply bg-gradient-to-br from-green-500 to-green-600;
-        }
-        
-        .project-title {
-            @apply text-base font-bold text-gray-900 mb-1 leading-tight;
-            margin: 0;
-        }
-        
-        .project-subtitle {
-            @apply mb-0;
-        }
-        
-        .project-status-badge {
-            @apply text-xs font-medium px-2 py-1 rounded-full;
-        }
-        
-        .project-status-badge.planning {
-            @apply bg-gray-100 text-gray-700;
-        }
-        
-        .project-status-badge.active {
-            @apply bg-blue-100 text-blue-700;
-        }
-        
-        .project-status-badge.on-hold {
-            @apply bg-yellow-100 text-yellow-700;
-        }
-        
-        .project-status-badge.completed {
-            @apply bg-green-100 text-green-700;
-        }
-        
-        /* Actions dropdown */
-        .project-actions-dropdown {
-            @apply flex items-center;
-        }
-        
-        .action-btn {
-            @apply w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-all;
-        }
-        
-        /* Description */
-        .project-description-section {
-            @apply px-4 pb-3;
-        }
-        
-        .project-description {
-            @apply text-sm text-gray-600 leading-relaxed line-clamp-2;
-        }
-        
-        /* Progression */
-        .project-progress-section {
-            @apply px-4 pb-3;
-        }
-        
-        .progress-bar {
-            @apply w-full h-2 bg-gray-200 rounded-full overflow-hidden;
-        }
-        
-        .progress-fill {
-            @apply h-full rounded-full transition-all duration-500;
-        }
-        
-        .progress-fill.planning {
-            @apply bg-gradient-to-r from-gray-400 to-gray-500;
-        }
-        
-        .progress-fill.active {
-            @apply bg-gradient-to-r from-blue-400 to-blue-500;
-        }
-        
-        .progress-fill.on-hold {
-            @apply bg-gradient-to-r from-yellow-400 to-yellow-500;
-        }
-        
-        .progress-fill.completed {
-            @apply bg-gradient-to-r from-green-400 to-green-500;
-        }
-        
-        /* Métadonnées */
-        .project-meta-section {
-            @apply px-4 pb-3;
-        }
-        
-        .meta-grid {
-            @apply grid grid-cols-3 gap-2;
-        }
-        
-        .meta-item {
-            @apply flex items-center space-x-1 text-xs text-gray-500;
-        }
-        
-        .meta-item i {
-            @apply text-gray-400;
-        }
-        
-        /* Footer */
-        .project-card-footer {
-            @apply px-4 py-3 border-t border-gray-100;
-        }
-        
-        .project-team {
-            @apply flex items-center space-x-2;
-        }
-        
-        .team-avatar {
-            @apply w-7 h-7 bg-gradient-to-br from-primary-500 to-primary-600 text-white text-xs font-semibold rounded-full flex items-center justify-center border-2 border-white shadow-sm;
-        }
-        
-        .team-avatar-more {
-            @apply w-7 h-7 bg-gray-200 text-gray-600 text-xs font-semibold rounded-full flex items-center justify-center border-2 border-white;
-        }
-        
-        .project-footer-actions {
-            @apply flex items-center space-x-1;
-        }
-        
-        .action-btn-small {
-            @apply w-6 h-6 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-all;
-        }
-        
         /* Responsive */
         @media (max-width: 768px) {
             .flex.h-screen {
@@ -915,12 +508,8 @@
                 @apply min-h-64;
             }
             
-            .enhanced-project-card {
+            .simple-project-card {
                 @apply transform-none hover:transform-none;
-            }
-            
-            .meta-grid {
-                @apply grid-cols-2 gap-1;
             }
         }
         
