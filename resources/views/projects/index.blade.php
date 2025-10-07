@@ -232,25 +232,41 @@
                                             </div>
                                         @else
                                             @foreach ($planningProjects as $project)
-                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="project-block-card hover-lift group">
                                                     <!-- Barre de couleur en haut -->
                                                     <div class="project-color-bar planning"></div>
                                                     
-                                                    <!-- Contenu simplifié -->
-                                                    <div class="simple-card-content">
-                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
+                                                    <!-- Contenu du bloc -->
+                                                    <div class="project-block-content">
+                                                        <!-- Header avec titre -->
+                                                        <div class="project-block-header">
+                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
+                                                        </div>
                                                         
                                                         <!-- Progression -->
-                                                        <div class="simple-progress-section">
+                                                        <div class="project-progress-block">
                                                             @php
                                                                 $totalTasks = $project->tasks->count();
                                                                 $completedTasks = $project->tasks->where('status', 'done')->count();
                                                                 $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
                                                             @endphp
-                                                            <div class="simple-progress-bar">
-                                                                <div class="simple-progress-fill planning" style="width: {{ $progress }}%"></div>
+                                                            <div class="progress-block-bar">
+                                                                <div class="progress-block-fill planning" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <span class="simple-progress-text">{{ $progress }}%</span>
+                                                            <span class="progress-block-text">{{ $progress }}%</span>
+                                                        </div>
+                                                        
+                                                        <!-- Actions -->
+                                                        <div class="project-block-actions">
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
+                                                                <i class="fas fa-tasks"></i>
+                                                            </button>
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -281,20 +297,33 @@
                                             </div>
                                         @else
                                             @foreach ($activeProjects as $project)
-                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="project-block-card hover-lift group">
                                                     <div class="project-color-bar active"></div>
-                                                    <div class="simple-card-content">
-                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
-                                                        <div class="simple-progress-section">
+                                                    <div class="project-block-content">
+                                                        <div class="project-block-header">
+                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
+                                                        </div>
+                                                        <div class="project-progress-block">
                                                             @php
                                                                 $totalTasks = $project->tasks->count();
                                                                 $completedTasks = $project->tasks->where('status', 'done')->count();
                                                                 $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
                                                             @endphp
-                                                            <div class="simple-progress-bar">
-                                                                <div class="simple-progress-fill active" style="width: {{ $progress }}%"></div>
+                                                            <div class="progress-block-bar">
+                                                                <div class="progress-block-fill active" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <span class="simple-progress-text">{{ $progress }}%</span>
+                                                            <span class="progress-block-text">{{ $progress }}%</span>
+                                                        </div>
+                                                        <div class="project-block-actions">
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
+                                                                <i class="fas fa-tasks"></i>
+                                                            </button>
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -325,20 +354,33 @@
                                             </div>
                                         @else
                                             @foreach ($onHoldProjects as $project)
-                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="project-block-card hover-lift group">
                                                     <div class="project-color-bar on-hold"></div>
-                                                    <div class="simple-card-content">
-                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
-                                                        <div class="simple-progress-section">
+                                                    <div class="project-block-content">
+                                                        <div class="project-block-header">
+                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
+                                                        </div>
+                                                        <div class="project-progress-block">
                                                             @php
                                                                 $totalTasks = $project->tasks->count();
                                                                 $completedTasks = $project->tasks->where('status', 'done')->count();
                                                                 $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
                                                             @endphp
-                                                            <div class="simple-progress-bar">
-                                                                <div class="simple-progress-fill on-hold" style="width: {{ $progress }}%"></div>
+                                                            <div class="progress-block-bar">
+                                                                <div class="progress-block-fill on-hold" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <span class="simple-progress-text">{{ $progress }}%</span>
+                                                            <span class="progress-block-text">{{ $progress }}%</span>
+                                                        </div>
+                                                        <div class="project-block-actions">
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
+                                                                <i class="fas fa-tasks"></i>
+                                                            </button>
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -369,20 +411,33 @@
                                             </div>
                                         @else
                                             @foreach ($completedProjects as $project)
-                                                <div class="simple-project-card hover-lift group" onclick="window.location.href='{{ route('projects.show', $project->id) }}'">
+                                                <div class="project-block-card hover-lift group">
                                                     <div class="project-color-bar completed"></div>
-                                                    <div class="simple-card-content">
-                                                        <h5 class="simple-project-title">{{ $project->name }}</h5>
-                                                        <div class="simple-progress-section">
+                                                    <div class="project-block-content">
+                                                        <div class="project-block-header">
+                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
+                                                        </div>
+                                                        <div class="project-progress-block">
                                                             @php
                                                                 $totalTasks = $project->tasks->count();
                                                                 $completedTasks = $project->tasks->where('status', 'done')->count();
                                                                 $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 100;
                                                             @endphp
-                                                            <div class="simple-progress-bar">
-                                                                <div class="simple-progress-fill completed" style="width: {{ $progress }}%"></div>
+                                                            <div class="progress-block-bar">
+                                                                <div class="progress-block-fill completed" style="width: {{ $progress }}%"></div>
                                                             </div>
-                                                            <span class="simple-progress-text">{{ $progress }}%</span>
+                                                            <span class="progress-block-text">{{ $progress }}%</span>
+                                                        </div>
+                                                        <div class="project-block-actions">
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
+                                                                <i class="fas fa-tasks"></i>
+                                                            </button>
+                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -421,56 +476,91 @@
             @apply flex flex-col items-center justify-center py-8 text-center;
         }
         
-        /* Cartes de projet simplifiées */
-        .simple-project-card {
-            @apply bg-white rounded-lg border border-gray-200 shadow-sm cursor-pointer transition-all duration-200;
+        /* Blocs de projet avec actions */
+        .project-block-card {
+            @apply bg-white rounded-xl border border-gray-200 shadow-md cursor-pointer transition-all duration-300;
             position: relative;
             overflow: hidden;
+            min-height: 140px;
         }
         
-        .simple-project-card:hover {
-            @apply shadow-md border-primary-300 transform translate-y-1;
+        .project-block-card:hover {
+            @apply shadow-lg border-primary-300 transform translate-y-2 scale-105;
         }
         
-        .simple-card-content {
-            @apply p-4;
+        .project-block-content {
+            @apply p-5 h-full flex flex-col;
         }
         
-        .simple-project-title {
-            @apply text-sm font-semibold text-gray-900 mb-3 leading-tight;
+        .project-block-header {
+            @apply mb-4;
+        }
+        
+        .project-block-title {
+            @apply text-base font-bold text-gray-900 leading-tight;
             margin: 0;
+            line-height: 1.3;
         }
         
-        .simple-progress-section {
-            @apply flex items-center justify-between;
+        .project-progress-block {
+            @apply flex items-center justify-between mb-4 flex-1;
         }
         
-        .simple-progress-bar {
-            @apply flex-1 h-2 bg-gray-200 rounded-full overflow-hidden mr-3;
+        .progress-block-bar {
+            @apply flex-1 h-3 bg-gray-200 rounded-full overflow-hidden mr-3;
         }
         
-        .simple-progress-fill {
-            @apply h-full rounded-full transition-all duration-300;
+        .progress-block-fill {
+            @apply h-full rounded-full transition-all duration-500;
         }
         
-        .simple-progress-fill.planning {
+        .progress-block-fill.planning {
             @apply bg-gradient-to-r from-gray-400 to-gray-500;
         }
         
-        .simple-progress-fill.active {
+        .progress-block-fill.active {
             @apply bg-gradient-to-r from-blue-400 to-blue-500;
         }
         
-        .simple-progress-fill.on-hold {
+        .progress-block-fill.on-hold {
             @apply bg-gradient-to-r from-yellow-400 to-yellow-500;
         }
         
-        .simple-progress-fill.completed {
+        .progress-block-fill.completed {
             @apply bg-gradient-to-r from-green-400 to-green-500;
         }
         
-        .simple-progress-text {
-            @apply text-xs font-semibold text-gray-700;
+        .progress-block-text {
+            @apply text-sm font-bold text-gray-800;
+        }
+        
+        /* Boutons d'actions */
+        .project-block-actions {
+            @apply flex items-center justify-center space-x-2;
+        }
+        
+        .action-btn-block {
+            @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        
+        .action-btn-block:hover {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .action-btn-delete:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: #ef4444;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .action-btn-block i {
+            @apply text-sm;
         }
         
         /* Barre de couleur en haut */
@@ -508,8 +598,17 @@
                 @apply min-h-64;
             }
             
-            .simple-project-card {
+            .project-block-card {
                 @apply transform-none hover:transform-none;
+                min-height: 120px;
+            }
+            
+            .project-block-content {
+                @apply p-3;
+            }
+            
+            .action-btn-block {
+                @apply w-8 h-8;
             }
         }
         
@@ -521,4 +620,34 @@
             overflow: hidden;
         }
     </style>
+
+    <!-- Script pour la confirmation de suppression -->
+    <script>
+        function confirmDelete(projectId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.')) {
+                // Créer un formulaire de suppression
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/projects/${projectId}`;
+                
+                // Ajouter le token CSRF
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                form.appendChild(csrfToken);
+                
+                // Ajouter la méthode DELETE
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                form.appendChild(methodField);
+                
+                // Soumettre le formulaire
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
 </x-app-layout>
