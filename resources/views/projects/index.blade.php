@@ -117,17 +117,6 @@
         <!-- Kanban Board -->
         @if ($projects->count() > 0)
             <div class="modern-card">
-                <div class="modern-card-header">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-xl font-bold text-gray-900">Tableau Kanban</h2>
-                            <p class="text-sm text-gray-600 mt-1">Gérez vos projets par statut</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-500">{{ $projects->count() }} projet(s)</span>
-                        </div>
-                    </div>
-                </div>
                 <div class="modern-card-body">
                     <!-- Kanban Board -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -135,14 +124,22 @@
                                 <div class="kanban-column">
                                     <div class="kanban-header bg-gray-100">
                                         <div class="flex items-center justify-between">
-                                            <h4 class="font-semibold text-gray-700">
-                                                <i class="fas fa-clipboard-list text-gray-500 mr-2"></i>
-                                                En Planification
-                                            </h4>
-                                            <span class="badge-secondary">
-                                                @php $planningProjects = $projects->where('status', 'planning') @endphp
-                                                {{ $planningProjects->count() }}
-                                            </span>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-700">
+                                                    <i class="fas fa-clipboard-list text-gray-500 mr-2"></i>
+                                                    En Planification
+                                                </h4>
+                                                <p class="text-xs text-gray-500 mt-1">Projets à démarrer</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-2xl font-bold text-gray-900">
+                                                    @php $planningProjects = $projects->where('status', 'planning') @endphp
+                                                    {{ $planningProjects->count() }}
+                                                </span>
+                                                <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-clipboard-list text-white text-sm"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="kanban-content">
@@ -197,14 +194,22 @@
                                 <div class="kanban-column">
                                     <div class="kanban-header bg-blue-100">
                                         <div class="flex items-center justify-between">
-                                            <h4 class="font-semibold text-blue-700">
-                                                <i class="fas fa-play-circle text-blue-500 mr-2"></i>
-                                                Actif
-                                            </h4>
-                                            <span class="badge-primary">
-                                                @php $activeProjects = $projects->where('status', 'active') @endphp
-                                                {{ $activeProjects->count() }}
-                                            </span>
+                                            <div>
+                                                <h4 class="font-semibold text-blue-700">
+                                                    <i class="fas fa-play-circle text-blue-500 mr-2"></i>
+                                                    Actif
+                                                </h4>
+                                                <p class="text-xs text-blue-600 mt-1">Projets en cours</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-2xl font-bold text-blue-900">
+                                                    @php $activeProjects = $projects->where('status', 'active') @endphp
+                                                    {{ $activeProjects->count() }}
+                                                </span>
+                                                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-play-circle text-white text-sm"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="kanban-content">
@@ -253,14 +258,22 @@
                                 <div class="kanban-column">
                                     <div class="kanban-header bg-yellow-100">
                                         <div class="flex items-center justify-between">
-                                            <h4 class="font-semibold text-yellow-700">
-                                                <i class="fas fa-pause-circle text-yellow-500 mr-2"></i>
-                                                En Pause
-                                            </h4>
-                                            <span class="badge-warning">
-                                                @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
-                                                {{ $onHoldProjects->count() }}
-                                            </span>
+                                            <div>
+                                                <h4 class="font-semibold text-yellow-700">
+                                                    <i class="fas fa-pause-circle text-yellow-500 mr-2"></i>
+                                                    En Pause
+                                                </h4>
+                                                <p class="text-xs text-yellow-600 mt-1">Projets suspendus</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-2xl font-bold text-yellow-900">
+                                                    @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
+                                                    {{ $onHoldProjects->count() }}
+                                                </span>
+                                                <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-pause-circle text-white text-sm"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="kanban-content">
@@ -309,14 +322,22 @@
                                 <div class="kanban-column">
                                     <div class="kanban-header bg-green-100">
                                         <div class="flex items-center justify-between">
-                                            <h4 class="font-semibold text-green-700">
-                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                Terminé
-                                            </h4>
-                                            <span class="badge-success">
-                                                @php $completedProjects = $projects->where('status', 'completed') @endphp
-                                                {{ $completedProjects->count() }}
-                                            </span>
+                                            <div>
+                                                <h4 class="font-semibold text-green-700">
+                                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                    Terminé
+                                                </h4>
+                                                <p class="text-xs text-green-600 mt-1">Projets finalisés</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-2xl font-bold text-green-900">
+                                                    @php $completedProjects = $projects->where('status', 'completed') @endphp
+                                                    {{ $completedProjects->count() }}
+                                                </span>
+                                                <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                                                    <i class="fas fa-check-circle text-white text-sm"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="kanban-content">
@@ -376,7 +397,7 @@
         }
         
         .kanban-header {
-            @apply p-4 rounded-t-xl border-b border-gray-200 bg-gray-50;
+            @apply p-6 rounded-t-xl border-b border-gray-200 bg-gray-50;
         }
         
         .kanban-content {
