@@ -45,6 +45,7 @@ class TaskController extends Controller
             'priority' => 'nullable|integer|min:0|max:3',
             'assigned_to' => 'nullable|integer|exists:users,id',
             'parent_id' => 'nullable|integer|exists:tasks,id',
+            'status' => 'nullable|string|in:todo,in-progress,done,blocked',
         ]);
 
         // Vérifier que l'utilisateur assigné fait partie du projet
@@ -57,6 +58,7 @@ class TaskController extends Controller
             'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'due_date' => $request->due_date,
             'priority' => $request->priority ?? 0,
+            'status' => $request->status ?? 'todo', // Utiliser le statut fourni ou 'todo' par défaut
             'project_id' => $project->id,
             'author_id' => auth()->id(),
             'assigned_to' => $request->assigned_to,
