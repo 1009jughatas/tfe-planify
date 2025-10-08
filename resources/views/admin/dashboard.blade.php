@@ -107,50 +107,6 @@
             </div>
         </div>
 
-        <!-- Actions rapides -->
-        <div class="modern-card mb-8">
-            <div class="modern-card-header">
-                <h3 class="text-lg font-semibold text-gray-900">
-                    <i class="fas fa-bolt text-accent-500 mr-2"></i>
-                    Actions Rapides
-                </h3>
-            </div>
-            <div class="modern-card-body">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <a href="{{ route('admin.users.index') }}" class="admin-action-card hover-lift">
-                        <div class="admin-action-icon bg-blue-100">
-                            <i class="fas fa-users text-blue-600"></i>
-                        </div>
-                        <h4 class="admin-action-title">Gérer les Utilisateurs</h4>
-                        <p class="admin-action-desc">Voir et modifier les comptes utilisateurs</p>
-                    </a>
-
-                    <a href="{{ route('admin.statistics') }}" class="admin-action-card hover-lift">
-                        <div class="admin-action-icon bg-green-100">
-                            <i class="fas fa-chart-bar text-green-600"></i>
-                        </div>
-                        <h4 class="admin-action-title">Statistiques</h4>
-                        <p class="admin-action-desc">Analyses détaillées et rapports</p>
-                    </a>
-
-                    <a href="{{ route('admin.logs') }}" class="admin-action-card hover-lift">
-                        <div class="admin-action-icon bg-yellow-100">
-                            <i class="fas fa-file-alt text-yellow-600"></i>
-                        </div>
-                        <h4 class="admin-action-title">Logs Système</h4>
-                        <p class="admin-action-desc">Consulter les logs d'activité</p>
-                    </a>
-
-                    <a href="{{ route('admin.legal.index') }}" class="admin-action-card hover-lift">
-                        <div class="admin-action-icon bg-purple-100">
-                            <i class="fas fa-gavel text-purple-600"></i>
-                        </div>
-                        <h4 class="admin-action-title">Contenus Légaux</h4>
-                        <p class="admin-action-desc">Mentions légales et CGU</p>
-                    </a>
-                </div>
-            </div>
-        </div>
 
         <!-- Graphiques et analyses -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -349,28 +305,5 @@
         </div>
     </div>
 
-    <style>
-        .admin-action-card {
-            @apply block p-4 bg-white rounded-xl border border-gray-200 hover:border-primary-300 hover:shadow-md transition-all duration-200;
-        }
-        
-        .admin-action-icon {
-            @apply w-12 h-12 rounded-lg flex items-center justify-center mb-3;
-        }
-        
-        .admin-action-title {
-            @apply text-sm font-semibold text-gray-900 mb-1;
-        }
-        
-        .admin-action-desc {
-            @apply text-xs text-gray-500;
-        }
-        
-        @media (max-width: 768px) {
-            .admin-action-card {
-                @apply text-center;
-            }
-        }
-    </style>
 </x-app-layout>
 
