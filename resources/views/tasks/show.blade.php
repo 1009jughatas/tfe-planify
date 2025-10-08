@@ -339,6 +339,13 @@
                 
                 console.log('Task ID:', taskId);
                 console.log('New Status:', newStatus);
+                console.log('Original Status:', originalStatus);
+
+                // Vérifier si le statut a vraiment changé
+                if (newStatus === originalStatus) {
+                    showNotification('Aucun changement détecté. Le statut est déjà : ' + newStatus, 'info');
+                    return;
+                }
 
                 // Désactiver les contrôles pendant la requête
                 selectElement.prop('disabled', true);
@@ -369,21 +376,54 @@
                             location.reload();
                         }, 1000);
                     },
-                    error: function (error) {
+                    error: function (xhr, status, error) {
+                        console.log('Erreur AJAX:', xhr.responseText);
+                        console.log('Status:', status);
+                        console.log('Error:', error);
+                        
                         // Réactiver les contrôles
                         selectElement.prop('disabled', false);
                         $('#updateStatusBtn').prop('disabled', false);
-                        showNotification('Erreur lors de la mise à jour du statut.', 'error');
+                        
+                        let errorMessage = 'Erreur lors de la mise à jour du statut.';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage = xhr.responseJSON.error;
+                        }
+                        showNotification(errorMessage, 'error');
                     }
                 });
             });
 
             function showNotification(message, type) {
                 // Créer une notification toast simple
+                let bgColor, textColor, icon;
+                
+                switch(type) {
+                    case 'success':
+                        bgColor = 'bg-green-500';
+                        textColor = 'text-white';
+                        icon = 'check';
+                        break;
+                    case 'error':
+                        bgColor = 'bg-red-500';
+                        textColor = 'text-white';
+                        icon = 'exclamation';
+                        break;
+                    case 'info':
+                        bgColor = 'bg-blue-500';
+                        textColor = 'text-white';
+                        icon = 'info-circle';
+                        break;
+                    default:
+                        bgColor = 'bg-gray-500';
+                        textColor = 'text-white';
+                        icon = 'info';
+                }
+                
                 const notification = $(`
-                    <div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">
+                    <div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${bgColor} ${textColor}">
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}"></i>
+                            <i class="fas fa-${icon}"></i>
                             <span>${message}</span>
                         </div>
                     </div>
