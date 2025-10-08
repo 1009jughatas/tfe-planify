@@ -24,6 +24,9 @@ class Company extends Model
         'trial_ends_at',
         'subscription_ends_at',
         'admin_id',
+        'stripe_customer_id',
+        'stripe_subscription_id',
+        'stripe_price_id',
     ];
 
     protected $casts = [

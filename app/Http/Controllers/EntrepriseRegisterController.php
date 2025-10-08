@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\User;
+use App\Services\StripeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -102,15 +103,32 @@ class EntrepriseRegisterController extends Controller
      */
     private function redirectToStripeCheckout($amount, $companyName)
     {
-        // Pour l'instant, simuler le paiement et créer directement l'entreprise
-        // TODO: Intégrer Stripe Checkout réel
-        
         try {
-            return $this->handleSuccessfulPayment();
+            $registrationData = session('entreprise_registration');
+            $stripeService = new StripeService();
+            
+            // Préparer les données pour Stripe
+            $stripeData = [
+                'plan_name' => config("stripe.plans.{$registrationData['plan']}.name"),
+                'plan' => $registrationData['plan'],
+                'amount' => $amount,
+                'company_name' => $registrationData['company_name'],
+                'company_email' => $registrationData['company_email'],
+                'admin_name' => $registrationData['admin_name'],
+                'admin_email' => $registrationData['admin_email'],
+                'session_data' => $registrationData,
+            ];
+            
+            // Créer la session Stripe
+            $session = $stripeService->createCheckoutSession($stripeData);
+            
+            // Rediriger vers Stripe Checkout
+            return redirect($session->url);
+            
         } catch (\Exception $e) {
-            \Log::error('Erreur lors de la création de l\'entreprise: ' . $e->getMessage());
+            \Log::error('Erreur lors de la création de la session Stripe: ' . $e->getMessage());
             return redirect()->route('entreprise.register')
-                ->with('error', 'Une erreur est survenue lors de la création de votre entreprise. Veuillez réessayer.');
+                ->with('error', 'Une erreur est survenue lors de l\'initialisation du paiement. Veuillez réessayer.');
         }
     }
 
@@ -189,8 +207,45 @@ class EntrepriseRegisterController extends Controller
      */
     public function stripeWebhook(Request $request)
     {
-        // TODO: Implémenter la vérification du webhook Stripe
-        // Pour l'instant, on simule un paiement réussi
+        $payload = $request->getContent();
+        $sigHeader = $request->header('Stripe-Signature');
+        $endpointSecret = config('stripe.webhook_secret');
+        
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sigHeader, $endpointSecret
+            );
+        } catch (\UnexpectedValueException $e) {
+            \Log::error('Invalid payload Stripe webhook', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Invalid payload'], 400);
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            \Log::error('Invalid signature Stripe webhook', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Invalid signature'], 400);
+        }
+        
+        // Gérer l'événement
+        switch ($event->type) {
+            case 'checkout.session.completed':
+                $session = $event->data->object;
+                \Log::info('Session de paiement complétée', ['session_id' => $session->id]);
+                
+                // Ici on pourrait créer l'entreprise directement via webhook
+                // Mais pour l'instant on laisse l'utilisateur être redirigé vers paymentSuccess
+                break;
+                
+            case 'invoice.payment_succeeded':
+                $invoice = $event->data->object;
+                \Log::info('Paiement de facture réussi', ['invoice_id' => $invoice->id]);
+                break;
+                
+            case 'invoice.payment_failed':
+                $invoice = $event->data->object;
+                \Log::warning('Échec du paiement de facture', ['invoice_id' => $invoice->id]);
+                break;
+                
+            default:
+                \Log::info('Événement Stripe non géré', ['type' => $event->type]);
+        }
         
         return response()->json(['status' => 'success']);
     }
@@ -200,7 +255,38 @@ class EntrepriseRegisterController extends Controller
      */
     public function paymentSuccess(Request $request)
     {
-        return $this->handleSuccessfulPayment();
+        $sessionId = $request->get('session_id');
+        
+        if (!$sessionId) {
+            return redirect()->route('entreprise.register')
+                ->with('error', 'Session de paiement invalide.');
+        }
+        
+        try {
+            $stripeService = new StripeService();
+            
+            // Vérifier que le paiement est bien effectué
+            if (!$stripeService->isSessionPaid($sessionId)) {
+                return redirect()->route('entreprise.payment.failed')
+                    ->with('error', 'Le paiement n\'a pas été confirmé.');
+            }
+            
+            // Récupérer les métadonnées de la session
+            $metadata = $stripeService->getSessionMetadata($sessionId);
+            
+            // Restaurer les données de session à partir des métadonnées
+            if (isset($metadata['session_data'])) {
+                $sessionData = json_decode(base64_decode($metadata['session_data']), true);
+                session(['entreprise_registration' => $sessionData]);
+            }
+            
+            return $this->handleSuccessfulPayment();
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la vérification du paiement: ' . $e->getMessage());
+            return redirect()->route('entreprise.payment.failed')
+                ->with('error', 'Erreur lors de la vérification du paiement.');
+        }
     }
 
     /**
