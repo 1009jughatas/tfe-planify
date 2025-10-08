@@ -105,7 +105,13 @@ class EntrepriseRegisterController extends Controller
         // Pour l'instant, simuler le paiement et créer directement l'entreprise
         // TODO: Intégrer Stripe Checkout réel
         
-        return $this->handleSuccessfulPayment();
+        try {
+            return $this->handleSuccessfulPayment();
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la création de l\'entreprise: ' . $e->getMessage());
+            return redirect()->route('entreprise.register')
+                ->with('error', 'Une erreur est survenue lors de la création de votre entreprise. Veuillez réessayer.');
+        }
     }
 
     /**
@@ -116,8 +122,11 @@ class EntrepriseRegisterController extends Controller
         $registrationData = session('entreprise_registration');
         
         if (!$registrationData) {
+            \Log::error('Session entreprise_registration non trouvée');
             return redirect()->route('entreprise.register')->with('error', 'Session expirée. Veuillez recommencer.');
         }
+
+        \Log::info('Début de la création de l\'entreprise', $registrationData);
 
         try {
             DB::beginTransaction();
@@ -127,11 +136,14 @@ class EntrepriseRegisterController extends Controller
                 'name' => $registrationData['company_name'],
                 'email' => $registrationData['company_email'],
                 'slug' => Str::slug($registrationData['company_name']),
+                'plan' => $registrationData['plan'],
                 'monthly_price' => $registrationData['price'],
                 'user_limit' => $registrationData['user_limit'],
                 'status' => 'active',
                 'admin_id' => null, // Sera mis à jour après création de l'admin
             ]);
+
+            \Log::info('Entreprise créée avec l\'ID: ' . $company->id);
 
             // Créer l'administrateur d'entreprise
             $admin = User::create([
@@ -144,6 +156,8 @@ class EntrepriseRegisterController extends Controller
                 'department' => 'Direction',
                 'is_active' => true,
             ]);
+
+            \Log::info('Administrateur créé avec l\'ID: ' . $admin->id);
 
             // Mettre à jour l'entreprise avec l'ID de l'admin
             $company->update(['admin_id' => $admin->id]);
