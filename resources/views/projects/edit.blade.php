@@ -123,7 +123,7 @@
                         <label for="participants" class="form-label-modern">
                             <i class="fas fa-users text-gray-500 mr-1"></i>
                             Participants
-                            @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
+                            @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
                                 <span class="badge-warning ml-2">
                                     <i class="fas fa-crown mr-1"></i>Premium
                                 </span>
@@ -133,21 +133,21 @@
                                 id="participants" 
                                 class="input-modern @error('participants') border-red-300 focus:ring-red-500 @enderror"
                                 multiple
-                                @if (!Auth::user()->is_premium && !Auth::user()->is_admin()) disabled @endif>
+                                @if (!Auth::user()->is_premium() && !Auth::user()->is_admin()) disabled @endif>
                             @foreach ($users as $user)
                                 <option value="{{ $user->id }}" 
                                         @if(in_array($user->id, json_decode($project->participants, true) ?? [])) selected @endif>
                                     {{ $user->name }}
                                     @if($user->is_admin())
                                         (Admin)
-                                    @elseif($user->is_premium)
+                                    @elseif($user->is_premium())
                                         (Premium)
                                     @endif
                                 </option>
                             @endforeach
                         </select>
                         
-                        @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
+                        @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
                             <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                 <p class="text-sm text-yellow-700">
                                     <i class="fas fa-info-circle mr-1"></i>

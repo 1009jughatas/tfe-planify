@@ -35,7 +35,7 @@ class ProjectController extends Controller
 
         // Vérifier l'autorisation via Policy
         if (!$user->can('create', Project::class)) {
-            $limit = $user->is_premium ? 'illimité' : '3';
+            $limit = $user->is_premium() ? 'illimité' : '3';
             return redirect()->route('projects.index')->with('error', 'Vous avez atteint la limite de projets (' . $limit . '). Les utilisateurs gratuits sont limités à 3 projets. Passez en premium pour créer plus de projets.');
         }
 
@@ -177,7 +177,7 @@ class ProjectController extends Controller
         // Sync participants via the pivot table (uniquement pour les utilisateurs premium)
         if ($request->has('participants') && $user->can('inviteCollaborators', $project)) {
             $project->participants()->sync($request->participants);
-        } elseif ($request->has('participants') && !$user->is_premium) {
+        } elseif ($request->has('participants') && !$user->is_premium()) {
             return redirect()->route('projects.show', $project->id)->with('warning', 'Projet mis à jour. Note : La fonctionnalité d\'invitation de collaborateurs est réservée aux utilisateurs premium.');
         }
 

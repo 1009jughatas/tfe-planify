@@ -159,7 +159,7 @@ class TaskController extends Controller
             'task_assigned_to' => $task->assigned_to,
             'user_id' => $user->id,
             'user_role' => $user->role,
-            'user_is_premium' => $user->is_premium,
+            'user_is_premium' => $user->is_premium(),
             'user_is_admin' => $user->is_admin(),
             'project_participants' => $task->project->participants->pluck('id')->toArray()
         ]);

@@ -203,7 +203,7 @@
                                     <div class="text-right">
                                         @if ($user->is_admin())
                                             <span class="badge-danger">Admin</span>
-                                        @elseif ($user->is_premium)
+                                        @elseif ($user->is_premium())
                                             <span class="badge-warning">Premium</span>
                                         @else
                                             <span class="badge-secondary">Gratuit</span>

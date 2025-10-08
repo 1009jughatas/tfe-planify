@@ -9,7 +9,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
                 <p class="text-sm text-gray-600 mt-1">Vue d'ensemble de vos projets et tâches</p>
             </div>
-            @if (Auth::user()->is_premium)
+            @if (Auth::user()->is_premium())
                 <a href="{{ route('dashboard.exportReport') }}" class="btn-primary-modern">
                     <i class="fas fa-file-pdf mr-2"></i>
                     Exporter PDF
@@ -64,7 +64,7 @@
             </div>
 
             <!-- Premium Feature -->
-            @if (Auth::user()->is_premium)
+            @if (Auth::user()->is_premium())
                 <div class="stats-card hover-lift bg-gradient-accent text-white">
                     <div class="flex items-center justify-between">
                         <div>

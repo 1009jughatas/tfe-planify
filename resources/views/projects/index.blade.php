@@ -7,7 +7,7 @@
             </div>
             @php
                 $canCreate = Auth::user()->is_admin() || 
-                             Auth::user()->is_premium || 
+                             Auth::user()->is_premium() || 
                              Auth::user()->projects()->count() < 3;
             @endphp
             @if ($canCreate)
@@ -27,7 +27,7 @@
     <!-- Contenu principal -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Alertes de limitation -->
-        @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
+        @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
             @php
                 $projectCount = Auth::user()->projects()->count();
                 $projectLimit = 3;

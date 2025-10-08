@@ -286,7 +286,7 @@
                                     <div class="flex items-center space-x-2">
                                         @if($participant->is_admin())
                                             <span class="badge-danger text-xs">Admin</span>
-                                        @elseif($participant->is_premium)
+                                        @elseif($participant->is_premium())
                                             <span class="badge-warning text-xs">Premium</span>
                                         @else
                                             <span class="badge-secondary text-xs">Gratuit</span>

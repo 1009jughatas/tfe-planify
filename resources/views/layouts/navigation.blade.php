@@ -12,7 +12,7 @@
                 <div x-show="!collapsed" class="transition-all duration-200">
                     <h1 class="text-xl font-bold text-gray-900">Planify</h1>
                     <div class="flex items-center space-x-2">
-                        @if (Auth::user()->is_premium)
+                        @if (Auth::user()->is_premium())
                             <span class="text-xs font-medium text-accent-600 bg-accent-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-crown mr-1"></i>Premium
                             </span>
@@ -74,7 +74,7 @@
         @endauth
 
         <!-- Premium -->
-        @if (!Auth::user()->is_premium && !Auth::user()->is_admin())
+        @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
         <div class="nav-section">
             <div x-show="!collapsed" class="nav-section-title">
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Premium</span>
@@ -91,7 +91,7 @@
         @endif
 
         <!-- Preferences -->
-        @if (Auth::user()->is_premium || Auth::user()->is_admin())
+        @if (Auth::user()->is_premium() || Auth::user()->is_admin())
         <div class="nav-section">
             <div x-show="!collapsed" class="nav-section-title">
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Paramètres</span>
