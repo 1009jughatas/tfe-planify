@@ -56,9 +56,10 @@ class CompanyAdminController extends Controller
         // Derniers projets créés
         $recentProjects = $company->projects()->with('author')->latest()->limit(5)->get();
         foreach ($recentProjects as $project) {
+            $authorName = $project->author ? $project->author->name : 'Utilisateur inconnu';
             $recentActivities->push([
                 'type' => 'project_created',
-                'message' => "Projet \"{$project->name}\" créé par {$project->author->name}",
+                'message' => "Projet \"{$project->name}\" créé par {$authorName}",
                 'time' => $project->created_at,
                 'icon' => 'fas fa-folder-plus',
                 'color' => 'blue'
@@ -71,9 +72,10 @@ class CompanyAdminController extends Controller
         })->where('status', 'done')->with(['author', 'project'])->latest()->limit(5)->get();
         
         foreach ($recentTasks as $task) {
+            $projectName = $task->project ? $task->project->name : 'Projet inconnu';
             $recentActivities->push([
                 'type' => 'task_completed',
-                'message' => "Tâche \"{$task->title}\" terminée dans le projet \"{$task->project->name}\"",
+                'message' => "Tâche \"{$task->title}\" terminée dans le projet \"{$projectName}\"",
                 'time' => $task->updated_at,
                 'icon' => 'fas fa-check-circle',
                 'color' => 'green'
