@@ -276,8 +276,8 @@
                                 <option value="blocked" @if($task->status == 'blocked') selected @endif>🚫 Bloquée</option>
                             </select>
                             
-                            <div class="flex space-x-2" id="statusButtons" style="display: none;">
-                                <button id="updateStatusBtn" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium rounded-lg hover:from-primary-700 hover:to-primary-800 focus:ring-4 focus:ring-primary-200 transition-all duration-200 shadow-sm hover:shadow-md flex-1">
+                            <div class="flex space-x-2" id="statusButtons">
+                                <button id="updateStatusBtn" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md flex-1">
                                     <i class="fas fa-check mr-2"></i>
                                     Valider
                                 </button>
@@ -327,18 +327,16 @@
             let originalStatus = $('#status').data('original-status');
             console.log('Original status:', originalStatus);
             
-            // Gérer le changement de sélection
+            // Les boutons sont maintenant toujours visibles
+            $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
+            
+            // Gérer le changement de sélection (optionnel, pour feedback)
             $('#status').change(function () {
                 let currentStatus = $(this).val();
-                
                 if (currentStatus !== originalStatus) {
-                    // Afficher les boutons de validation
-                    $('#statusButtons').show();
-                    $('#statusHelp').text('Cliquez sur "Valider" pour confirmer ou "Annuler" pour revenir au statut précédent.');
+                    $('#statusHelp').text('Statut modifié ! Cliquez sur "Valider" pour confirmer ou "Annuler" pour revenir au statut précédent.');
                 } else {
-                    // Masquer les boutons si on revient au statut original
-                    $('#statusButtons').hide();
-                    $('#statusHelp').text('Changez le statut ci-dessus pour voir les boutons de validation.');
+                    $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
                 }
             });
             
@@ -366,8 +364,8 @@
                         // Mettre à jour le statut original
                         originalStatus = newStatus;
                         
-                        // Masquer les boutons
-                        $('#statusButtons').hide();
+                        // Remettre le texte d'aide
+                        $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
                         
                         // Réactiver les contrôles
                         selectElement.prop('disabled', false);
@@ -391,8 +389,8 @@
                 // Remettre le statut original
                 $('#status').val(originalStatus);
                 
-                // Masquer les boutons
-                $('#statusButtons').hide();
+                // Remettre le texte d'aide
+                $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
             });
 
             function showNotification(message, type) {
