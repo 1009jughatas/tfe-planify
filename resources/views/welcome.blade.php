@@ -62,7 +62,7 @@
                 
                 <!-- Boutons d'action principaux -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                    <a href="{{ route('company.register') }}" class="btn-primary-modern px-8 py-4 text-lg font-semibold">
+                    <a href="{{ route('entreprise.register') }}" class="btn-primary-modern px-8 py-4 text-lg font-semibold">
                         <i class="fas fa-building mr-2"></i>
                         Créer mon Entreprise
                     </a>

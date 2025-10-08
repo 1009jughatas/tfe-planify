@@ -70,9 +70,24 @@ class User extends Authenticatable
         return $this->role === 'company_admin';
     }
 
+    public function isEmploye()
+    {
+        return $this->role === 'employe';
+    }
+
     public function isMember()
     {
         return $this->role === 'member';
+    }
+
+    public function isIndependent()
+    {
+        return $this->role === 'user' && !$this->company_id;
+    }
+
+    public function isPartOfCompany()
+    {
+        return $this->company_id !== null;
     }
 
     public function is_premium()

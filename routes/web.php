@@ -7,6 +7,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyInvitationController;
 use App\Http\Controllers\CompanyAdminController;
+use App\Http\Controllers\EntrepriseRegisterController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +16,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Routes d'inscription d'entreprise
+// Routes d'inscription entreprise (nouveau système)
+Route::get('/register/entreprise', [EntrepriseRegisterController::class, 'showRegistrationForm'])->name('entreprise.register');
+Route::post('/register/entreprise', [EntrepriseRegisterController::class, 'register'])->name('entreprise.store');
+Route::get('/entreprise/payment/success', [EntrepriseRegisterController::class, 'paymentSuccess'])->name('entreprise.payment.success');
+Route::get('/entreprise/payment/failed', [EntrepriseRegisterController::class, 'paymentFailed'])->name('entreprise.payment.failed');
+Route::post('/entreprise/stripe/webhook', [EntrepriseRegisterController::class, 'stripeWebhook'])->name('entreprise.stripe.webhook');
+
+// Routes d'inscription d'entreprise (ancien système - à supprimer plus tard)
 Route::get('/company/register', [CompanyController::class, 'showRegistrationForm'])->name('company.register');
 Route::post('/company/register', [CompanyController::class, 'register'])->name('company.store');
 
