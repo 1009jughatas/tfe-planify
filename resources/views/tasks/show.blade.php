@@ -268,13 +268,27 @@
                         </h3>
                     </div>
                     <div class="modern-card-body">
-                        <select id="status" class="input-modern" data-task-id="{{ $task->id }}">
-                            <option value="todo" @if($task->status == 'todo') selected @endif>📋 À faire</option>
-                            <option value="in-progress" @if($task->status == 'in-progress') selected @endif>🔄 En cours</option>
-                            <option value="done" @if($task->status == 'done') selected @endif>✅ Terminée</option>
-                            <option value="blocked" @if($task->status == 'blocked') selected @endif>🚫 Bloquée</option>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-2">Le statut sera mis à jour automatiquement.</p>
+                        <div class="space-y-3">
+                            <select id="status" class="input-modern" data-task-id="{{ $task->id }}" data-original-status="{{ $task->status }}">
+                                <option value="todo" @if($task->status == 'todo') selected @endif>📋 À faire</option>
+                                <option value="in-progress" @if($task->status == 'in-progress') selected @endif>🔄 En cours</option>
+                                <option value="done" @if($task->status == 'done') selected @endif>✅ Terminée</option>
+                                <option value="blocked" @if($task->status == 'blocked') selected @endif>🚫 Bloquée</option>
+                            </select>
+                            
+                            <div class="flex space-x-2">
+                                <button id="updateStatusBtn" class="btn-primary-modern flex-1" style="display: none;">
+                                    <i class="fas fa-check mr-2"></i>
+                                    Valider
+                                </button>
+                                <button id="cancelStatusBtn" class="btn-secondary-modern flex-1" style="display: none;">
+                                    <i class="fas fa-times mr-2"></i>
+                                    Annuler
+                                </button>
+                            </div>
+                            
+                            <p class="text-xs text-gray-500">Sélectionnez un nouveau statut et cliquez sur "Valider".</p>
+                        </div>
                     </div>
                 </div>
 
@@ -310,13 +324,30 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            let originalStatus = $('#status').data('original-status');
+            
+            // Gérer le changement de sélection
             $('#status').change(function () {
-                let taskId = $(this).data('task-id');
-                let newStatus = $(this).val();
-                let selectElement = $(this);
+                let currentStatus = $(this).val();
+                
+                if (currentStatus !== originalStatus) {
+                    // Afficher les boutons de validation
+                    $('#updateStatusBtn, #cancelStatusBtn').show();
+                } else {
+                    // Masquer les boutons si on revient au statut original
+                    $('#updateStatusBtn, #cancelStatusBtn').hide();
+                }
+            });
+            
+            // Gérer la validation
+            $('#updateStatusBtn').click(function () {
+                let taskId = $('#status').data('task-id');
+                let newStatus = $('#status').val();
+                let selectElement = $('#status');
 
-                // Désactiver le select pendant la requête
+                // Désactiver les contrôles pendant la requête
                 selectElement.prop('disabled', true);
+                $('#updateStatusBtn, #cancelStatusBtn').prop('disabled', true);
 
                 $.ajax({
                     url: `/tasks/${taskId}/update-status`,
@@ -328,17 +359,37 @@
                     success: function (response) {
                         // Afficher un message de succès
                         showNotification('Statut mis à jour avec succès !', 'success');
+                        
+                        // Mettre à jour le statut original
+                        originalStatus = newStatus;
+                        
+                        // Masquer les boutons
+                        $('#updateStatusBtn, #cancelStatusBtn').hide();
+                        
+                        // Réactiver les contrôles
+                        selectElement.prop('disabled', false);
+                        
                         // Recharger la page après un court délai
                         setTimeout(function() {
                             location.reload();
                         }, 1000);
                     },
                     error: function (error) {
-                        // Réactiver le select et remettre l'ancienne valeur
+                        // Réactiver les contrôles
                         selectElement.prop('disabled', false);
+                        $('#updateStatusBtn, #cancelStatusBtn').prop('disabled', false);
                         showNotification('Erreur lors de la mise à jour du statut.', 'error');
                     }
                 });
+            });
+            
+            // Gérer l'annulation
+            $('#cancelStatusBtn').click(function () {
+                // Remettre le statut original
+                $('#status').val(originalStatus);
+                
+                // Masquer les boutons
+                $('#updateStatusBtn, #cancelStatusBtn').hide();
             });
 
             function showNotification(message, type) {
