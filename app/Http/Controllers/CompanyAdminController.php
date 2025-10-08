@@ -18,12 +18,16 @@ class CompanyAdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isCompanyAdmin()) {
-                abort(403, 'Accès non autorisé. Seuls les administrateurs d\'entreprise peuvent accéder à cette section.');
-            }
-            return $next($request);
-        });
+    }
+
+    /**
+     * Vérifier que l'utilisateur est un admin d'entreprise
+     */
+    private function checkCompanyAdmin()
+    {
+        if (!Auth::user()->isCompanyAdmin()) {
+            abort(403, 'Accès non autorisé. Seuls les administrateurs d\'entreprise peuvent accéder à cette section.');
+        }
     }
 
     /**
@@ -31,6 +35,7 @@ class CompanyAdminController extends Controller
      */
     public function dashboard()
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         // Statistiques générales
@@ -90,6 +95,7 @@ class CompanyAdminController extends Controller
      */
     public function users()
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         $users = $company->users()->with('projects')->paginate(15);
         $invitations = $company->invitations()->where('expires_at', '>', now())->get();
@@ -102,6 +108,7 @@ class CompanyAdminController extends Controller
      */
     public function inviteUser(Request $request)
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         $request->validate([
@@ -134,6 +141,7 @@ class CompanyAdminController extends Controller
      */
     public function updateUserRole(Request $request, User $user)
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         // Vérifier que l'utilisateur appartient à la même entreprise
@@ -160,6 +168,7 @@ class CompanyAdminController extends Controller
      */
     public function deleteUser(User $user)
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         // Vérifier que l'utilisateur appartient à la même entreprise
@@ -182,6 +191,7 @@ class CompanyAdminController extends Controller
      */
     public function projects()
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         $projects = $company->projects()->with(['author', 'participants'])->paginate(15);
         $users = $company->users()->get();
@@ -194,6 +204,7 @@ class CompanyAdminController extends Controller
      */
     public function tasks()
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         $tasks = Task::whereHas('project', function($query) use ($company) {
@@ -211,6 +222,7 @@ class CompanyAdminController extends Controller
      */
     public function subscription()
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         return view('company-admin.subscription.index', compact('company'));
@@ -221,6 +233,7 @@ class CompanyAdminController extends Controller
      */
     public function settings()
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         return view('company-admin.settings.index', compact('company'));
@@ -231,6 +244,7 @@ class CompanyAdminController extends Controller
      */
     public function updateSettings(Request $request)
     {
+        $this->checkCompanyAdmin();
         $company = Auth::user()->company;
         
         $request->validate([
