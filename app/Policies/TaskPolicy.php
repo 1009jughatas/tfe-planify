@@ -12,8 +12,13 @@ class TaskPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Tous les utilisateurs authentifiés peuvent voir leurs tâches
-        return true;
+        // Super admin peut voir toutes les tâches
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Les utilisateurs peuvent voir les tâches de leur entreprise
+        return $user->company_id !== null;
     }
 
     /**
@@ -21,9 +26,14 @@ class TaskPolicy
      */
     public function view(User $user, Task $task): bool
     {
-        // Les admins peuvent voir toutes les tâches
-        if ($user->is_admin()) {
+        // Super admin peut voir toutes les tâches
+        if ($user->isSuperAdmin()) {
             return true;
+        }
+
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $task->company_id) {
+            return false;
         }
 
         // L'auteur peut voir ses tâches
@@ -45,9 +55,13 @@ class TaskPolicy
      */
     public function create(User $user): bool
     {
-        // Tous les utilisateurs authentifiés peuvent créer des tâches
-        // (la limitation est au niveau du projet)
-        return true;
+        // Super admin peut créer des tâches partout
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Les utilisateurs doivent appartenir à une entreprise active
+        return $user->company_id !== null && $user->company->isActive();
     }
 
     /**
@@ -55,8 +69,18 @@ class TaskPolicy
      */
     public function update(User $user, Task $task): bool
     {
-        // Les admins peuvent modifier toutes les tâches
-        if ($user->is_admin()) {
+        // Super admin peut modifier toutes les tâches
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $task->company_id) {
+            return false;
+        }
+
+        // L'admin de l'entreprise peut modifier toutes les tâches de son entreprise
+        if ($user->isCompanyAdmin()) {
             return true;
         }
 
@@ -65,8 +89,8 @@ class TaskPolicy
             return true;
         }
 
-        // L'utilisateur assigné peut modifier la tâche (pour utilisateurs premium)
-        if ($user->is_premium && $task->assigned_to === $user->id) {
+        // L'utilisateur assigné peut modifier la tâche (pour utilisateurs de l'entreprise)
+        if ($task->assigned_to === $user->id) {
             return true;
         }
 
@@ -78,8 +102,18 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task): bool
     {
-        // Les admins peuvent supprimer toutes les tâches
-        if ($user->is_admin()) {
+        // Super admin peut supprimer toutes les tâches
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $task->company_id) {
+            return false;
+        }
+
+        // L'admin de l'entreprise peut supprimer toutes les tâches de son entreprise
+        if ($user->isCompanyAdmin()) {
             return true;
         }
 
@@ -92,8 +126,18 @@ class TaskPolicy
      */
     public function updateStatus(User $user, Task $task): bool
     {
-        // Les admins peuvent toujours changer le statut
-        if ($user->is_admin()) {
+        // Super admin peut toujours changer le statut
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $task->company_id) {
+            return false;
+        }
+
+        // L'admin de l'entreprise peut changer le statut de toutes les tâches
+        if ($user->isCompanyAdmin()) {
             return true;
         }
 
@@ -107,8 +151,8 @@ class TaskPolicy
             return true;
         }
 
-        // Les participants au projet peuvent changer le statut (pour utilisateurs premium)
-        if ($user->is_premium && $task->project->participants->contains($user->id)) {
+        // Les participants au projet peuvent changer le statut (pour utilisateurs de l'entreprise)
+        if ($task->project->participants->contains($user->id)) {
             return true;
         }
 
@@ -120,22 +164,26 @@ class TaskPolicy
      */
     public function assign(User $user, Task $task): bool
     {
-        // Les admins peuvent toujours assigner
-        if ($user->is_admin()) {
+        // Super admin peut toujours assigner
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seuls les utilisateurs premium peuvent assigner des tâches
-        if (!$user->is_premium) {
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $task->company_id) {
             return false;
         }
 
-        // L'auteur du projet peut assigner
-        if ($task->project->author_id === $user->id) {
+        // L'admin de l'entreprise peut assigner toutes les tâches
+        if ($user->isCompanyAdmin()) {
             return true;
         }
 
         // L'auteur de la tâche peut assigner
-        return $task->author_id === $user->id;
+        if ($task->author_id === $user->id) {
+            return true;
+        }
+
+        return false;
     }
 }

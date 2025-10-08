@@ -12,8 +12,13 @@ class ProjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Tous les utilisateurs authentifiés peuvent voir la liste des projets
-        return true;
+        // Super admin peut voir tous les projets
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Les utilisateurs peuvent voir les projets de leur entreprise
+        return $user->company_id !== null;
     }
 
     /**
@@ -21,12 +26,17 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        // Les admins peuvent voir tous les projets
-        if ($user->is_admin()) {
+        // Super admin peut voir tous les projets
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Les utilisateurs peuvent voir leurs propres projets
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
+            return false;
+        }
+
+        // L'auteur peut voir son projet
         if ($project->author_id === $user->id) {
             return true;
         }
@@ -40,19 +50,13 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        // Les admins peuvent créer des projets sans limite
-        if ($user->is_admin()) {
+        // Super admin peut créer des projets partout
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Utilisateurs gratuits : limité à 3 projets
-        if (!$user->is_premium) {
-            $projectCount = $user->projects()->count();
-            return $projectCount < 3;
-        }
-
-        // Utilisateurs premium : pas de limite
-        return true;
+        // Les utilisateurs doivent appartenir à une entreprise active
+        return $user->company_id !== null && $user->company->isActive();
     }
 
     /**
@@ -60,12 +64,22 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        // Les admins peuvent modifier tous les projets
-        if ($user->is_admin()) {
+        // Super admin peut modifier tous les projets
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seul l'auteur peut modifier son projet
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
+            return false;
+        }
+
+        // L'admin de l'entreprise peut modifier tous les projets de son entreprise
+        if ($user->isCompanyAdmin()) {
+            return true;
+        }
+
+        // L'auteur peut modifier son projet
         return $project->author_id === $user->id;
     }
 
@@ -74,12 +88,22 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        // Les admins peuvent supprimer tous les projets
-        if ($user->is_admin()) {
+        // Super admin peut supprimer tous les projets
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seul l'auteur peut supprimer son projet
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
+            return false;
+        }
+
+        // L'admin de l'entreprise peut supprimer tous les projets de son entreprise
+        if ($user->isCompanyAdmin()) {
+            return true;
+        }
+
+        // L'auteur peut supprimer son projet
         return $project->author_id === $user->id;
     }
 
@@ -88,17 +112,22 @@ class ProjectPolicy
      */
     public function inviteCollaborators(User $user, Project $project): bool
     {
-        // Les admins peuvent toujours inviter
-        if ($user->is_admin()) {
+        // Super admin peut toujours inviter
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seuls les utilisateurs premium peuvent inviter des collaborateurs
-        if (!$user->is_premium) {
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
             return false;
         }
 
-        // L'utilisateur doit être l'auteur du projet
+        // L'admin de l'entreprise peut inviter dans tous les projets
+        if ($user->isCompanyAdmin()) {
+            return true;
+        }
+
+        // L'auteur peut inviter des collaborateurs de la même entreprise
         return $project->author_id === $user->id;
     }
 
@@ -107,17 +136,17 @@ class ProjectPolicy
      */
     public function viewStatistics(User $user, Project $project): bool
     {
-        // Les admins ont toujours accès
-        if ($user->is_admin()) {
+        // Super admin a toujours accès
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seuls les utilisateurs premium ont accès aux statistiques
-        if (!$user->is_premium) {
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
             return false;
         }
 
-        // L'utilisateur doit être l'auteur ou participant
+        // L'auteur ou participant peut voir les statistiques
         return $project->author_id === $user->id || $project->participants->contains($user->id);
     }
 
@@ -126,17 +155,17 @@ class ProjectPolicy
      */
     public function viewKanban(User $user, Project $project): bool
     {
-        // Les admins ont toujours accès
-        if ($user->is_admin()) {
+        // Super admin a toujours accès
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seuls les utilisateurs premium ont accès au Kanban
-        if (!$user->is_premium) {
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
             return false;
         }
 
-        // L'utilisateur doit être l'auteur ou participant
+        // L'auteur ou participant peut voir le Kanban
         return $project->author_id === $user->id || $project->participants->contains($user->id);
     }
 
@@ -145,17 +174,17 @@ class ProjectPolicy
      */
     public function uploadFiles(User $user, Project $project): bool
     {
-        // Les admins peuvent toujours uploader
-        if ($user->is_admin()) {
+        // Super admin peut toujours uploader
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seuls les utilisateurs premium peuvent uploader des fichiers
-        if (!$user->is_premium) {
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
             return false;
         }
 
-        // L'utilisateur doit être l'auteur ou participant
+        // L'auteur ou participant peut uploader
         return $project->author_id === $user->id || $project->participants->contains($user->id);
     }
 
@@ -164,17 +193,17 @@ class ProjectPolicy
      */
     public function exportReport(User $user, Project $project): bool
     {
-        // Les admins peuvent toujours exporter
-        if ($user->is_admin()) {
+        // Super admin peut toujours exporter
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Seuls les utilisateurs premium peuvent exporter
-        if (!$user->is_premium) {
+        // Cloisonnement par entreprise
+        if ($user->company_id !== $project->company_id) {
             return false;
         }
 
-        // L'utilisateur doit être l'auteur ou participant
+        // L'auteur ou participant peut exporter
         return $project->author_id === $user->id || $project->participants->contains($user->id);
     }
 }
