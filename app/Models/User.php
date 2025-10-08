@@ -21,8 +21,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'is_premium',
-        'is_admin'
+        'company_id',
+        'position',
+        'department',
+        'is_active'
     ];
 
     /**
@@ -58,14 +60,49 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isCompanyAdmin()
+    {
+        return $this->role === 'company_admin';
+    }
+
+    public function isMember()
+    {
+        return $this->role === 'member';
+    }
+
     public function is_premium()
     {
-        return $this->is_premium === 1 || $this->is_premium === true;
+        // Dans le nouveau système, un utilisateur est "premium" s'il appartient à une entreprise active
+        return $this->company && $this->company->isActive();
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function participatingProjects()
     {
         return $this->belongsToMany(Project::class, 'project_user');
+    }
+
+    public function getCompanyProjectsAttribute()
+    {
+        return $this->company ? $this->company->projects : collect();
+    }
+
+    public function getAssignedTasksAttribute()
+    {
+        return $this->company ? 
+            Task::where('company_id', $this->company_id)
+                ->where('assigned_to', $this->id)
+                ->get() : 
+            collect();
     }
 
     public function preferences()

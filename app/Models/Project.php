@@ -15,6 +15,7 @@ class Project extends Model
         'name',
         'description',
         'author_id',
+        'company_id',
         'start_date',
         'end_date',
         'status',
@@ -33,6 +34,11 @@ class Project extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function tasks()

@@ -10,6 +10,7 @@ class Task extends Model
 
     protected $fillable = [
         'project_id',
+        'company_id',
         'parent_id',
         'title',
         'description',
@@ -31,6 +32,11 @@ class Task extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function parent()
