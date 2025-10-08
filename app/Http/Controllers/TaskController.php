@@ -151,9 +151,25 @@ class TaskController extends Controller
     public function updateStatus(Request $request, Task $task)
     {
         $user = auth()->user();
+        
+        // Debug : Log des informations de la tâche et de l'utilisateur
+        \Log::info('Task updateStatus Debug', [
+            'task_id' => $task->id,
+            'task_author_id' => $task->author_id,
+            'task_assigned_to' => $task->assigned_to,
+            'user_id' => $user->id,
+            'user_role' => $user->role,
+            'user_is_premium' => $user->is_premium,
+            'user_is_admin' => $user->is_admin(),
+            'project_participants' => $task->project->participants->pluck('id')->toArray()
+        ]);
 
         // Vérifier l'autorisation via Policy
         if (!$user->can('updateStatus', $task)) {
+            \Log::warning('Access denied for task status update', [
+                'task_id' => $task->id,
+                'user_id' => $user->id
+            ]);
             return response()->json(['error' => 'Accès non autorisé. Seuls l\'auteur, l\'utilisateur assigné ou les participants premium peuvent modifier le statut.'], 403);
         }
 
@@ -163,6 +179,12 @@ class TaskController extends Controller
 
         $task->update([
             'status' => $request->status,
+        ]);
+
+        \Log::info('Task status updated successfully', [
+            'task_id' => $task->id,
+            'new_status' => $request->status,
+            'user_id' => $user->id
         ]);
 
         return response()->json(['message' => 'Le statut de la tâche a été mis à jour avec succès.']);

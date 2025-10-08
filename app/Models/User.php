@@ -58,6 +58,11 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function is_premium()
+    {
+        return $this->is_premium === 1 || $this->is_premium === true;
+    }
+
     public function participatingProjects()
     {
         return $this->belongsToMany(Project::class, 'project_user');
