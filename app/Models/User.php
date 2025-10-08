@@ -78,7 +78,7 @@ class User extends Authenticatable
     public function is_premium()
     {
         // Dans le nouveau système, un utilisateur est "premium" s'il appartient à une entreprise active
-        return $this->company && $this->company->isActive();
+        return $this && $this->company && $this->company->isActive();
     }
 
     public function company()

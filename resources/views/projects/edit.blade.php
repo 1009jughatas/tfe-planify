@@ -140,7 +140,7 @@
                                     {{ $user->name }}
                                     @if($user->is_admin())
                                         (Admin)
-                                    @elseif($user->is_premium())
+                                    @elseif($user && $user->is_premium())
                                         (Premium)
                                     @endif
                                 </option>

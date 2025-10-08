@@ -141,7 +141,7 @@
                                                     <span class="badge-secondary">User</span>
                                                 @endif
                                                 
-                                                @if ($user->is_premium())
+                                                @if ($user && $user->is_premium())
                                                     <span class="badge-warning">Premium</span>
                                                 @else
                                                     <span class="badge-secondary">Gratuit</span>
@@ -162,10 +162,10 @@
                                                       class="inline">
                                                     @csrf
                                                     <button type="submit" 
-                                                            class="btn-{{ $user->is_premium() ? 'secondary' : 'accent' }}-modern text-xs"
-                                                            title="{{ $user->is_premium() ? 'Retirer Premium' : 'Activer Premium' }}">
+                                                            class="btn-{{ ($user && $user->is_premium()) ? 'secondary' : 'accent' }}-modern text-xs"
+                                                            title="{{ ($user && $user->is_premium()) ? 'Retirer Premium' : 'Activer Premium' }}">
                                                         <i class="fas fa-crown mr-1"></i>
-                                                        {{ $user->is_premium() ? 'Retirer' : 'Premium' }}
+                                                        {{ ($user && $user->is_premium()) ? 'Retirer' : 'Premium' }}
                                                     </button>
                                                 </form>
                                                 

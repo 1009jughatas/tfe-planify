@@ -11,7 +11,7 @@ echo "📊 Démarrage de MySQL XAMPP..."
 /Applications/XAMPP/xamppfiles/bin/mysqld_safe --user=mysql --datadir=/Applications/XAMPP/xamppfiles/var/mysql --socket=/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock --pid-file=/Applications/XAMPP/xamppfiles/var/mysql/mysql.pid &
 
 # Attendre que MySQL soit prêt
-echo "⏳ Attente du démarrage de MySQL..."
+echo "⏳ Attente du démarrage de MySQL..Call to a member function is_premium() on null."
 sleep 5
 
 # Vérifier que MySQL fonctionne
