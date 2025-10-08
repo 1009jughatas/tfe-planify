@@ -276,14 +276,10 @@
                                 <option value="blocked" @if($task->status == 'blocked') selected @endif>🚫 Bloquée</option>
                             </select>
                             
-                            <div class="flex space-x-2" id="statusButtons">
-                                <button id="updateStatusBtn" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md flex-1">
+                            <div class="flex justify-end">
+                                <button id="updateStatusBtn" class="inline-flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm hover:shadow-md">
                                     <i class="fas fa-check mr-2"></i>
                                     Valider
-                                </button>
-                                <button id="cancelStatusBtn" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 transition-all duration-200 shadow-sm hover:shadow-md flex-1">
-                                    <i class="fas fa-times mr-2"></i>
-                                    Annuler
                                 </button>
                             </div>
                             
@@ -325,20 +321,9 @@
     <script>
         $(document).ready(function () {
             let originalStatus = $('#status').data('original-status');
-            console.log('Original status:', originalStatus);
             
-            // Les boutons sont maintenant toujours visibles
-            $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
-            
-            // Gérer le changement de sélection (optionnel, pour feedback)
-            $('#status').change(function () {
-                let currentStatus = $(this).val();
-                if (currentStatus !== originalStatus) {
-                    $('#statusHelp').text('Statut modifié ! Cliquez sur "Valider" pour confirmer ou "Annuler" pour revenir au statut précédent.');
-                } else {
-                    $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
-                }
-            });
+            // Texte d'aide simple
+            $('#statusHelp').text('Changez le statut et cliquez sur "Valider" pour confirmer.');
             
             // Gérer la validation
             $('#updateStatusBtn').click(function () {
@@ -348,7 +333,7 @@
 
                 // Désactiver les contrôles pendant la requête
                 selectElement.prop('disabled', true);
-                $('#updateStatusBtn, #cancelStatusBtn').prop('disabled', true);
+                $('#updateStatusBtn').prop('disabled', true);
 
                 $.ajax({
                     url: `/tasks/${taskId}/update-status`,
@@ -365,7 +350,7 @@
                         originalStatus = newStatus;
                         
                         // Remettre le texte d'aide
-                        $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
+                        $('#statusHelp').text('Changez le statut et cliquez sur "Valider" pour confirmer.');
                         
                         // Réactiver les contrôles
                         selectElement.prop('disabled', false);
@@ -378,19 +363,10 @@
                     error: function (error) {
                         // Réactiver les contrôles
                         selectElement.prop('disabled', false);
-                        $('#updateStatusBtn, #cancelStatusBtn').prop('disabled', false);
+                        $('#updateStatusBtn').prop('disabled', false);
                         showNotification('Erreur lors de la mise à jour du statut.', 'error');
                     }
                 });
-            });
-            
-            // Gérer l'annulation
-            $('#cancelStatusBtn').click(function () {
-                // Remettre le statut original
-                $('#status').val(originalStatus);
-                
-                // Remettre le texte d'aide
-                $('#statusHelp').text('Changez le statut ci-dessus et cliquez sur "Valider" pour confirmer.');
             });
 
             function showNotification(message, type) {
