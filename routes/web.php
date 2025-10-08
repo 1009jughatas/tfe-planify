@@ -31,24 +31,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
         return $next($request);
     }], function () {
-        // Admin Dashboard
-        Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/admin/logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('admin.logs');
-        Route::get('/admin/statistics', [App\Http\Controllers\Admin\DashboardController::class, 'statistics'])->name('admin.statistics');
+        // Admin Dashboard - Temporairement désactivé pour le nouveau système SaaS
+        // Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+        // Route::get('/admin/logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('admin.logs');
+        // Route::get('/admin/statistics', [App\Http\Controllers\Admin\DashboardController::class, 'statistics'])->name('admin.statistics');
 
         // Gestion des entreprises
         Route::resource('admin/companies', CompanyController::class)->except(['show']);
         Route::get('/admin/companies/{company}', [CompanyController::class, 'show'])->name('admin.companies.show');
 
-        // User Management
-        Route::get('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
-        Route::get('/admin/users/create', [App\Http\Controllers\Admin\UserManagementController::class, 'create'])->name('admin.users.create');
-        Route::post('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'store'])->name('admin.users.store');
-        Route::get('/admin/users/{user}/edit', [App\Http\Controllers\Admin\UserManagementController::class, 'edit'])->name('admin.users.edit');
-        Route::patch('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'update'])->name('admin.users.update');
-        Route::delete('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
-        Route::post('/admin/users/{user}/toggle-premium', [App\Http\Controllers\Admin\UserManagementController::class, 'togglePremium'])->name('admin.users.toggle-premium');
-        Route::post('/admin/users/{user}/change-role', [App\Http\Controllers\Admin\UserManagementController::class, 'changeRole'])->name('admin.users.change-role');
+        // User Management - Temporairement désactivé pour le nouveau système SaaS
+        // Route::get('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
+        // Route::get('/admin/users/create', [App\Http\Controllers\Admin\UserManagementController::class, 'create'])->name('admin.users.create');
+        // Route::post('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'store'])->name('admin.users.store');
+        // Route::get('/admin/users/{user}/edit', [App\Http\Controllers\Admin\UserManagementController::class, 'edit'])->name('admin.users.edit');
+        // Route::patch('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'update'])->name('admin.users.update');
+        // Route::delete('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
+        // Route::post('/admin/users/{user}/toggle-premium', [App\Http\Controllers\Admin\UserManagementController::class, 'togglePremium'])->name('admin.users.toggle-premium');
+        // Route::post('/admin/users/{user}/change-role', [App\Http\Controllers\Admin\UserManagementController::class, 'changeRole'])->name('admin.users.change-role');
 
         // Legal Content Management
         Route::get('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'index'])->name('admin.legal.index');
