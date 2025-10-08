@@ -25,12 +25,12 @@ Route::delete('/invitations/{token}/decline', [CompanyInvitationController::clas
 
 // Routes pour Super Admin
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::middleware(function ($request, $next) {
+    Route::group(['middleware' => function ($request, $next) {
         if (!auth()->user()->isSuperAdmin()) {
             abort(403);
         }
         return $next($request);
-    })->group(function () {
+    }], function () {
         // Admin Dashboard
         Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('admin.logs');
@@ -50,9 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/users/{user}/toggle-premium', [App\Http\Controllers\Admin\UserManagementController::class, 'togglePremium'])->name('admin.users.toggle-premium');
         Route::post('/admin/users/{user}/change-role', [App\Http\Controllers\Admin\UserManagementController::class, 'changeRole'])->name('admin.users.change-role');
 
-    // Legal Content Management
-    Route::get('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'index'])->name('admin.legal.index');
-    Route::post('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'update'])->name('admin.legal.update');
+        // Legal Content Management
+        Route::get('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'index'])->name('admin.legal.index');
+        Route::post('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'update'])->name('admin.legal.update');
+    });
 });
 
 // Routes pour tous les users connecte
@@ -104,13 +105,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/attachments/{attachment}', [App\Http\Controllers\AttachmentController::class, 'destroy'])->name('attachments.destroy');
 
     // Routes pour la gestion d'entreprise (Company Admin)
-    Route::middleware(function ($request, $next) {
+    Route::group(['middleware' => function ($request, $next) {
         $user = auth()->user();
         if (!$user->isCompanyAdmin() && !$user->isSuperAdmin()) {
             abort(403);
         }
         return $next($request);
-    })->group(function () {
+    }], function () {
         Route::post('/companies/{company}/invite', [CompanyController::class, 'inviteUser'])->name('companies.invite');
         Route::post('/invitations/{invitation}/resend', [CompanyInvitationController::class, 'resend'])->name('invitations.resend');
         Route::delete('/invitations/{invitation}', [CompanyInvitationController::class, 'cancel'])->name('invitations.cancel');
