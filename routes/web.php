@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyInvitationController;
+use App\Http\Controllers\CompanyAdminController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,38 @@ Route::post('/company/register', [CompanyController::class, 'register'])->name('
 Route::get('/invitations/{token}', [CompanyInvitationController::class, 'show'])->name('invitations.accept');
 Route::post('/invitations/{token}', [CompanyInvitationController::class, 'accept'])->name('invitations.accept.store');
 Route::delete('/invitations/{token}/decline', [CompanyInvitationController::class, 'decline'])->name('invitations.decline');
+
+// Routes pour Admin d'entreprise (Company Admin)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::group(['middleware' => function ($request, $next) {
+        if (!auth()->user()->isCompanyAdmin()) {
+            abort(403, 'Accès non autorisé. Seuls les administrateurs d\'entreprise peuvent accéder à cette section.');
+        }
+        return $next($request);
+    }], function () {
+        // Dashboard Admin d'entreprise
+        Route::get('/company-admin', [CompanyAdminController::class, 'dashboard'])->name('company-admin.dashboard');
+        
+        // Gestion des utilisateurs
+        Route::get('/company-admin/users', [CompanyAdminController::class, 'users'])->name('company-admin.users');
+        Route::post('/company-admin/users/invite', [CompanyAdminController::class, 'inviteUser'])->name('company-admin.users.invite');
+        Route::patch('/company-admin/users/{user}/role', [CompanyAdminController::class, 'updateUserRole'])->name('company-admin.users.role');
+        Route::delete('/company-admin/users/{user}/delete', [CompanyAdminController::class, 'deleteUser'])->name('company-admin.users.delete');
+        
+        // Gestion des projets
+        Route::get('/company-admin/projects', [CompanyAdminController::class, 'projects'])->name('company-admin.projects');
+        
+        // Gestion des tâches
+        Route::get('/company-admin/tasks', [CompanyAdminController::class, 'tasks'])->name('company-admin.tasks');
+        
+        // Abonnement
+        Route::get('/company-admin/subscription', [CompanyAdminController::class, 'subscription'])->name('company-admin.subscription');
+        
+        // Paramètres
+        Route::get('/company-admin/settings', [CompanyAdminController::class, 'settings'])->name('company-admin.settings');
+        Route::patch('/company-admin/settings', [CompanyAdminController::class, 'updateSettings'])->name('company-admin.settings.update');
+    });
+});
 
 // Routes pour Super Admin
 Route::middleware(['auth', 'verified'])->group(function () {
