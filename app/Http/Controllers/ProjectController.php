@@ -39,7 +39,14 @@ class ProjectController extends Controller
             return redirect()->route('projects.index')->with('error', 'Vous avez atteint la limite de projets (' . $limit . '). Les utilisateurs gratuits sont limités à 3 projets. Passez en premium pour créer plus de projets.');
         }
 
-        $users = User::all();
+        // Pour les admins, récupérer tous les utilisateurs membres
+        // Pour les utilisateurs normaux, pas besoin de la liste des utilisateurs
+        if ($user->is_admin()) {
+            $users = User::where('role', 'member')->get();
+        } else {
+            $users = collect(); // Collection vide pour les utilisateurs normaux
+        }
+
         return view('projects.create', compact('users'));
     }
 
@@ -52,31 +59,52 @@ class ProjectController extends Controller
             return redirect()->route('projects.index')->with('error', 'Vous avez atteint la limite de projets. Les utilisateurs gratuits sont limités à 3 projets. Passez en premium pour créer plus de projets.');
         }
 
-        $request->validate([
+        // Règles de validation selon le rôle
+        $validationRules = [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:5000',
-            'participants' => 'nullable|array',
-            'participants.*' => 'exists:users,id',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-        ]);
+            'deadline' => 'nullable|date|after:today',
+            'priority' => 'required|in:low,medium,high',
+            'status' => 'required|in:planning,active,on-hold,completed',
+        ];
 
+        // Ajouter la validation pour les membres d'équipe si c'est un admin
+        if ($user->is_admin()) {
+            $validationRules['team_members'] = 'nullable|array';
+            $validationRules['team_members.*'] = 'exists:users,id|different:' . $user->id;
+        }
+
+        $request->validate($validationRules);
+
+        // Créer le projet
         $project = Project::create([
             'name' => htmlspecialchars($request->name, ENT_QUOTES, 'UTF-8'),
             'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'author_id' => $user->id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'deadline' => $request->deadline,
+            'priority' => $request->priority,
+            'status' => $request->status,
+            'start_date' => now(), // Date de début par défaut
         ]);
 
-        // Sync participants via the pivot table (uniquement pour les utilisateurs premium)
-        if ($request->has('participants') && $user->can('inviteCollaborators', $project)) {
-            $project->participants()->sync($request->participants);
-        } elseif ($request->has('participants') && !$user->is_premium) {
-            return redirect()->route('projects.show', $project->id)->with('warning', 'Projet créé avec succès. Note : La fonctionnalité d\'invitation de collaborateurs est réservée aux utilisateurs premium.');
+        // Gestion de l'assignation d'équipe pour les admins
+        if ($user->is_admin() && $request->has('team_members')) {
+            $teamMembers = $request->team_members;
+            
+            // Ajouter le projet à la table pivot pour chaque membre sélectionné
+            foreach ($teamMembers as $memberId) {
+                $project->participants()->attach($memberId);
+            }
+            
+            $assignedCount = count($teamMembers);
+            $message = $assignedCount > 0 
+                ? "Projet créé avec succès et assigné à {$assignedCount} membre(s) de l'équipe."
+                : "Projet créé avec succès.";
+        } else {
+            $message = "Projet créé avec succès.";
         }
 
-        return redirect()->route('projects.index')->with('success', 'Projet créé avec succès.');
+        return redirect()->route('projects.index')->with('success', $message);
     }
 
     public function show(Project $project)

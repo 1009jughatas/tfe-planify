@@ -18,12 +18,16 @@ class Project extends Model
         'start_date',
         'end_date',
         'status',
+        'priority',
+        'deadline',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'deadline' => 'date',
         'status' => 'string',
+        'priority' => 'string',
     ];
 
     public function author()
