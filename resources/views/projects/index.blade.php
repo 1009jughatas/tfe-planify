@@ -29,7 +29,7 @@
         <!-- Alertes de limitation -->
         @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
             @php
-                $projectCount = Auth::user()->projects()->count();
+                $projectCount = Auth::user() ? Auth::user()->projects()->count() : 0;
                 $projectLimit = 3;
             @endphp
             @if ($projectCount >= $projectLimit)

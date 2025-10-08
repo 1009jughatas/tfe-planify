@@ -71,11 +71,11 @@
         <div class="p-6 bg-gray-50 border-b border-gray-200">
             <div class="flex items-center space-x-4">
                 <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <span class="text-white font-bold text-lg">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                    <span class="text-white font-bold text-lg">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-lg font-semibold text-gray-900 truncate">{{ Auth::user()->name }}</h3>
-                    <p class="text-sm text-gray-600 truncate">{{ Auth::user()->email }}</p>
+                    <h3 class="text-lg font-semibold text-gray-900 truncate">{{ Auth::user()->name ?? 'Utilisateur' }}</h3>
+                    <p class="text-sm text-gray-600 truncate">{{ Auth::user()->email ?? 'email@example.com' }}</p>
                     <div class="flex items-center space-x-2 mt-1">
                         @if (Auth::user() && Auth::user()->is_premium())
                             <span class="text-xs font-medium text-accent-600 bg-accent-100 px-2 py-1 rounded-full">
@@ -184,7 +184,7 @@
             @endif
 
             <!-- Administration -->
-            @if (Auth::user()->is_admin())
+            @if (Auth::user() && Auth::user()->is_admin())
             <div class="nav-section">
                 <h3 class="nav-section-title">Administration</h3>
                 <div class="space-y-1">

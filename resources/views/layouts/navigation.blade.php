@@ -108,7 +108,7 @@
         @endif
 
         <!-- Admin Section -->
-        @if (Auth::user()->is_admin())
+        @if (Auth::user() && Auth::user()->is_admin())
         <div class="nav-section">
             <div x-show="!collapsed" class="nav-section-title">
                 <span class="text-xs font-semibold text-red-500 uppercase tracking-wider">Administration</span>
@@ -130,11 +130,11 @@
         <!-- User Info -->
         <div x-show="!collapsed" class="flex items-center space-x-3 mb-4 p-3 bg-white rounded-lg border border-gray-200">
             <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
-                <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                <span class="text-white font-semibold text-sm">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
+                <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->name ?? 'Utilisateur' }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? 'email@example.com' }}</p>
             </div>
         </div>
 

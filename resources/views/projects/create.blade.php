@@ -4,7 +4,7 @@
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">Créer un projet</h1>
                 <p class="text-sm text-gray-600 mt-1">
-                    @if (Auth::user()->is_admin())
+                    @if (Auth::user() && Auth::user()->is_admin())
                         Créez un nouveau projet et assignez-le à votre équipe
                     @else
                         Créez votre nouveau projet personnel
@@ -28,7 +28,7 @@
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Nouveau Projet</h2>
                         <p class="text-sm text-gray-600">
-                            @if (Auth::user()->is_admin())
+                            @if (Auth::user() && Auth::user()->is_admin())
                                 Configurez les détails du projet et assignez-le à votre équipe
                             @else
                                 Configurez les détails de votre projet personnel
@@ -164,7 +164,7 @@
                     </div>
 
                     <!-- Assignation d'équipe (Admin uniquement) -->
-                    @if (Auth::user()->is_admin())
+                    @if (Auth::user() && Auth::user()->is_admin())
                         <div class="space-y-6">
                             <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                                 <i class="fas fa-users text-primary-600 mr-2"></i>
@@ -227,7 +227,7 @@
                         
                         <button type="submit" class="btn-primary-modern">
                             <i class="fas fa-plus mr-2"></i>
-                            @if (Auth::user()->is_admin())
+                            @if (Auth::user() && Auth::user()->is_admin())
                                 Créer et assigner le projet
                             @else
                                 Créer mon projet
