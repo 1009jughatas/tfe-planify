@@ -19,6 +19,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        // Rediriger les utilisateurs déjà connectés vers le dashboard
+        if (auth()->check()) {
+            return redirect()->route('dashboard')->with('info', 'Vous êtes déjà connecté. Si vous souhaitez créer un nouveau compte, veuillez vous déconnecter d\'abord.');
+        }
+        
         return view('auth.register');
     }
 
@@ -29,6 +34,11 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Vérifier que l'utilisateur n'est pas déjà connecté
+        if (auth()->check()) {
+            return redirect()->route('dashboard')->with('error', 'Vous ne pouvez pas créer un nouveau compte car vous êtes déjà connecté.');
+        }
+        
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],

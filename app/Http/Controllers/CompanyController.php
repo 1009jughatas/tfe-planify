@@ -221,6 +221,11 @@ class CompanyController extends Controller
      */
     public function showRegistrationForm()
     {
+        // Rediriger les utilisateurs déjà connectés vers le dashboard
+        if (auth()->check()) {
+            return redirect()->route('dashboard')->with('info', 'Vous êtes déjà connecté. Si vous souhaitez créer une nouvelle entreprise, veuillez vous déconnecter d\'abord.');
+        }
+        
         return view('auth.company-register');
     }
 
@@ -229,6 +234,11 @@ class CompanyController extends Controller
      */
     public function register(Request $request)
     {
+        // Vérifier que l'utilisateur n'est pas déjà connecté
+        if (auth()->check()) {
+            return redirect()->route('dashboard')->with('error', 'Vous ne pouvez pas créer une nouvelle entreprise car vous êtes déjà connecté.');
+        }
+        
         $request->validate([
             'company_name' => 'required|string|max:255',
             'company_email' => 'required|email|unique:companies,email',
