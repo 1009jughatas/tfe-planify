@@ -277,8 +277,8 @@
                             </select>
                             
                             <div class="flex justify-end">
-                                <button id="updateStatusBtn" class="inline-flex items-center px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm hover:shadow-md">
-                                    <i class="fas fa-check mr-2"></i>
+                                <button id="updateStatusBtn" style="background-color: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" onmouseover="this.style.backgroundColor='#1d4ed8'" onmouseout="this.style.backgroundColor='#2563eb'">
+                                    <i class="fas fa-check"></i>
                                     Valider
                                 </button>
                             </div>
@@ -322,14 +322,23 @@
         $(document).ready(function () {
             let originalStatus = $('#status').data('original-status');
             
+            // Debug : vérifier si les éléments existent
+            console.log('Status select found:', $('#status').length);
+            console.log('Update button found:', $('#updateStatusBtn').length);
+            console.log('Original status:', originalStatus);
+            
             // Texte d'aide simple
             $('#statusHelp').text('Changez le statut et cliquez sur "Valider" pour confirmer.');
             
             // Gérer la validation
             $('#updateStatusBtn').click(function () {
+                console.log('Bouton Valider cliqué !');
                 let taskId = $('#status').data('task-id');
                 let newStatus = $('#status').val();
                 let selectElement = $('#status');
+                
+                console.log('Task ID:', taskId);
+                console.log('New Status:', newStatus);
 
                 // Désactiver les contrôles pendant la requête
                 selectElement.prop('disabled', true);
