@@ -43,11 +43,11 @@
                     <div>
                         <h1 class="text-xl font-bold text-white">Planify</h1>
                         <div class="flex items-center space-x-2">
-                            @if (Auth::user()->is_premium())
+                            @if (Auth::user() && Auth::user()->is_premium())
                                 <span class="text-xs font-medium bg-accent-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
                                     <i class="fas fa-crown mr-1"></i>Premium
                                 </span>
-                            @elseif (Auth::user()->is_admin())
+                            @elseif (Auth::user() && Auth::user()->is_admin())
                                 <span class="text-xs font-medium bg-red-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
                                     <i class="fas fa-shield-alt mr-1"></i>Admin
                                 </span>
@@ -77,11 +77,11 @@
                     <h3 class="text-lg font-semibold text-gray-900 truncate">{{ Auth::user()->name }}</h3>
                     <p class="text-sm text-gray-600 truncate">{{ Auth::user()->email }}</p>
                     <div class="flex items-center space-x-2 mt-1">
-                        @if (Auth::user()->is_premium())
+                        @if (Auth::user() && Auth::user()->is_premium())
                             <span class="text-xs font-medium text-accent-600 bg-accent-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-crown mr-1"></i>Premium
                             </span>
-                        @elseif (Auth::user()->is_admin())
+                        @elseif (Auth::user() && Auth::user()->is_admin())
                             <span class="text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-shield-alt mr-1"></i>Administrateur
                             </span>
@@ -140,7 +140,7 @@
             @endauth
 
             <!-- Premium -->
-            @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+            @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
             <div class="nav-section">
                 <h3 class="nav-section-title">Premium</h3>
                 <div class="space-y-1">
@@ -162,7 +162,7 @@
             @endif
 
             <!-- Paramètres -->
-            @if (Auth::user()->is_premium() || Auth::user()->is_admin())
+            @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
             <div class="nav-section">
                 <h3 class="nav-section-title">Paramètres</h3>
                 <div class="space-y-1">
