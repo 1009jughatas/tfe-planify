@@ -4,6 +4,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyInvitationController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
@@ -12,22 +14,41 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Routes for Admin
-Route::middleware(['auth', 'verified', IsAdmin::class])->group(function () {
-    // Admin Dashboard
-    Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('admin.logs');
-    Route::get('/admin/statistics', [App\Http\Controllers\Admin\DashboardController::class, 'statistics'])->name('admin.statistics');
+// Routes d'inscription d'entreprise
+Route::get('/company/register', [CompanyController::class, 'showRegistrationForm'])->name('company.register');
+Route::post('/company/register', [CompanyController::class, 'register'])->name('company.store');
 
-    // User Management
-    Route::get('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
-    Route::get('/admin/users/create', [App\Http\Controllers\Admin\UserManagementController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'store'])->name('admin.users.store');
-    Route::get('/admin/users/{user}/edit', [App\Http\Controllers\Admin\UserManagementController::class, 'edit'])->name('admin.users.edit');
-    Route::patch('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
-    Route::post('/admin/users/{user}/toggle-premium', [App\Http\Controllers\Admin\UserManagementController::class, 'togglePremium'])->name('admin.users.toggle-premium');
-    Route::post('/admin/users/{user}/change-role', [App\Http\Controllers\Admin\UserManagementController::class, 'changeRole'])->name('admin.users.change-role');
+// Routes d'invitation (accessibles sans authentification)
+Route::get('/invitations/{token}', [CompanyInvitationController::class, 'show'])->name('invitations.accept');
+Route::post('/invitations/{token}', [CompanyInvitationController::class, 'accept'])->name('invitations.accept.store');
+Route::delete('/invitations/{token}/decline', [CompanyInvitationController::class, 'decline'])->name('invitations.decline');
+
+// Routes pour Super Admin
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware(function ($request, $next) {
+        if (!auth()->user()->isSuperAdmin()) {
+            abort(403);
+        }
+        return $next($request);
+    })->group(function () {
+        // Admin Dashboard
+        Route::get('/admin', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('admin.logs');
+        Route::get('/admin/statistics', [App\Http\Controllers\Admin\DashboardController::class, 'statistics'])->name('admin.statistics');
+
+        // Gestion des entreprises
+        Route::resource('admin/companies', CompanyController::class)->except(['show']);
+        Route::get('/admin/companies/{company}', [CompanyController::class, 'show'])->name('admin.companies.show');
+
+        // User Management
+        Route::get('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'index'])->name('admin.users.index');
+        Route::get('/admin/users/create', [App\Http\Controllers\Admin\UserManagementController::class, 'create'])->name('admin.users.create');
+        Route::post('/admin/users', [App\Http\Controllers\Admin\UserManagementController::class, 'store'])->name('admin.users.store');
+        Route::get('/admin/users/{user}/edit', [App\Http\Controllers\Admin\UserManagementController::class, 'edit'])->name('admin.users.edit');
+        Route::patch('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'update'])->name('admin.users.update');
+        Route::delete('/admin/users/{user}', [App\Http\Controllers\Admin\UserManagementController::class, 'destroy'])->name('admin.users.destroy');
+        Route::post('/admin/users/{user}/toggle-premium', [App\Http\Controllers\Admin\UserManagementController::class, 'togglePremium'])->name('admin.users.toggle-premium');
+        Route::post('/admin/users/{user}/change-role', [App\Http\Controllers\Admin\UserManagementController::class, 'changeRole'])->name('admin.users.change-role');
 
     // Legal Content Management
     Route::get('/admin/legal', [App\Http\Controllers\Admin\LegalContentController::class, 'index'])->name('admin.legal.index');
@@ -81,6 +102,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attachments', [App\Http\Controllers\AttachmentController::class, 'store'])->name('attachments.store');
     Route::get('/attachments/{attachment}/download', [App\Http\Controllers\AttachmentController::class, 'download'])->name('attachments.download');
     Route::delete('/attachments/{attachment}', [App\Http\Controllers\AttachmentController::class, 'destroy'])->name('attachments.destroy');
+
+    // Routes pour la gestion d'entreprise (Company Admin)
+    Route::middleware(function ($request, $next) {
+        $user = auth()->user();
+        if (!$user->isCompanyAdmin() && !$user->isSuperAdmin()) {
+            abort(403);
+        }
+        return $next($request);
+    })->group(function () {
+        Route::post('/companies/{company}/invite', [CompanyController::class, 'inviteUser'])->name('companies.invite');
+        Route::post('/invitations/{invitation}/resend', [CompanyInvitationController::class, 'resend'])->name('invitations.resend');
+        Route::delete('/invitations/{invitation}', [CompanyInvitationController::class, 'cancel'])->name('invitations.cancel');
+    });
 });
 
     Route::view('/mentions-legales', 'legal')->name('mentions.legales');
