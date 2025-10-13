@@ -148,8 +148,8 @@
                         @foreach($companyProjects->take(5) as $project)
                             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                 <div>
-                                    <h3 class="text-sm font-medium text-gray-900">{{ $project->title }}</h3>
-                                    <p class="text-sm text-gray-500">{{ $project->tasks->count() }} tâches • Créé par {{ $project->author->name }}</p>
+                                    <h3 class="text-sm font-medium text-gray-900">{{ $project->title ?? 'Projet sans titre' }}</h3>
+                                    <p class="text-sm text-gray-500">{{ $project->tasks->count() }} tâches • Créé par {{ $project->author->name ?? 'Utilisateur inconnu' }}</p>
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
