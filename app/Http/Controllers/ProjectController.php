@@ -82,6 +82,7 @@ class ProjectController extends Controller
             'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'author_id' => $user->id,
             'deadline' => $request->deadline,
+            'end_date' => $request->deadline, // Synchroniser end_date avec deadline
             'priority' => $request->priority,
             'status' => $request->status,
             'start_date' => now(), // Date de début par défaut
