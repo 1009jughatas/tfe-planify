@@ -22,4 +22,19 @@ class CommentController extends Controller
 
         return redirect()->route('tasks.show', $task->id)->with('success', 'Comment added successfully.');
     }
+
+    public function destroy(Comment $comment)
+    {
+        $user = auth()->user();
+
+        // Vérifier l'autorisation : seul l'auteur du commentaire peut le supprimer
+        if ($comment->user_id !== $user->id && !$user->is_admin()) {
+            abort(403, 'Vous ne pouvez supprimer que vos propres commentaires.');
+        }
+
+        $taskId = $comment->task_id;
+        $comment->delete();
+
+        return redirect()->route('tasks.show', $taskId)->with('success', 'Commentaire supprimé avec succès.');
+    }
 }

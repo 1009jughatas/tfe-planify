@@ -181,8 +181,23 @@
                                         <div class="flex-1">
                                             <div class="bg-gray-50 rounded-lg p-4">
                                                 <div class="flex items-center justify-between mb-2">
-                                                    <h4 class="font-medium text-gray-900">{{ $comment->user->name }}</h4>
-                                                    <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                                                    <div class="flex items-center space-x-2">
+                                                        <h4 class="font-medium text-gray-900">{{ $comment->user->name }}</h4>
+                                                        @if($comment->user_id === auth()->id())
+                                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Vous</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center space-x-2">
+                                                        <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+                                                        @if($comment->user_id === auth()->id() || auth()->user()->is_admin())
+                                                            <button 
+                                                                onclick="confirmDeleteComment({{ $comment->id }})"
+                                                                class="text-red-500 hover:text-red-700 text-xs p-1 rounded-full hover:bg-red-50 transition-colors duration-200"
+                                                                title="Supprimer le commentaire">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                                 <p class="text-gray-700">{{ $comment->content }}</p>
                                             </div>
@@ -439,5 +454,33 @@
                 }, 3000);
             }
         });
+        
+        // Fonction de confirmation de suppression de commentaire
+        function confirmDeleteComment(commentId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.')) {
+                // Créer un formulaire de suppression
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/comments/${commentId}`;
+                
+                // Ajouter le token CSRF
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                form.appendChild(csrfToken);
+                
+                // Ajouter la méthode DELETE
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                form.appendChild(methodField);
+                
+                // Ajouter le formulaire au DOM et le soumettre
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
     </script>
 </x-app-layout>

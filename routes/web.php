@@ -97,6 +97,7 @@ Route::middleware(['auth', 'verified', IsIndependant::class])->group(function ()
     Route::post('/projects/{project}/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::resource('tasks', TaskController::class)->except(['create', 'store']);
     Route::post('/tasks/{task}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 
     // Profile Routes - Indépendants uniquement
@@ -127,6 +128,7 @@ Route::middleware(['auth', 'verified', IsEntreprise::class])->prefix('entreprise
     Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
     Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
     Route::post('/tasks/{task}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // Profile Routes - Entreprise
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
