@@ -65,29 +65,45 @@ class User extends Authenticatable
         return $this->role === 'super_admin';
     }
 
-    public function isCompanyAdmin()
+    public function isAdminEntreprise()
     {
-        return $this->role === 'company_admin';
+        return $this->role === 'admin_entreprise';
     }
 
-    public function isEmploye()
+    public function isUserEntreprise()
     {
-        return $this->role === 'employe';
+        return $this->role === 'user_entreprise';
     }
 
-    public function isMember()
+    public function isUserIndependant()
     {
-        return $this->role === 'member';
-    }
-
-    public function isIndependent()
-    {
-        return $this->role === 'user' && !$this->company_id;
+        return $this->role === 'user_independant' && !$this->company_id;
     }
 
     public function isPartOfCompany()
     {
         return $this->company_id !== null;
+    }
+
+    // Méthodes de compatibilité avec l'ancien système
+    public function isCompanyAdmin()
+    {
+        return $this->isAdminEntreprise();
+    }
+
+    public function isEmploye()
+    {
+        return $this->isUserEntreprise();
+    }
+
+    public function isMember()
+    {
+        return $this->isUserIndependant();
+    }
+
+    public function isIndependent()
+    {
+        return $this->isUserIndependant();
     }
 
     public function is_premium()

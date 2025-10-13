@@ -293,15 +293,72 @@
             <p class="text-xl text-blue-100 mb-8">
                 Rejoignez des centaines d'entreprises qui font confiance à Planify pour gérer leurs projets d'équipe.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('company.register') }}" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-building mr-2"></i>
-                    Créer mon Entreprise
-                </a>
-                <a href="{{ route('register') }}" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
-                    <i class="fas fa-user mr-2"></i>
-                    Essayer Individuellement
-                </a>
+            <!-- Sélecteur de type de compte -->
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-xl font-semibold text-white mb-8 text-center">Choisissez votre type de compte</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Entreprise -->
+                    <div class="group relative bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 hover:bg-white/20 hover:border-white/40 transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('entreprise.register') }}'">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-building text-white text-2xl"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-white mb-3">Entreprise</h4>
+                            <p class="text-white/80 mb-4">Créez une équipe et gérez vos projets collaboratifs</p>
+                            
+                            <ul class="text-left text-sm text-white/80 space-y-2 mb-4">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-2"></i>
+                                    Gestion d'équipe complète
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-2"></i>
+                                    Projets collaboratifs
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-2"></i>
+                                    Support prioritaire
+                                </li>
+                            </ul>
+                            
+                            <div class="text-center">
+                                <span class="text-2xl font-bold text-white">À partir de 399€</span>
+                                <span class="text-white/80">/mois</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indépendant -->
+                    <div class="group relative bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 hover:bg-white/20 hover:border-white/40 transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('register') }}'">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user text-white text-2xl"></i>
+                            </div>
+                            <h4 class="text-xl font-bold text-white mb-3">Indépendant</h4>
+                            <p class="text-white/80 mb-4">Gérez vos projets personnels et restez organisé</p>
+                            
+                            <ul class="text-left text-sm text-white/80 space-y-2 mb-4">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-2"></i>
+                                    Projets personnels
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-2"></i>
+                                    Gestion des tâches
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-400 mr-2"></i>
+                                    Support communautaire
+                                </li>
+                            </ul>
+                            
+                            <div class="text-center">
+                                <span class="text-2xl font-bold text-white">Gratuit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

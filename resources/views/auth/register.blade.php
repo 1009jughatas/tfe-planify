@@ -1,8 +1,15 @@
 <x-guest-layout>
     <!-- Header -->
     <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900">Créer un compte</h2>
-        <p class="text-sm text-gray-600 mt-2">Rejoignez Planify et commencez à organiser vos projets</p>
+        <h2 class="text-2xl font-bold text-gray-900">Inscription Indépendant</h2>
+        <p class="text-sm text-gray-600 mt-2">Créez votre compte personnel et gérez vos projets</p>
+        <!-- Lien vers inscription entreprise -->
+        <div class="mt-4">
+            <a href="{{ route('entreprise.register') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                <i class="fas fa-building mr-1"></i>
+                Inscription entreprise
+            </a>
+        </div>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-6">

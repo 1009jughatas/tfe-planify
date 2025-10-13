@@ -6,8 +6,8 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p class="text-sm text-gray-600 mt-1">Vue d'ensemble de vos projets et tâches</p>
+                <h1 class="text-2xl font-bold text-gray-900">Dashboard Personnel</h1>
+                <p class="text-sm text-gray-600 mt-1">Gérez vos projets et tâches personnels</p>
             </div>
             @if (Auth::user() && Auth::user()->is_premium())
                 <a href="{{ route('dashboard.exportReport') }}" class="btn-primary-modern">

@@ -12,6 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        
+        // Enregistrer les middlewares personnalisés
+        $middleware->alias([
+            'entreprise' => \App\Http\Middleware\IsUserEntreprise::class,
+            'admin.entreprise' => \App\Http\Middleware\IsAdminEntreprise::class,
+            'user.independant' => \App\Http\Middleware\IsUserIndependant::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

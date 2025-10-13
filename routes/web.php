@@ -16,12 +16,31 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Routes d'inscription entreprise (nouveau système)
-Route::get('/register/entreprise', [EntrepriseRegisterController::class, 'showRegistrationForm'])->name('entreprise.register');
-Route::post('/register/entreprise', [EntrepriseRegisterController::class, 'register'])->name('entreprise.store');
-Route::get('/entreprise/payment/success', [EntrepriseRegisterController::class, 'paymentSuccess'])->name('entreprise.payment.success');
-Route::get('/entreprise/payment/failed', [EntrepriseRegisterController::class, 'paymentFailed'])->name('entreprise.payment.failed');
-Route::post('/entreprise/stripe/webhook', [EntrepriseRegisterController::class, 'stripeWebhook'])->name('entreprise.stripe.webhook');
+// Routes d'authentification entreprise
+Route::prefix('entreprise')->name('entreprise.')->group(function () {
+    // Inscription entreprise
+    Route::get('/register', [EntrepriseAuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [EntrepriseAuthController::class, 'register'])->name('store');
+    
+    // Connexion entreprise
+    Route::get('/login', [EntrepriseAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [EntrepriseAuthController::class, 'login'])->name('login.store');
+    
+    // Déconnexion entreprise
+    Route::post('/logout', [EntrepriseAuthController::class, 'logout'])->name('logout');
+    
+    // Paiement Stripe
+    Route::get('/payment/success', [EntrepriseAuthController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/payment/failed', [EntrepriseAuthController::class, 'paymentFailed'])->name('payment.failed');
+    Route::post('/stripe/webhook', [EntrepriseAuthController::class, 'stripeWebhook'])->name('stripe.webhook');
+    
+    // Dashboard entreprise (protégé par middleware)
+    Route::middleware(['auth', 'entreprise'])->group(function () {
+        Route::get('/dashboard', function () {
+            return view('entreprise.dashboard');
+        })->name('dashboard');
+    });
+});
 
 // Routes d'inscription d'entreprise (ancien système - à supprimer plus tard)
 Route::get('/company/register', [CompanyController::class, 'showRegistrationForm'])->name('company.register');
@@ -99,8 +118,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Routes pour tous les users connecte
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::get('/dashboard/export-report', [DashboardController::class, 'exportReport'])->name('dashboard.exportReport');
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'user.independant'])->name('dashboard');
+    Route::get('/dashboard/export-report', [DashboardController::class, 'exportReport'])->middleware(['auth', 'user.independant'])->name('dashboard.exportReport');
 
     // Premium Routes
     Route::get('/premium', [PaymentController::class, 'show'])->name('premium.show');

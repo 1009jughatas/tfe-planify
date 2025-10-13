@@ -1,21 +1,18 @@
 <x-guest-layout>
     <!-- Header -->
     <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900">Connexion Indépendant</h2>
-        <p class="text-sm text-gray-600 mt-2">Accédez à votre espace personnel</p>
-        <!-- Lien vers connexion entreprise -->
+        <h2 class="text-2xl font-bold text-gray-900">Connexion Entreprise</h2>
+        <p class="text-sm text-gray-600 mt-2">Accédez à votre espace d'équipe</p>
+        <!-- Lien vers connexion indépendant -->
         <div class="mt-4">
-            <a href="{{ route('entreprise.login') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                <i class="fas fa-building mr-1"></i>
-                Connexion entreprise
+            <a href="{{ route('login') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                <i class="fas fa-user mr-1"></i>
+                Connexion indépendant
             </a>
         </div>
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-6" :status="session('status')" />
-
-    <form method="POST" action="{{ route('login') }}" class="space-y-6">
+    <form method="POST" action="{{ route('entreprise.login') }}" class="space-y-6">
         @csrf
 
         <!-- Email Address -->
@@ -29,7 +26,7 @@
                          required 
                          autofocus 
                          autocomplete="username"
-                         placeholder="votre@email.com" />
+                         placeholder="admin@monentreprise.com" />
             <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-600" />
         </div>
 
@@ -51,37 +48,33 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-600" />
         </div>
 
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between">
-            <label for="remember_me" class="flex items-center">
-                <input id="remember_me" 
-                       type="checkbox" 
-                       class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2" 
-                       name="remember">
-                <span class="ml-2 text-sm text-gray-600">{{ __('Se souvenir de moi') }}</span>
+        <!-- Remember Me -->
+        <div class="flex items-center">
+            <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50">
+            <label for="remember_me" class="ml-2 text-sm text-gray-600">
+                Se souvenir de moi
             </label>
-            
-            @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" 
-                   class="text-sm text-primary-600 hover:text-primary-700 transition-colors">
-                    Mot de passe oublié ?
-                </a>
-            @endif
         </div>
 
         <!-- Submit Button -->
         <button type="submit" class="w-full btn-primary-modern">
             <i class="fas fa-sign-in-alt mr-2"></i>
-            {{ __('Se connecter') }}
+            Se connecter à mon équipe
         </button>
     </form>
 
-    <!-- Register Link -->
+    <!-- Links -->
     <div class="mt-8 text-center">
         <p class="text-sm text-gray-600">
-            Pas encore de compte ?
-            <a href="{{ route('register') }}" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                Créer un compte
+            Pas encore d'équipe ?
+            <a href="{{ route('entreprise.register') }}" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                Créer une entreprise
+            </a>
+        </p>
+        <p class="text-sm text-gray-600 mt-2">
+            Mot de passe oublié ?
+            <a href="{{ route('password.request') }}" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                Réinitialiser
             </a>
         </p>
     </div>
