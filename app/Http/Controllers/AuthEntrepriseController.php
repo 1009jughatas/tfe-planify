@@ -16,7 +16,9 @@ class AuthEntrepriseController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        // Permettre l'accès aux pages d'inscription/connexion même si connecté
+        // pour permettre le changement de type de compte
+        // Pas de middleware guest pour permettre l'accès libre
     }
 
     /**
@@ -24,16 +26,8 @@ class AuthEntrepriseController extends Controller
      */
     public function showRegister()
     {
-        // Rediriger les utilisateurs déjà connectés vers le dashboard approprié
-        if (auth()->check()) {
-            $user = auth()->user();
-            if ($user->role === 'admin_entreprise' || $user->company_id) {
-                return redirect()->route('entreprise.dashboard');
-            } else {
-                return redirect()->route('dashboard');
-            }
-        }
-
+        // Permettre l'accès même si connecté (pour créer une nouvelle entreprise)
+        // L'utilisateur peut vouloir créer une nouvelle entreprise même s'il a déjà un compte
         return view('entreprise.auth.register');
     }
 
@@ -96,15 +90,8 @@ class AuthEntrepriseController extends Controller
      */
     public function showLogin()
     {
-        if (auth()->check()) {
-            $user = auth()->user();
-            if ($user->company_id) {
-                return redirect()->route('entreprise.dashboard');
-            } else {
-                return redirect()->route('dashboard');
-            }
-        }
-
+        // Permettre l'accès même si connecté (pour changer de compte)
+        // L'utilisateur peut vouloir se connecter avec un autre compte entreprise
         return view('entreprise.auth.login');
     }
 
