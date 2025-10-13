@@ -118,9 +118,9 @@
 
                     <!-- Plan Growth -->
                     <div class="relative">
-                        <input type="radio" id="plan_growth" name="plan" value="growth" 
-                               class="peer sr-only" {{ old('plan') === 'growth' ? 'checked' : '' }}>
-                        <label for="plan_growth" class="block p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50">
+                        <input type="radio" id="plan_professional" name="plan" value="professional" 
+                               class="peer sr-only" {{ old('plan') === 'professional' ? 'checked' : '' }}>
+                        <label for="plan_professional" class="block p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50">
                             <div class="text-center">
                                 <h4 class="text-lg font-semibold text-gray-900">Growth</h4>
                                 <p class="text-2xl font-bold text-indigo-600">599€<span class="text-sm font-normal text-gray-500">/mois</span></p>
