@@ -77,7 +77,7 @@ class ProjectController extends Controller
         $request->validate($validationRules);
 
         // Créer le projet
-        $project = Project::create([
+        $projectData = [
             'name' => htmlspecialchars($request->name, ENT_QUOTES, 'UTF-8'),
             'description' => htmlspecialchars($request->description, ENT_QUOTES, 'UTF-8'),
             'author_id' => $user->id,
@@ -85,7 +85,14 @@ class ProjectController extends Controller
             'priority' => $request->priority,
             'status' => $request->status,
             'start_date' => now(), // Date de début par défaut
-        ]);
+        ];
+
+        // Ajouter company_id seulement pour les utilisateurs d'entreprise
+        if ($user->company_id) {
+            $projectData['company_id'] = $user->company_id;
+        }
+
+        $project = Project::create($projectData);
 
         // Gestion de l'assignation d'équipe pour les admins
         if ($user->is_admin() && $request->has('team_members')) {
