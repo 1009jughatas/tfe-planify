@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Mes Projets</h1>
-                <p class="text-sm text-gray-600 mt-1">Vue Kanban - Gérez vos projets par statut</p>
+                <h1 class="text-3xl font-bold text-gray-900">Mes Projets</h1>
+                <p class="text-gray-600 mt-2">Gérez vos projets avec une interface moderne et intuitive</p>
             </div>
             @php
                 $canCreate = Auth::user() && (Auth::user()->isAdminEntreprise() || Auth::user()->isUserEntreprise() || 
@@ -559,4 +559,41 @@
             }
         }
     </script>
+
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .btn-primary-modern {
+            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md;
+        }
+        
+        .btn-secondary-modern {
+            @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 transition-all duration-200 shadow-sm hover:shadow-md;
+        }
+        
+        .badge-success {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800;
+        }
+        
+        .badge-primary {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
+        }
+        
+        .badge-warning {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800;
+        }
+        
+        .badge-danger {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
+        }
+        
+        .badge-secondary {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800;
+        }
+    </style>
 </x-app-layout>

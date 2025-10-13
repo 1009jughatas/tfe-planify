@@ -1,34 +1,166 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-                    <i class="fas fa-folder-open text-white text-lg"></i>
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-folder-open text-white text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Détails du Projet</h1>
-                    <p class="text-sm text-gray-600 mt-1">{{ $project->name }}</p>
+                    <h1 class="text-3xl font-bold text-gray-900">{{ $project->name }}</h1>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <span class="badge-{{ 
+                            $project->status == 'completed' ? 'success' :
+                            ($project->status == 'active' ? 'primary' :
+                            ($project->status == 'on-hold' ? 'warning' :
+                            ($project->status == 'cancelled' ? 'danger' : 'secondary')))
+                        }}">
+                            @switch($project->status)
+                                @case('planning')
+                                    📋 En planification
+                                    @break
+                                @case('active')
+                                    🚀 Actif
+                                    @break
+                                @case('on-hold')
+                                    ⏸️ En pause
+                                    @break
+                                @case('completed')
+                                    ✅ Terminé
+                                    @break
+                                @case('cancelled')
+                                    ❌ Annulé
+                                    @break
+                                @default
+                                    📋 En planification
+                            @endswitch
+                        </span>
+                        @if($project->priority)
+                            <span class="badge-{{ 
+                                $project->priority == 'high' ? 'danger' :
+                                ($project->priority == 'medium' ? 'warning' : 'secondary')
+                            }}">
+                                @switch($project->priority)
+                                    @case('high')
+                                        🔴 Priorité élevée
+                                        @break
+                                    @case('medium')
+                                        🟡 Priorité moyenne
+                                        @break
+                                    @case('low')
+                                        🔵 Priorité faible
+                                        @break
+                                @endswitch
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <a href="{{ route('projects.tasks', $project->id) }}" class="btn-secondary-modern">
+            <div class="flex items-center space-x-3">
+                <a href="{{ route('projects.tasks', $project->id) }}" class="btn-primary-modern">
                     <i class="fas fa-tasks mr-2"></i>
-                    Voir les tâches
+                    Gérer les tâches
                 </a>
                 <a href="{{ route('projects.edit', $project->id) }}" class="btn-secondary-modern">
                     <i class="fas fa-edit mr-2"></i>
                     Modifier
                 </a>
-                <a href="{{ route('projects.index') }}" class="btn-secondary-modern">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                    Retour
-                </a>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="btn-secondary-modern">
+                        <i class="fas fa-ellipsis-v mr-2"></i>
+                        Actions
+                    </button>
+                    <div x-show="open" @click.away="open = false" 
+                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                        <div class="py-1">
+                            <a href="{{ route('tasks.create', ['project' => $project->id]) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-plus mr-2"></i>Nouvelle tâche
+                            </a>
+                            <a href="{{ route('projects.duplicate', $project->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-copy mr-2"></i>Dupliquer le projet
+                            </a>
+                            <hr class="my-1">
+                            <a href="{{ route('projects.export', $project->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-download mr-2"></i>Exporter
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </x-slot>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Statistiques rapides -->
+        @php
+            $totalTasks = $project->tasks ? $project->tasks->count() : 0;
+            $completedTasks = $project->tasks ? $project->tasks->where('status', 'done')->count() : 0;
+            $inProgressTasks = $project->tasks ? $project->tasks->where('status', 'in-progress')->count() : 0;
+            $blockedTasks = $project->tasks ? $project->tasks->where('status', 'blocked')->count() : 0;
+            $todoTasks = $project->tasks ? $project->tasks->where('status', 'todo')->count() : 0;
+            $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+        @endphp
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Progression -->
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Progression</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $progressPercentage }}%</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500" 
+                             style="width: {{ $progressPercentage }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tâches totales -->
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Tâches totales</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $totalTasks }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-tasks text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tâches en cours -->
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">En cours</p>
+                        <p class="text-3xl font-bold text-orange-600">{{ $inProgressTasks }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-play text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tâches terminées -->
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Terminées</p>
+                        <p class="text-3xl font-bold text-green-600">{{ $completedTasks }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-check text-white text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Informations principales -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Description du projet -->
@@ -392,6 +524,46 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+        
+        .btn-primary-modern {
+            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md;
+        }
+        
+        .btn-secondary-modern {
+            @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 transition-all duration-200 shadow-sm hover:shadow-md;
+        }
+        
+        .btn-accent-modern {
+            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:ring-4 focus:ring-purple-200 transition-all duration-200 shadow-sm hover:shadow-md;
+        }
+        
+        .badge-success {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800;
+        }
+        
+        .badge-primary {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
+        }
+        
+        .badge-warning {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800;
+        }
+        
+        .badge-danger {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
+        }
+        
+        .badge-secondary {
+            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800;
+        }
+        
+        .form-label-modern {
+            @apply block text-sm font-medium text-gray-700 mb-2;
+        }
+        
+        .input-modern {
+            @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white;
         }
     </style>
 </x-app-layout>
