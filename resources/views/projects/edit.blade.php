@@ -118,56 +118,66 @@
                         </div>
                     </div>
 
-                    <!-- Participants -->
-                    <div>
-                        <label for="participants" class="form-label-modern">
-                            <i class="fas fa-users text-gray-500 mr-1"></i>
-                            Participants
-                            @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium())
-                                <span class="badge-warning ml-2">
-                                    <i class="fas fa-crown mr-1"></i>Premium
-                                </span>
-                            @endif
-                        </label>
-                        <select name="participants[]" 
-                                id="participants" 
-                                class="input-modern @error('participants') border-red-300 focus:ring-red-500 @enderror"
-                                multiple
-                                @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium()) disabled @endif>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" 
-                                        @if(in_array($user->id, json_decode($project->participants, true) ?? [])) selected @endif>
-                                    {{ $user->name }}
-                                    @if($user->isAdminEntreprise())
-                                        (Admin)
-                                    @elseif($user && $user->is_premium())
-                                        (Premium)
-                                    @endif
-                                </option>
-                            @endforeach
-                        </select>
-                        
-                        @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium())
-                            <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                <p class="text-sm text-yellow-700">
+                    <!-- Participants (seulement pour les utilisateurs d'entreprise) -->
+                    @if (!Auth::user()->isUserIndependant())
+                        <div>
+                            <label for="participants" class="form-label-modern">
+                                <i class="fas fa-users text-gray-500 mr-1"></i>
+                                Participants
+                                @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+                                    <span class="badge-warning ml-2">
+                                        <i class="fas fa-crown mr-1"></i>Premium
+                                    </span>
+                                @endif
+                            </label>
+                            <select name="participants[]" 
+                                    id="participants" 
+                                    class="input-modern @error('participants') border-red-300 focus:ring-red-500 @enderror"
+                                    multiple
+                                    @if (!Auth::user()->is_premium() && !Auth::user()->is_admin()) disabled @endif>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}" 
+                                            @if(in_array($user->id, json_decode($project->participants, true) ?? [])) selected @endif>
+                                        {{ $user->name }}
+                                        @if($user->isAdminEntreprise())
+                                            (Admin)
+                                        @elseif($user && $user->is_premium())
+                                            (Premium)
+                                        @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            
+                            @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+                                <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <p class="text-sm text-yellow-700">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        L'ajout de participants est une fonctionnalité premium. 
+                                        <a href="{{ route('premium.show') }}" class="text-yellow-800 hover:text-yellow-900 underline font-medium">
+                                            Passez à Premium
+                                        </a>
+                                    </p>
+                                </div>
+                            @else
+                                <p class="mt-2 text-xs text-gray-500">
                                     <i class="fas fa-info-circle mr-1"></i>
-                                    L'ajout de participants est une fonctionnalité premium. 
-                                    <a href="{{ route('premium.show') }}" class="text-yellow-800 hover:text-yellow-900 underline font-medium">
-                                        Passez à Premium
-                                    </a>
+                                    Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs participants.
                                 </p>
-                            </div>
-                        @else
-                            <p class="mt-2 text-xs text-gray-500">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs participants.
-                            </p>
-                        @endif
-                        
-                        @error('participants')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                            @endif
+                            
+                            @error('participants')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @else
+                        <!-- Pour les utilisateurs indépendants, garder les participants existants -->
+                        @php
+                            $currentParticipants = json_decode($project->participants, true) ?? [];
+                        @endphp
+                        @foreach ($currentParticipants as $participantId)
+                            <input type="hidden" name="participants[]" value="{{ $participantId }}">
+                        @endforeach
+                    @endif
 
                     <!-- Statut du projet -->
                     <div>
