@@ -18,7 +18,7 @@
             </p>
             <p class="mt-2 text-center text-xs text-gray-500">
                 Vous travaillez en entreprise ?
-                <a href="{{ route('login.entreprise') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="{{ route('entreprise.login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
                     Connexion entreprise
                 </a>
             </p>

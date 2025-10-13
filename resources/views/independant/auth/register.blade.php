@@ -18,7 +18,7 @@
             </p>
             <p class="mt-2 text-center text-xs text-gray-500">
                 Vous représentez une entreprise ?
-                <a href="{{ route('register.entreprise') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="{{ route('entreprise.register') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
                     Inscription entreprise
                 </a>
             </p>

@@ -163,7 +163,7 @@ class AuthEntrepriseController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login.entreprise');
+        return redirect()->route('entreprise.login');
     }
 
     /**
@@ -195,7 +195,7 @@ class AuthEntrepriseController extends Controller
             
         } catch (\Exception $e) {
             \Log::error('Erreur lors de la création de la session Stripe: ' . $e->getMessage());
-            return redirect()->route('register.entreprise')
+            return redirect()->route('entreprise.register')
                 ->with('error', 'Une erreur est survenue lors de l\'initialisation du paiement. Veuillez réessayer.');
         }
     }
@@ -209,7 +209,7 @@ class AuthEntrepriseController extends Controller
         
         if (!$registrationData) {
             \Log::error('Session entreprise_registration non trouvée');
-            return redirect()->route('register.entreprise')->with('error', 'Session expirée. Veuillez recommencer.');
+            return redirect()->route('entreprise.register')->with('error', 'Session expirée. Veuillez recommencer.');
         }
 
         \Log::info('Début de la création de l\'entreprise', $registrationData);
@@ -265,7 +265,7 @@ class AuthEntrepriseController extends Controller
             // Nettoyer la session en cas d'erreur
             session()->forget('entreprise_registration');
             
-            return redirect()->route('register.entreprise')
+            return redirect()->route('entreprise.register')
                 ->with('error', 'Une erreur est survenue lors de la création de votre entreprise. Veuillez réessayer.');
         }
     }
@@ -278,7 +278,7 @@ class AuthEntrepriseController extends Controller
         $sessionId = $request->get('session_id');
         
         if (!$sessionId) {
-            return redirect()->route('register.entreprise')
+            return redirect()->route('entreprise.register')
                 ->with('error', 'Session de paiement invalide.');
         }
         
@@ -316,7 +316,7 @@ class AuthEntrepriseController extends Controller
     {
         session()->forget('entreprise_registration');
         
-        return redirect()->route('register.entreprise')
+        return redirect()->route('entreprise.register')
             ->with('error', 'Le paiement a échoué. Veuillez réessayer.');
     }
 

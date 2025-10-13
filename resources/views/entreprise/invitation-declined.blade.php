@@ -31,11 +31,11 @@
             </p>
 
             <div class="mt-6 space-x-4">
-                <a href="{{ route('login.entreprise') }}" 
+                <a href="{{ route('entreprise.login') }}" 
                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Se connecter
                 </a>
-                <a href="{{ route('register.entreprise') }}" 
+                <a href="{{ route('entreprise.register') }}" 
                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Créer une entreprise
                 </a>

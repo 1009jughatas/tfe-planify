@@ -12,7 +12,7 @@
             </h2>
             <p class="mt-2 text-center text-sm text-gray-600">
                 Ou
-                <a href="{{ route('login.entreprise') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <a href="{{ route('entreprise.login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
                     connectez-vous à votre compte
                 </a>
             </p>
@@ -24,7 +24,7 @@
             </p>
         </div>
         
-        <form class="mt-8 space-y-6" action="{{ route('register.entreprise') }}" method="POST">
+        <form class="mt-8 space-y-6" action="{{ route('entreprise.register') }}" method="POST">
             @csrf
             
             @if ($errors->any())
