@@ -17,7 +17,12 @@ class TaskPolicy
             return true;
         }
 
-        // Les utilisateurs peuvent voir les tâches de leur entreprise
+        // Les utilisateurs indépendants peuvent voir leurs tâches
+        if ($user->isUserIndependant()) {
+            return true;
+        }
+
+        // Les utilisateurs d'entreprise peuvent voir les tâches de leur entreprise
         return $user->company_id !== null;
     }
 
@@ -31,8 +36,22 @@ class TaskPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
-        if ($user->company_id !== $task->company_id) {
+        // Les utilisateurs indépendants peuvent voir leurs tâches
+        if ($user->isUserIndependant()) {
+            // L'auteur peut voir ses tâches
+            if ($task->author_id === $user->id) {
+                return true;
+            }
+            // L'utilisateur assigné peut voir ses tâches
+            if ($task->assigned_to === $user->id) {
+                return true;
+            }
+            // Les participants au projet peuvent voir les tâches du projet
+            return $task->project->participants->contains($user->id);
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
+        if ($user->company_id !== $task->project->company_id) {
             return false;
         }
 
@@ -60,8 +79,13 @@ class TaskPolicy
             return true;
         }
 
-        // Les utilisateurs doivent appartenir à une entreprise active
-        return $user->company_id !== null && $user->company->isActive();
+        // Les utilisateurs indépendants peuvent créer des tâches
+        if ($user->isUserIndependant()) {
+            return true;
+        }
+
+        // Les utilisateurs d'entreprise doivent appartenir à une entreprise active
+        return $user->company_id !== null && $user->company && $user->company->isActive();
     }
 
     /**
@@ -74,8 +98,21 @@ class TaskPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
-        if ($user->company_id !== $task->company_id) {
+        // Les utilisateurs indépendants peuvent modifier leurs tâches
+        if ($user->isUserIndependant()) {
+            // L'auteur peut modifier ses tâches
+            if ($task->author_id === $user->id) {
+                return true;
+            }
+            // L'utilisateur assigné peut modifier la tâche
+            if ($task->assigned_to === $user->id) {
+                return true;
+            }
+            return false;
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
+        if ($user->company_id !== $task->project->company_id) {
             return false;
         }
 
@@ -107,8 +144,13 @@ class TaskPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
-        if ($user->company_id !== $task->company_id) {
+        // Les utilisateurs indépendants peuvent supprimer leurs tâches
+        if ($user->isUserIndependant()) {
+            return $task->author_id === $user->id;
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
+        if ($user->company_id !== $task->project->company_id) {
             return false;
         }
 
@@ -131,8 +173,21 @@ class TaskPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
-        if ($user->company_id !== $task->company_id) {
+        // Les utilisateurs indépendants peuvent changer le statut de leurs tâches
+        if ($user->isUserIndependant()) {
+            // L'auteur peut changer le statut de ses tâches
+            if ($task->author_id === $user->id) {
+                return true;
+            }
+            // L'utilisateur assigné peut changer le statut de ses tâches
+            if ($task->assigned_to === $user->id) {
+                return true;
+            }
+            return false;
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
+        if ($user->company_id !== $task->project->company_id) {
             return false;
         }
 

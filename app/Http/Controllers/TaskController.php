@@ -19,7 +19,7 @@ class TaskController extends Controller
         $user = auth()->user();
 
         // Vérifier l'autorisation
-        if (!$user->is_admin() && !$project->participants->contains($user->id)) {
+        if (!$user->is_admin() && !$project->participants->contains($user->id) && $project->author_id !== $user->id) {
             abort(403, 'Accès non autorisé à ce projet.');
         }
 
@@ -34,7 +34,7 @@ class TaskController extends Controller
         $user = auth()->user();
 
         // Vérifier l'autorisation
-        if (!$user->is_admin() && !$project->participants->contains($user->id)) {
+        if (!$user->is_admin() && !$project->participants->contains($user->id) && $project->author_id !== $user->id) {
             abort(403, 'Accès non autorisé à ce projet.');
         }
 
@@ -64,6 +64,11 @@ class TaskController extends Controller
             'assigned_to' => $request->assigned_to,
             'parent_id' => $request->parent_id,
         ];
+
+        // Ajouter company_id seulement pour les projets d'entreprise
+        if ($project->company_id) {
+            $taskData['company_id'] = $project->company_id;
+        }
 
         Task::create($taskData);
         return redirect()->route('projects.tasks', $project->id)->with('success', 'Tâche créée avec succès.');
