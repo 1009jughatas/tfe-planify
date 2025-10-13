@@ -204,7 +204,7 @@ class AuthEntrepriseController extends Controller
         try {
             DB::beginTransaction();
 
-            // Créer l'entreprise
+            // Créer l'entreprise sans admin_id (nullable maintenant)
             $company = Company::create([
                 'name' => $registrationData['company_name'],
                 'email' => $registrationData['company_email'],
@@ -213,7 +213,7 @@ class AuthEntrepriseController extends Controller
                 'monthly_price' => $registrationData['price'],
                 'user_limit' => $registrationData['user_limit'],
                 'status' => 'active',
-                'admin_id' => null,
+                'admin_id' => null, // Sera mis à jour après création de l'admin
             ]);
 
             \Log::info('Entreprise créée avec l\'ID: ' . $company->id);
@@ -235,6 +235,8 @@ class AuthEntrepriseController extends Controller
             // Mettre à jour l'entreprise avec l'ID de l'admin
             $company->update(['admin_id' => $admin->id]);
 
+            \Log::info('Entreprise mise à jour avec admin_id: ' . $admin->id);
+
             DB::commit();
 
             // Nettoyer la session
@@ -249,11 +251,18 @@ class AuthEntrepriseController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             
+            // Log détaillé de l'erreur
+            \Log::error('Erreur lors de la création de l\'entreprise', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'registration_data' => $registrationData
+            ]);
+            
             // Nettoyer la session en cas d'erreur
             session()->forget('entreprise_registration');
             
             return redirect()->route('entreprise.register')
-                ->with('error', 'Une erreur est survenue lors de la création de votre entreprise. Veuillez réessayer.');
+                ->with('error', 'Une erreur est survenue lors de la création de votre entreprise: ' . $e->getMessage());
         }
     }
 
