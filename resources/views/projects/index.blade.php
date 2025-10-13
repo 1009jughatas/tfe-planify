@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Mes Projets</h1>
-                <p class="text-gray-600 mt-2">Gérez vos projets avec une interface moderne et intuitive</p>
+                <h1 class="text-2xl font-bold text-gray-900">Mes Projets</h1>
+                <p class="text-sm text-gray-600 mt-1">Gérez vos projets et tâches personnels</p>
             </div>
             @php
                 $canCreate = Auth::user() && (Auth::user()->isAdminEntreprise() || Auth::user()->isUserEntreprise() || 
@@ -72,13 +72,13 @@
             <div class="stats-card hover-lift">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Actifs</p>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Projets actifs</p>
                         @php $activeProjects = $projects->where('status', 'active') @endphp
                         <p class="text-3xl font-bold text-gray-900">{{ $activeProjects->count() }}</p>
                         <p class="text-xs text-gray-500 mt-1">En cours</p>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-play-circle text-white text-lg"></i>
+                    <div class="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
+                        <i class="fas fa-project-diagram text-white text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@
             <div class="stats-card hover-lift">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Terminés</p>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Projets terminés</p>
                         @php $completedProjects = $projects->where('status', 'completed') @endphp
                         <p class="text-3xl font-bold text-gray-900">{{ $completedProjects->count() }}</p>
                         <p class="text-xs text-gray-500 mt-1">Finalisés</p>
@@ -566,34 +566,6 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-        
-        .btn-primary-modern {
-            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md;
-        }
-        
-        .btn-secondary-modern {
-            @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 transition-all duration-200 shadow-sm hover:shadow-md;
-        }
-        
-        .badge-success {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800;
-        }
-        
-        .badge-primary {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
-        }
-        
-        .badge-warning {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800;
-        }
-        
-        .badge-danger {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
-        }
-        
-        .badge-secondary {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800;
         }
     </style>
 </x-app-layout>

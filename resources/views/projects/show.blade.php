@@ -6,7 +6,7 @@
                     <i class="fas fa-folder-open text-white text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900">{{ $project->name }}</h1>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ $project->name }}</h1>
                     <div class="flex items-center space-x-4 mt-2">
                         <span class="badge-{{ 
                             $project->status == 'completed' ? 'success' :
@@ -100,61 +100,65 @@
             $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
         @endphp
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Progression -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="stats-card hover-lift">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Progression</p>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Progression</p>
                         <p class="text-3xl font-bold text-gray-900">{{ $progressPercentage }}%</p>
+                        <p class="text-xs text-gray-500 mt-1">Avancement</p>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
                         <i class="fas fa-chart-line text-white text-lg"></i>
                     </div>
                 </div>
                 <div class="mt-4">
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500" 
+                        <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500" 
                              style="width: {{ $progressPercentage }}%"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Tâches totales -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="stats-card hover-lift">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Tâches totales</p>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Tâches ouvertes</p>
                         <p class="text-3xl font-bold text-gray-900">{{ $totalTasks }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Total</p>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
                         <i class="fas fa-tasks text-white text-lg"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Tâches en cours -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="stats-card hover-lift">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">En cours</p>
-                        <p class="text-3xl font-bold text-orange-600">{{ $inProgressTasks }}</p>
+                        <p class="text-sm font-medium text-gray-600 mb-1">En cours</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $inProgressTasks }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Actives</p>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
                         <i class="fas fa-play text-white text-lg"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Tâches terminées -->
-            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="stats-card hover-lift">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Terminées</p>
-                        <p class="text-3xl font-bold text-green-600">{{ $completedTasks }}</p>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Terminées</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $completedTasks }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Finalisées</p>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-check text-white text-lg"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-check-circle text-white text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -524,46 +528,6 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-        
-        .btn-primary-modern {
-            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md;
-        }
-        
-        .btn-secondary-modern {
-            @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 transition-all duration-200 shadow-sm hover:shadow-md;
-        }
-        
-        .btn-accent-modern {
-            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-lg hover:from-purple-700 hover:to-purple-800 focus:ring-4 focus:ring-purple-200 transition-all duration-200 shadow-sm hover:shadow-md;
-        }
-        
-        .badge-success {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800;
-        }
-        
-        .badge-primary {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800;
-        }
-        
-        .badge-warning {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800;
-        }
-        
-        .badge-danger {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800;
-        }
-        
-        .badge-secondary {
-            @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800;
-        }
-        
-        .form-label-modern {
-            @apply block text-sm font-medium text-gray-700 mb-2;
-        }
-        
-        .input-modern {
-            @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white;
         }
     </style>
 </x-app-layout>
