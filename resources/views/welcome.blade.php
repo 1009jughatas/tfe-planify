@@ -38,7 +38,7 @@
                         <a href="{{ url('/projects') }}" class="text-gray-600 hover:text-gray-900 font-medium">Projets</a>
                     @else
                         <!-- Bouton Connexion Indépendant -->
-                        <a href="{{ route('independant.login') }}" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        <a href="{{ route('login.indep') }}" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
                             <i class="fas fa-user mr-2"></i>
                             Connexion Indépendant
                         </a>
@@ -75,7 +75,7 @@
                         <i class="fas fa-building mr-2"></i>
                         Créer mon Entreprise
                     </a>
-                    <a href="{{ route('independant.register') }}" class="btn-secondary-modern px-8 py-4 text-lg font-semibold">
+                    <a href="{{ route('register.indep') }}" class="btn-secondary-modern px-8 py-4 text-lg font-semibold">
                         <i class="fas fa-user mr-2"></i>
                         Inscription Indépendant
                     </a>
@@ -216,11 +216,11 @@
                     </div>
                     
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="{{ route('independant.register') }}" class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                        <a href="{{ route('register.indep') }}" class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
                             <i class="fas fa-rocket mr-2"></i>
                             Commencer gratuitement
                         </a>
-                        <a href="{{ route('independant.login') }}" class="inline-flex items-center justify-center px-6 py-3 border-2 border-green-600 text-green-600 font-semibold rounded-lg hover:bg-green-600 hover:text-white transition-colors">
+                        <a href="{{ route('login.indep') }}" class="inline-flex items-center justify-center px-6 py-3 border-2 border-green-600 text-green-600 font-semibold rounded-lg hover:bg-green-600 hover:text-white transition-colors">
                             <i class="fas fa-sign-in-alt mr-2"></i>
                             Se connecter
                         </a>
@@ -535,7 +535,7 @@
                     </div>
 
                     <!-- Indépendant -->
-                    <div class="group relative bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 hover:bg-white/20 hover:border-white/40 transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('independant.register') }}'">
+                    <div class="group relative bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 hover:bg-white/20 hover:border-white/40 transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('register.indep') }}'">
                         <div class="text-center">
                             <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-user text-white text-2xl"></i>
@@ -677,7 +677,7 @@
                 </div>
 
                 <!-- Connexion Indépendant -->
-                <div class="group relative bg-white rounded-2xl border-2 border-gray-200 p-8 hover:border-green-500 hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('independant.login') }}'">
+                <div class="group relative bg-white rounded-2xl border-2 border-gray-200 p-8 hover:border-green-500 hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('login.indep') }}'">
                     <div class="text-center">
                         <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                             <i class="fas fa-user text-white text-2xl"></i>

@@ -136,6 +136,6 @@ class AuthIndepController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('independant.login');
+        return redirect()->route('login.indep');
     }
 }

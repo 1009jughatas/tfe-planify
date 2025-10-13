@@ -26,17 +26,17 @@ Route::get('/', function () {
 // ========================================
 // AUTHENTIFICATION INDÉPENDANTS
 // ========================================
-Route::prefix('independant')->name('independant.')->group(function () {
+Route::prefix('')->group(function () {
     // Inscription indépendant
-    Route::get('/register', [AuthIndepController::class, 'showRegister'])->name('register');
+    Route::get('/register', [AuthIndepController::class, 'showRegister'])->name('register.indep');
     Route::post('/register', [AuthIndepController::class, 'register']);
     
     // Connexion indépendant
-    Route::get('/login', [AuthIndepController::class, 'showLogin'])->name('login');
+    Route::get('/login', [AuthIndepController::class, 'showLogin'])->name('login.indep');
     Route::post('/login', [AuthIndepController::class, 'login']);
     
     // Déconnexion indépendant
-    Route::post('/logout', [AuthIndepController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthIndepController::class, 'logout'])->name('logout.indep');
 });
 
 // ========================================
