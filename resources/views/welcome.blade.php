@@ -32,13 +32,72 @@
                 </div>
                 
                 <!-- Navigation -->
-                <nav class="hidden md:flex items-center space-x-8">
+                <nav class="hidden md:flex items-center space-x-6">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="text-gray-600 hover:text-gray-900 font-medium">Dashboard</a>
+                        <a href="{{ Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="text-gray-600 hover:text-gray-900 font-medium">Dashboard</a>
                         <a href="{{ url('/projects') }}" class="text-gray-600 hover:text-gray-900 font-medium">Projets</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 font-medium">Connexion</a>
-                        <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">S'inscrire</a>
+                        <!-- Dropdown Connexion -->
+                        <div class="relative group">
+                            <button class="flex items-center text-gray-600 hover:text-gray-900 font-medium">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Connexion
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-2">
+                                    <a href="{{ route('login') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-user text-green-600 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Indépendant</div>
+                                            <div class="text-xs text-gray-500">Espace personnel</div>
+                                        </div>
+                                    </a>
+                                    <a href="{{ route('entreprise.login') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-building text-blue-600 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Entreprise</div>
+                                            <div class="text-xs text-gray-500">Espace d'équipe</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Dropdown Inscription -->
+                        <div class="relative group">
+                            <button class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                S'inscrire
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-2">
+                                    <a href="{{ route('register') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-user text-green-600 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Indépendant</div>
+                                            <div class="text-xs text-gray-500">Compte gratuit</div>
+                                        </div>
+                                    </a>
+                                    <a href="{{ route('entreprise.register') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-building text-blue-600 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Entreprise</div>
+                                            <div class="text-xs text-gray-500">À partir de 399€/mois</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     @endauth
                 </nav>
             </div>
@@ -358,6 +417,62 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Connexion -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    Déjà un compte ?
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Connectez-vous à votre espace personnel ou d'entreprise pour accéder à vos projets.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <!-- Connexion Entreprise -->
+                <div class="group relative bg-white rounded-2xl border-2 border-gray-200 p-8 hover:border-blue-500 hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('entreprise.login') }}'">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-building text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">Connexion Entreprise</h4>
+                        <p class="text-gray-600 mb-6">Accédez à votre espace d'équipe et gérez vos projets collaboratifs</p>
+                        
+                        <div class="text-center">
+                            <span class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Se connecter
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/5 to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+
+                <!-- Connexion Indépendant -->
+                <div class="group relative bg-white rounded-2xl border-2 border-gray-200 p-8 hover:border-green-500 hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="window.location.href='{{ route('login') }}'">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-user text-white text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">Connexion Indépendant</h4>
+                        <p class="text-gray-600 mb-6">Accédez à votre espace personnel et gérez vos projets individuels</p>
+                        
+                        <div class="text-center">
+                            <span class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Se connecter
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/5 to-emerald-600/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
             </div>
         </div>
