@@ -16,11 +16,11 @@ class IsUserEntreprise
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check()) {
+        $user = auth()->user();
+        
+        if (!$user) {
             return redirect()->route('entreprise.login');
         }
-
-        $user = auth()->user();
         
         // Vérifier que l'utilisateur appartient à une entreprise
         if (!$user->company_id || !in_array($user->role, ['admin_entreprise', 'user_entreprise'])) {
