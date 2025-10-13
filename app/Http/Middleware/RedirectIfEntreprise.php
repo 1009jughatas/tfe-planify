@@ -27,7 +27,7 @@ class RedirectIfEntreprise
                     return redirect()->route('company-admin.dashboard');
                 } else {
                     // Utilisateur employé d'une entreprise
-                    return redirect()->route('dashboard');
+                    return redirect()->route('entreprise.dashboard');
                 }
             }
         }
