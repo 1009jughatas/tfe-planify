@@ -58,8 +58,10 @@ class DashboardController extends Controller
     /**
      * Dashboard pour les utilisateurs d'entreprise
      */
-    private function entrepriseDashboard($user)
+    public function entrepriseDashboard()
     {
+        $user = auth()->user();
+        
         // Récupérer les projets de l'entreprise
         $companyProjects = $user->company->projects()->get();
         

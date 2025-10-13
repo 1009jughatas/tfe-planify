@@ -119,9 +119,7 @@ Route::middleware(['auth', 'verified', IsIndependant::class])->group(function ()
 // ========================================
 Route::middleware(['auth', 'verified', IsEntreprise::class])->prefix('entreprise')->name('entreprise.')->group(function () {
     // Dashboard entreprise
-    Route::get('/dashboard', function () {
-        return view('entreprise.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'entrepriseDashboard'])->name('dashboard');
 
     // Routes communes aux employés et admins d'entreprise
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
