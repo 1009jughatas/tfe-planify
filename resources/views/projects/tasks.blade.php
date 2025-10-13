@@ -160,6 +160,76 @@
             </div>
         </div>
 
+        <!-- Changer le Statut du Projet -->
+        <div class="modern-card mb-8">
+            <div class="modern-card-header">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-exchange-alt text-primary-600 mr-2"></i>
+                    Statut du Projet
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">Modifiez le statut de votre projet</p>
+            </div>
+            <div class="modern-card-body">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <span class="text-sm font-medium text-gray-700">Statut actuel :</span>
+                        <span class="badge-{{ 
+                            $project->status == 'completed' ? 'success' :
+                            ($project->status == 'active' ? 'primary' :
+                            ($project->status == 'on-hold' ? 'warning' :
+                            ($project->status == 'cancelled' ? 'danger' : 'secondary')))
+                        }} ml-2">
+                            @switch($project->status)
+                                @case('planning')
+                                    📋 En planification
+                                    @break
+                                @case('active')
+                                    🚀 Actif
+                                    @break
+                                @case('on-hold')
+                                    ⏸️ En pause
+                                    @break
+                                @case('completed')
+                                    ✅ Terminé
+                                    @break
+                                @case('cancelled')
+                                    ❌ Annulé
+                                    @break
+                                @default
+                                    📋 En planification
+                            @endswitch
+                        </span>
+                    </div>
+                </div>
+                
+                <form id="statusForm" action="{{ route('projects.updateStatus', $project->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    @method('PATCH')
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-1">
+                            <label for="status" class="form-label-modern">Nouveau Statut</label>
+                            <select name="status" id="status" class="input-modern" required>
+                                <option value="">Sélectionner un statut</option>
+                                <option value="planning" {{ $project->status == 'planning' ? 'selected' : '' }}>📋 En planification</option>
+                                <option value="active" {{ $project->status == 'active' ? 'selected' : '' }}>🚀 Actif</option>
+                                <option value="on-hold" {{ $project->status == 'on-hold' ? 'selected' : '' }}>⏸️ En pause</option>
+                                <option value="completed" {{ $project->status == 'completed' ? 'selected' : '' }}>✅ Terminé</option>
+                                <option value="cancelled" {{ $project->status == 'cancelled' ? 'selected' : '' }}>❌ Annulé</option>
+                            </select>
+                        </div>
+                        
+                        <div class="pt-6">
+                            <button type="submit" class="btn-primary-modern">
+                                <i class="fas fa-save mr-2"></i>
+                                Mettre à Jour
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Participants -->
         @if($project->participants && $project->participants->isNotEmpty())
             <div class="modern-card mb-8">
