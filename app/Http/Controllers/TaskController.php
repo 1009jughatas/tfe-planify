@@ -48,8 +48,8 @@ class TaskController extends Controller
             'status' => 'nullable|string|in:todo,in-progress,done,blocked',
         ]);
 
-        // Vérifier que l'utilisateur assigné fait partie du projet
-        if ($request->assigned_to && !$project->participants->contains($request->assigned_to)) {
+        // Vérifier que l'utilisateur assigné fait partie du projet (seulement pour les utilisateurs d'entreprise)
+        if (!$user->isUserIndependant() && $request->assigned_to && !$project->participants->contains($request->assigned_to)) {
             return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
         }
 
