@@ -1,263 +1,176 @@
-<x-guest-layout>
-    <!-- Header -->
-    <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900">Créer votre entreprise</h2>
-        <p class="text-sm text-gray-600 mt-2">Rejoignez des milliers d'équipes qui font confiance à Planify</p>
-        <!-- Lien vers inscription indépendant -->
-        <div class="mt-4">
-            <a href="{{ route('register') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                <i class="fas fa-user mr-1"></i>
-                Inscription indépendant
-            </a>
-        </div>
-    </div>
+@extends('layouts.app')
 
-    <form method="POST" action="{{ route('entreprise.register') }}" class="space-y-6">
-        @csrf
-
-        <!-- Company Name -->
+@section('content')
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl w-full space-y-8">
         <div>
-            <x-input-label for="company_name" :value="__('Nom de l\'entreprise')" class="form-label-modern" />
-            <x-text-input id="company_name" 
-                         class="input-modern" 
-                         type="text" 
-                         name="company_name" 
-                         :value="old('company_name')" 
-                         required 
-                         autofocus
-                         placeholder="Ex: Mon Entreprise SARL" />
-            <x-input-error :messages="$errors->get('company_name')" class="mt-2 text-sm text-red-600" />
-        </div>
-
-        <!-- Company Email -->
-        <div>
-            <x-input-label for="company_email" :value="__('Email de l\'entreprise')" class="form-label-modern" />
-            <x-text-input id="company_email" 
-                         class="input-modern" 
-                         type="email" 
-                         name="company_email" 
-                         :value="old('company_email')" 
-                         required 
-                         autocomplete="email"
-                         placeholder="contact@monentreprise.com" />
-            <x-input-error :messages="$errors->get('company_email')" class="mt-2 text-sm text-red-600" />
-        </div>
-
-        <!-- Admin Name -->
-        <div>
-            <x-input-label for="name" :value="__('Votre nom complet')" class="form-label-modern" />
-            <x-text-input id="name" 
-                         class="input-modern" 
-                         type="text" 
-                         name="name" 
-                         :value="old('name')" 
-                         required 
-                         autocomplete="name"
-                         placeholder="Jean Dupont" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2 text-sm text-red-600" />
-        </div>
-
-        <!-- Admin Email -->
-        <div>
-            <x-input-label for="email" :value="__('Votre adresse email')" class="form-label-modern" />
-            <x-text-input id="email" 
-                         class="input-modern" 
-                         type="email" 
-                         name="email" 
-                         :value="old('email')" 
-                         required 
-                         autocomplete="username"
-                         placeholder="jean.dupont@monentreprise.com" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-600" />
-        </div>
-
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Mot de passe')" class="form-label-modern" />
-            <div class="relative">
-                <x-text-input id="password" 
-                             class="input-modern pr-10" 
-                             type="password"
-                             name="password"
-                             required 
-                             autocomplete="new-password"
-                             placeholder="••••••••" />
-                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-gray-400"></i>
-                </div>
+            <div class="mx-auto h-12 w-auto flex justify-center">
+                <img class="h-12 w-auto" src="{{ asset('images/logo.png') }}" alt="Planify">
             </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-600" />
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Inscription Entreprise
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Ou
+                <a href="{{ route('login.entreprise') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    connectez-vous à votre compte
+                </a>
+            </p>
+            <p class="mt-2 text-center text-xs text-gray-500">
+                Vous travaillez seul ?
+                <a href="{{ route('register.indep') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    Inscription indépendant
+                </a>
+            </p>
         </div>
-
-        <!-- Confirm Password -->
-        <div>
-            <x-input-label for="password_confirmation" :value="__('Confirmer le mot de passe')" class="form-label-modern" />
-            <div class="relative">
-                <x-text-input id="password_confirmation" 
-                             class="input-modern pr-10" 
-                             type="password"
-                             name="password_confirmation" 
-                             required 
-                             autocomplete="new-password"
-                             placeholder="••••••••" />
-                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-gray-400"></i>
-                </div>
-            </div>
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 text-sm text-red-600" />
-        </div>
-
-        <!-- Plan Selection -->
-        <div>
-            <x-input-label :value="__('Choisissez votre plan d\'abonnement')" class="form-label-modern" />
-            <div class="grid grid-cols-1 gap-4 mt-2">
-                <!-- Plan Starter -->
-                <label class="relative">
-                    <input type="radio" name="plan" value="starter" class="sr-only" {{ old('plan') === 'starter' ? 'checked' : '' }}>
-                    <div class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary-300 transition-all plan-card">
-                        <div class="flex items-center justify-between">
-                            <div class="flex-1">
-                                <h4 class="text-lg font-semibold text-gray-900">Starter</h4>
-                                <p class="text-sm text-gray-600">Parfait pour les petites équipes</p>
-                                <ul class="mt-2 space-y-1 text-sm text-gray-600">
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Jusqu'à 10 utilisateurs
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Projets illimités
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Support email
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-2xl font-bold text-gray-900">399€</div>
-                                <div class="text-sm text-gray-500">/mois</div>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-
-                <!-- Plan Professional -->
-                <label class="relative">
-                    <input type="radio" name="plan" value="professional" class="sr-only" {{ old('plan') === 'professional' ? 'checked' : '' }}>
-                    <div class="border-2 border-primary-500 rounded-lg p-4 cursor-pointer plan-card relative">
-                        <div class="absolute -top-2 left-4">
-                            <span class="bg-primary-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                Populaire
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex-1">
-                                <h4 class="text-lg font-semibold text-gray-900">Professional</h4>
-                                <p class="text-sm text-gray-600">Idéal pour les équipes moyennes</p>
-                                <ul class="mt-2 space-y-1 text-sm text-gray-600">
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Jusqu'à 20 utilisateurs
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Projets illimités
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Support prioritaire
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Rapports avancés
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-2xl font-bold text-gray-900">599€</div>
-                                <div class="text-sm text-gray-500">/mois</div>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-
-                <!-- Plan Enterprise -->
-                <label class="relative">
-                    <input type="radio" name="plan" value="enterprise" class="sr-only" {{ old('plan') === 'enterprise' ? 'checked' : '' }}>
-                    <div class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary-300 transition-all plan-card">
-                        <div class="flex items-center justify-between">
-                            <div class="flex-1">
-                                <h4 class="text-lg font-semibold text-gray-900">Enterprise</h4>
-                                <p class="text-sm text-gray-600">Pour les grandes organisations</p>
-                                <ul class="mt-2 space-y-1 text-sm text-gray-600">
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Utilisateurs illimités
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Projets illimités
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        Support 24/7
-                                    </li>
-                                    <li class="flex items-center">
-                                        <i class="fas fa-check text-green-500 mr-2 text-xs"></i>
-                                        API personnalisée
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-2xl font-bold text-gray-900">999€</div>
-                                <div class="text-sm text-gray-500">/mois</div>
-                            </div>
-                        </div>
-                    </div>
-                </label>
-            </div>
+        
+        <form class="mt-8 space-y-6" action="{{ route('register.entreprise') }}" method="POST">
+            @csrf
             
-            <x-input-error :messages="$errors->get('plan')" class="mt-2 text-sm text-red-600" />
-        </div>
+            @if ($errors->any())
+                <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <!-- Submit Button -->
-        <button type="submit" class="w-full btn-primary-modern">
-            <i class="fas fa-credit-card mr-2"></i>
-            Créer mon équipe et payer
-        </button>
-    </form>
+            @if (session('error'))
+                <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-    <!-- Terms and Login Link -->
-    <div class="mt-8 text-center">
-        <p class="text-xs text-gray-500 mb-4">
-            En créant votre entreprise, vous acceptez nos 
-            <a href="#" class="text-primary-600 hover:text-primary-700 underline">conditions d'utilisation</a> 
-            et notre 
-            <a href="#" class="text-primary-600 hover:text-primary-700 underline">politique de confidentialité</a>
-        </p>
-        <p class="text-sm text-gray-600">
-            Déjà une entreprise ?
-            <a href="{{ route('entreprise.login') }}" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                Se connecter
-            </a>
-        </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Informations de l'entreprise -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-900">Informations de l'entreprise</h3>
+                    
+                    <div>
+                        <label for="company_name" class="block text-sm font-medium text-gray-700">Nom de l'entreprise</label>
+                        <input id="company_name" name="company_name" type="text" required 
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                               placeholder="Nom de votre entreprise" value="{{ old('company_name') }}">
+                    </div>
+                    
+                    <div>
+                        <label for="company_email" class="block text-sm font-medium text-gray-700">Email de l'entreprise</label>
+                        <input id="company_email" name="company_email" type="email" required 
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                               placeholder="contact@entreprise.com" value="{{ old('company_email') }}">
+                    </div>
+                </div>
+
+                <!-- Informations de l'administrateur -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-900">Vos informations</h3>
+                    
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Votre nom</label>
+                        <input id="name" name="name" type="text" required 
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                               placeholder="Votre nom complet" value="{{ old('name') }}">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Votre email</label>
+                        <input id="email" name="email" type="email" required 
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                               placeholder="votre.email@entreprise.com" value="{{ old('email') }}">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        <input id="password" name="password" type="password" required 
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                               placeholder="Minimum 8 caractères">
+                    </div>
+                    
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+                        <input id="password_confirmation" name="password_confirmation" type="password" required 
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                               placeholder="Confirmer le mot de passe">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sélection du plan -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-medium text-gray-900">Choisissez votre plan d'abonnement</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Plan Starter -->
+                    <div class="relative">
+                        <input type="radio" id="plan_starter" name="plan" value="starter" 
+                               class="peer sr-only" {{ old('plan') === 'starter' ? 'checked' : '' }}>
+                        <label for="plan_starter" class="block p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50">
+                            <div class="text-center">
+                                <h4 class="text-lg font-semibold text-gray-900">Starter</h4>
+                                <p class="text-2xl font-bold text-indigo-600">399€<span class="text-sm font-normal text-gray-500">/mois</span></p>
+                                <p class="text-sm text-gray-600 mt-2">Jusqu'à 10 utilisateurs</p>
+                                <p class="text-xs text-gray-500 mt-1">Parfait pour les petites équipes</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Plan Growth -->
+                    <div class="relative">
+                        <input type="radio" id="plan_growth" name="plan" value="growth" 
+                               class="peer sr-only" {{ old('plan') === 'growth' ? 'checked' : '' }}>
+                        <label for="plan_growth" class="block p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50">
+                            <div class="text-center">
+                                <h4 class="text-lg font-semibold text-gray-900">Growth</h4>
+                                <p class="text-2xl font-bold text-indigo-600">599€<span class="text-sm font-normal text-gray-500">/mois</span></p>
+                                <p class="text-sm text-gray-600 mt-2">Jusqu'à 20 utilisateurs</p>
+                                <p class="text-xs text-gray-500 mt-1">Idéal pour les équipes en croissance</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Plan Enterprise -->
+                    <div class="relative">
+                        <input type="radio" id="plan_enterprise" name="plan" value="enterprise" 
+                               class="peer sr-only" {{ old('plan') === 'enterprise' ? 'checked' : '' }}>
+                        <label for="plan_enterprise" class="block p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50">
+                            <div class="text-center">
+                                <h4 class="text-lg font-semibold text-gray-900">Enterprise</h4>
+                                <p class="text-2xl font-bold text-indigo-600">999€<span class="text-sm font-normal text-gray-500">/mois</span></p>
+                                <p class="text-sm text-gray-600 mt-2">Utilisateurs illimités</p>
+                                <p class="text-xs text-gray-500 mt-1">Pour les grandes organisations</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-blue-800">
+                            Inscription sécurisée
+                        </h3>
+                        <div class="mt-2 text-sm text-blue-700">
+                            <p>Votre paiement sera traité de manière sécurisée via Stripe. Vous pourrez gérer votre abonnement depuis votre dashboard entreprise.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" 
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Créer mon entreprise
+                </button>
+            </div>
+        </form>
     </div>
-
-    <style>
-        .plan-card {
-            transition: all 0.3s ease;
-        }
-        
-        input[type="radio"]:checked + .plan-card {
-            border-color: #0ea5e9;
-            background-color: #f0f9ff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
-        }
-        
-        input[type="radio"]:checked + .plan-card h4 {
-            color: #0369a1;
-        }
-    </style>
-</x-guest-layout>
+</div>
+@endsection

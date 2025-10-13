@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'entreprise' => \App\Http\Middleware\IsUserEntreprise::class,
             'admin.entreprise' => \App\Http\Middleware\IsAdminEntreprise::class,
             'user.independant' => \App\Http\Middleware\IsUserIndependant::class,
+            'isIndependant' => \App\Http\Middleware\IsIndependant::class,
+            'isEntreprise' => \App\Http\Middleware\IsEntreprise::class,
+            'isAdminEntreprise' => \App\Http\Middleware\IsAdminEntreprise::class,
+            'isUserEntreprise' => \App\Http\Middleware\IsUserEntreprise::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

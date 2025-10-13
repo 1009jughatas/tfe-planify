@@ -4,27 +4,25 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class IsUserEntreprise
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
+        if (!auth()->check()) {
+            return redirect()->route('login.entreprise');
+        }
+
         $user = auth()->user();
         
-        if (!$user) {
-            return redirect()->route('entreprise.login');
-        }
-        
-        // Vérifier que l'utilisateur appartient à une entreprise
-        if (!$user->company_id || !in_array($user->role, ['admin_entreprise', 'user_entreprise'])) {
-            abort(403, 'Accès réservé aux utilisateurs d\'entreprise.');
+        if ($user->role !== 'user_entreprise' || !$user->company_id) {
+            abort(403, 'Accès non autorisé. Seuls les employés d\'entreprise peuvent accéder à cette section.');
         }
 
         return $next($request);

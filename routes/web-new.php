@@ -10,7 +10,6 @@ use App\Http\Controllers\CompanyInvitationController;
 use App\Http\Controllers\CompanyAdminController;
 use App\Http\Controllers\AuthIndepController;
 use App\Http\Controllers\AuthEntrepriseController;
-use App\Http\Controllers\EmployeeInvitationController;
 use App\Http\Middleware\IsIndependant;
 use App\Http\Middleware\IsEntreprise;
 use App\Http\Middleware\IsAdminEntreprise;
@@ -26,17 +25,17 @@ Route::get('/', function () {
 // ========================================
 // AUTHENTIFICATION INDÉPENDANTS
 // ========================================
-Route::prefix('independant')->name('independant.')->group(function () {
+Route::prefix('')->name('')->group(function () {
     // Inscription indépendant
-    Route::get('/register', [AuthIndepController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthIndepController::class, 'register']);
+    Route::get('/register', [AuthIndepController::class, 'showRegister'])->name('register.indep');
+    Route::post('/register', [AuthIndepController::class, 'register'])->name('register.indep');
     
     // Connexion indépendant
-    Route::get('/login', [AuthIndepController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthIndepController::class, 'login']);
+    Route::get('/login', [AuthIndepController::class, 'showLogin'])->name('login.indep');
+    Route::post('/login', [AuthIndepController::class, 'login'])->name('login.indep');
     
     // Déconnexion indépendant
-    Route::post('/logout', [AuthIndepController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthIndepController::class, 'logout'])->name('logout.indep');
 });
 
 // ========================================
@@ -45,11 +44,11 @@ Route::prefix('independant')->name('independant.')->group(function () {
 Route::prefix('entreprise')->name('entreprise.')->group(function () {
     // Inscription entreprise
     Route::get('/register', [AuthEntrepriseController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthEntrepriseController::class, 'register']);
+    Route::post('/register', [AuthEntrepriseController::class, 'register'])->name('register');
     
     // Connexion entreprise
     Route::get('/login', [AuthEntrepriseController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthEntrepriseController::class, 'login']);
+    Route::post('/login', [AuthEntrepriseController::class, 'login'])->name('login');
     
     // Déconnexion entreprise
     Route::post('/logout', [AuthEntrepriseController::class, 'logout'])->name('logout');
@@ -63,9 +62,9 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
 // ========================================
 // INVITATIONS D'EMPLOYÉS (ACCESSIBLES SANS AUTH)
 // ========================================
-Route::get('/invitations/{token}', [EmployeeInvitationController::class, 'showAcceptInvitation'])->name('invitations.accept');
-Route::post('/invitations/{token}', [EmployeeInvitationController::class, 'acceptInvitation'])->name('invitations.accept.store');
-Route::delete('/invitations/{token}/decline', [EmployeeInvitationController::class, 'declineInvitation'])->name('invitations.decline');
+Route::get('/invitations/{token}', [CompanyInvitationController::class, 'show'])->name('invitations.accept');
+Route::post('/invitations/{token}', [CompanyInvitationController::class, 'accept'])->name('invitations.accept.store');
+Route::delete('/invitations/{token}/decline', [CompanyInvitationController::class, 'decline'])->name('invitations.decline');
 
 // ========================================
 // ROUTES INDÉPENDANTS (PROTÉGÉES)
@@ -145,10 +144,7 @@ Route::middleware(['auth', 'verified', IsAdminEntreprise::class])->prefix('entre
     
     // Gestion des utilisateurs
     Route::get('/users', [CompanyAdminController::class, 'users'])->name('users');
-    Route::get('/users/invite', [EmployeeInvitationController::class, 'showInviteForm'])->name('users.invite');
-    Route::post('/users/invite', [EmployeeInvitationController::class, 'sendInvitation'])->name('users.invite');
-    Route::post('/users/invitations/{invitation}/resend', [EmployeeInvitationController::class, 'resendInvitation'])->name('users.resend');
-    Route::delete('/users/invitations/{invitation}/cancel', [EmployeeInvitationController::class, 'cancelInvitation'])->name('users.cancel');
+    Route::post('/users/invite', [CompanyAdminController::class, 'inviteUser'])->name('users.invite');
     Route::patch('/users/{user}/role', [CompanyAdminController::class, 'updateUserRole'])->name('users.role');
     Route::delete('/users/{user}/delete', [CompanyAdminController::class, 'deleteUser'])->name('users.delete');
     

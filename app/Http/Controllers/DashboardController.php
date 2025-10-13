@@ -11,42 +11,78 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->is_admin()) {
-            // Admin voit tout
-            $activeProjectsCount = Project::where('status', 'active')->count();
-            $completedProjectsCount = Project::where('status', 'completed')->count();
-            $openTasksCount = Task::whereIn('status', ['pending', 'in-progress'])->count();
-            $tasks = Task::all();
+        // Rediriger selon le rôle
+        if ($user->company_id) {
+            // L'utilisateur appartient à une entreprise
+            return $this->entrepriseDashboard($user);
         } else {
-            // Utilisateur voit ses projets + ceux où il participe
-            $ownProjectIds = $user->projects()->pluck('projects.id');
-            $participatingProjectIds = $user->participatingProjects()->pluck('projects.id');
-            $allProjectIds = $ownProjectIds->merge($participatingProjectIds)->unique();
-
-            $activeProjectsCount = Project::whereIn('id', $allProjectIds)
-                ->where('status', 'active')
-                ->count();
-            $completedProjectsCount = Project::whereIn('id', $allProjectIds)
-                ->where('status', 'completed')
-                ->count();
-            $openTasksCount = Task::whereIn('project_id', $allProjectIds)
-                ->whereIn('status', ['pending', 'in-progress'])
-                ->count();
-            $tasks = Task::whereIn('project_id', $allProjectIds)->get();
+            // L'utilisateur est indépendant
+            return $this->independantDashboard($user);
         }
+    }
 
-        $totalProjectsCount = $activeProjectsCount + $completedProjectsCount;
+    /**
+     * Dashboard pour les utilisateurs indépendants
+     */
+    private function independantDashboard($user)
+    {
+        // Récupérer les projets de l'utilisateur indépendant
+        $projects = $user->projects()->get();
+        
+        // Statistiques
+        $activeProjectsCount = $projects->where('status', '!=', 'completed')->count();
+        $completedProjectsCount = $projects->where('status', 'completed')->count();
+        $totalProjectsCount = $projects->count();
 
-        // Récupérer les projets pour le calendrier
-        if ($user->is_admin()) {
-            $projects = Project::all();
-        } else {
-            $ownProjects = $user->projects()->get();
-            $participatingProjects = $user->participatingProjects()->select('projects.*')->get();
-            $projects = $ownProjects->merge($participatingProjects)->unique('id');
-        }
+        // Tâches
+        $projectIds = $projects->pluck('id');
+        $tasks = Task::whereIn('project_id', $projectIds)->get();
+        $pendingTasks = $tasks->whereIn('status', ['pending', 'in_progress'])->count();
+        $completedTasks = $tasks->where('status', 'completed')->count();
+        
+        // Progression
+        $progressPercentage = $tasks->count() > 0 ? round(($completedTasks / $tasks->count()) * 100) : 0;
 
-        return view('dashboard', compact('activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount', 'openTasksCount', 'tasks', 'projects'));
+        // Projets récents (5 derniers)
+        $recentProjects = $projects->sortByDesc('created_at')->take(5);
+
+        // Tâches urgentes (avec deadline proche)
+        $urgentTasks = $tasks->where('deadline', '<=', now()->addDays(3))->where('status', '!=', 'completed')->take(5);
+
+        return view('independant.dashboard', compact(
+            'projects', 'activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount',
+            'pendingTasks', 'completedTasks', 'progressPercentage', 'recentProjects', 'urgentTasks'
+        ));
+    }
+
+    /**
+     * Dashboard pour les utilisateurs d'entreprise
+     */
+    private function entrepriseDashboard($user)
+    {
+        // Récupérer les projets de l'entreprise
+        $companyProjects = $user->company->projects()->get();
+        
+        // Statistiques
+        $activeProjectsCount = $companyProjects->where('status', '!=', 'completed')->count();
+        $completedProjectsCount = $companyProjects->where('status', 'completed')->count();
+        $totalProjectsCount = $companyProjects->count();
+
+        // Tâches assignées à l'utilisateur
+        $assignedTasks = Task::where('assigned_to', $user->id)->get();
+        $pendingTasks = $assignedTasks->whereIn('status', ['pending', 'in_progress'])->count();
+        $completedTasks = $assignedTasks->where('status', 'completed')->count();
+        
+        // Progression
+        $progressPercentage = $assignedTasks->count() > 0 ? round(($completedTasks / $assignedTasks->count()) * 100) : 0;
+
+        // Projets récents de l'entreprise (5 derniers)
+        $recentProjects = $companyProjects->sortByDesc('created_at')->take(5);
+
+        return view('entreprise.dashboard', compact(
+            'companyProjects', 'activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount',
+            'assignedTasks', 'pendingTasks', 'completedTasks', 'progressPercentage', 'recentProjects'
+        ));
     }
 
     public function exportReport()

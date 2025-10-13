@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsAdminEntreprise
+class IsEntreprise
 {
     /**
      * Handle an incoming request.
@@ -21,8 +21,9 @@ class IsAdminEntreprise
 
         $user = auth()->user();
         
-        if ($user->role !== 'admin_entreprise' || !$user->company_id) {
-            abort(403, 'Accès non autorisé. Seuls les administrateurs d\'entreprise peuvent accéder à cette section.');
+        if (!$user->company_id) {
+            // Rediriger vers le dashboard indépendant
+            return redirect()->route('dashboard');
         }
 
         return $next($request);

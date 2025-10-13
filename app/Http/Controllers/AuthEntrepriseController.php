@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class EntrepriseAuthController extends Controller
+class AuthEntrepriseController extends Controller
 {
     public function __construct()
     {
@@ -27,9 +27,7 @@ class EntrepriseAuthController extends Controller
         // Rediriger les utilisateurs déjà connectés vers le dashboard approprié
         if (auth()->check()) {
             $user = auth()->user();
-            if ($user->role === 'admin_entreprise') {
-                return redirect()->route('entreprise.dashboard');
-            } elseif ($user->company_id) {
+            if ($user->role === 'admin_entreprise' || $user->company_id) {
                 return redirect()->route('entreprise.dashboard');
             } else {
                 return redirect()->route('dashboard');
@@ -44,11 +42,6 @@ class EntrepriseAuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Vérifier que l'utilisateur n'est pas déjà connecté
-        if (auth()->check()) {
-            return redirect()->route('dashboard')->with('error', 'Vous êtes déjà connecté.');
-        }
-
         // Validation des données
         $validated = $request->validate([
             'company_name' => 'required|string|max:255',
@@ -56,7 +49,7 @@ class EntrepriseAuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'plan' => 'required|in:starter,professional,enterprise',
+            'plan' => 'required|in:starter,growth,enterprise',
         ], [
             'company_name.required' => 'Le nom de l\'entreprise est obligatoire.',
             'company_email.required' => 'L\'email de l\'entreprise est obligatoire.',
@@ -74,7 +67,7 @@ class EntrepriseAuthController extends Controller
         // Définir les prix et limites selon le plan
         $planConfig = [
             'starter' => ['price' => 399, 'user_limit' => 10],
-            'professional' => ['price' => 599, 'user_limit' => 20],
+            'growth' => ['price' => 599, 'user_limit' => 20],
             'enterprise' => ['price' => 999, 'user_limit' => null],
         ];
 
@@ -132,7 +125,7 @@ class EntrepriseAuthController extends Controller
         
         if ($user && !$user->company_id) {
             return back()->withErrors([
-                'email' => 'Cette adresse email ne correspond pas à un compte entreprise.',
+                'email' => 'Cette adresse email ne correspond pas à un compte entreprise. Veuillez utiliser le formulaire de connexion indépendant.',
             ])->onlyInput('email');
         }
 
@@ -141,6 +134,14 @@ class EntrepriseAuthController extends Controller
 
             $user = Auth::user();
             
+            // Vérifier que l'utilisateur appartient bien à une entreprise
+            if (!$user->company_id) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Ce compte ne correspond pas à un utilisateur d\'entreprise.',
+                ])->onlyInput('email');
+            }
+
             // Rediriger selon le rôle
             if ($user->role === 'admin_entreprise') {
                 return redirect()->intended(route('entreprise.dashboard'));
@@ -162,7 +163,7 @@ class EntrepriseAuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('entreprise.login');
+        return redirect()->route('login.entreprise');
     }
 
     /**
@@ -194,7 +195,7 @@ class EntrepriseAuthController extends Controller
             
         } catch (\Exception $e) {
             \Log::error('Erreur lors de la création de la session Stripe: ' . $e->getMessage());
-            return redirect()->route('entreprise.register')
+            return redirect()->route('register.entreprise')
                 ->with('error', 'Une erreur est survenue lors de l\'initialisation du paiement. Veuillez réessayer.');
         }
     }
@@ -208,7 +209,7 @@ class EntrepriseAuthController extends Controller
         
         if (!$registrationData) {
             \Log::error('Session entreprise_registration non trouvée');
-            return redirect()->route('entreprise.register')->with('error', 'Session expirée. Veuillez recommencer.');
+            return redirect()->route('register.entreprise')->with('error', 'Session expirée. Veuillez recommencer.');
         }
 
         \Log::info('Début de la création de l\'entreprise', $registrationData);
@@ -264,7 +265,7 @@ class EntrepriseAuthController extends Controller
             // Nettoyer la session en cas d'erreur
             session()->forget('entreprise_registration');
             
-            return redirect()->route('entreprise.register')
+            return redirect()->route('register.entreprise')
                 ->with('error', 'Une erreur est survenue lors de la création de votre entreprise. Veuillez réessayer.');
         }
     }
@@ -277,7 +278,7 @@ class EntrepriseAuthController extends Controller
         $sessionId = $request->get('session_id');
         
         if (!$sessionId) {
-            return redirect()->route('entreprise.register')
+            return redirect()->route('register.entreprise')
                 ->with('error', 'Session de paiement invalide.');
         }
         
@@ -315,7 +316,7 @@ class EntrepriseAuthController extends Controller
     {
         session()->forget('entreprise_registration');
         
-        return redirect()->route('entreprise.register')
+        return redirect()->route('register.entreprise')
             ->with('error', 'Le paiement a échoué. Veuillez réessayer.');
     }
 
