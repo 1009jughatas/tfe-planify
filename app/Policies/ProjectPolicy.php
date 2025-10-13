@@ -17,7 +17,12 @@ class ProjectPolicy
             return true;
         }
 
-        // Les utilisateurs peuvent voir les projets de leur entreprise
+        // Les utilisateurs indépendants peuvent voir leurs projets
+        if ($user->isUserIndependant()) {
+            return true;
+        }
+
+        // Les utilisateurs d'entreprise peuvent voir les projets de leur entreprise
         return $user->company_id !== null;
     }
 
@@ -31,7 +36,17 @@ class ProjectPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
+        // Les utilisateurs indépendants peuvent voir leurs propres projets
+        if ($user->isUserIndependant()) {
+            // L'auteur peut voir son projet
+            if ($project->author_id === $user->id) {
+                return true;
+            }
+            // Les participants peuvent voir les projets auxquels ils participent
+            return $project->participants->contains($user->id);
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
         if ($user->company_id !== $project->company_id) {
             return false;
         }
@@ -55,8 +70,13 @@ class ProjectPolicy
             return true;
         }
 
-        // Les utilisateurs doivent appartenir à une entreprise active
-        return $user->company_id !== null && $user->company->isActive();
+        // Les utilisateurs indépendants peuvent créer des projets
+        if ($user->isUserIndependant()) {
+            return true;
+        }
+
+        // Les utilisateurs d'entreprise doivent appartenir à une entreprise active
+        return $user->company_id !== null && $user->company && $user->company->isActive();
     }
 
     /**
@@ -69,7 +89,12 @@ class ProjectPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
+        // Les utilisateurs indépendants peuvent modifier leurs propres projets
+        if ($user->isUserIndependant()) {
+            return $project->author_id === $user->id;
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
         if ($user->company_id !== $project->company_id) {
             return false;
         }
@@ -93,7 +118,12 @@ class ProjectPolicy
             return true;
         }
 
-        // Cloisonnement par entreprise
+        // Les utilisateurs indépendants peuvent supprimer leurs propres projets
+        if ($user->isUserIndependant()) {
+            return $project->author_id === $user->id;
+        }
+
+        // Cloisonnement par entreprise pour les utilisateurs d'entreprise
         if ($user->company_id !== $project->company_id) {
             return false;
         }
