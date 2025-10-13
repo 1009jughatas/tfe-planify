@@ -77,17 +77,21 @@
                     <h3 class="text-lg font-semibold text-gray-900 truncate">{{ Auth::user()->name ?? 'Utilisateur' }}</h3>
                     <p class="text-sm text-gray-600 truncate">{{ Auth::user()->email ?? 'email@example.com' }}</p>
                     <div class="flex items-center space-x-2 mt-1">
-                        @if (Auth::user() && Auth::user()->is_premium())
-                            <span class="text-xs font-medium text-accent-600 bg-accent-100 px-2 py-1 rounded-full">
-                                <i class="fas fa-crown mr-1"></i>Premium
+                        @if(Auth::user() && Auth::user()->isAdminEntreprise())
+                            <span class="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-building mr-1"></i>Admin Entreprise
                             </span>
-                        @elseif (Auth::user() && Auth::user()->is_admin())
-                            <span class="text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded-full">
-                                <i class="fas fa-shield-alt mr-1"></i>Administrateur
+                        @elseif(Auth::user() && Auth::user()->isUserEntreprise())
+                            <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-users mr-1"></i>Équipe
+                            </span>
+                        @elseif(Auth::user() && Auth::user()->isUserIndependant())
+                            <span class="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-user mr-1"></i>Indépendant
                             </span>
                         @else
                             <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
-                                <i class="fas fa-user mr-1"></i>Utilisateur Gratuit
+                                <i class="fas fa-user mr-1"></i>Utilisateur
                             </span>
                         @endif
                     </div>
@@ -101,7 +105,7 @@
             <div class="nav-section">
                 <h3 class="nav-section-title">Principal</h3>
                 <div class="space-y-1">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" 
+                    <x-nav-link :href="Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard')" 
                                class="mobile-nav-item {{ request()->routeIs('dashboard') ? 'mobile-nav-active' : '' }}">
                         <div class="mobile-nav-icon">
                             <i class="fas fa-home"></i>

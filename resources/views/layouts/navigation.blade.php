@@ -5,24 +5,28 @@
     <!-- Header with Logo -->
     <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-accent-50">
         <div class="flex items-center justify-between">
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 group">
+            <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="flex items-center space-x-3 group">
                 <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
                     <span class="text-white font-bold text-xl">P</span>
                 </div>
                 <div x-show="!collapsed" class="transition-all duration-200">
                     <h1 class="text-xl font-bold text-gray-900">Planify</h1>
                     <div class="flex items-center space-x-2">
-                        @if (Auth::user() && Auth::user()->is_premium())
-                            <span class="text-xs font-medium text-accent-600 bg-accent-100 px-2 py-1 rounded-full">
-                                <i class="fas fa-crown mr-1"></i>Premium
+                        @if (Auth::user() && Auth::user()->isAdminEntreprise())
+                            <span class="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-building mr-1"></i>Admin Entreprise
                             </span>
-                        @elseif (Auth::user() && Auth::user()->is_admin())
-                            <span class="text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded-full">
-                                <i class="fas fa-shield-alt mr-1"></i>Admin
+                        @elseif (Auth::user() && Auth::user()->isUserEntreprise())
+                            <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-users mr-1"></i>Équipe
+                            </span>
+                        @elseif (Auth::user() && Auth::user()->isUserIndependant())
+                            <span class="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                <i class="fas fa-user mr-1"></i>Indépendant
                             </span>
                         @else
                             <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
-                                <i class="fas fa-user mr-1"></i>Gratuit
+                                <i class="fas fa-user mr-1"></i>Utilisateur
                             </span>
                         @endif
                     </div>
@@ -46,8 +50,9 @@
             <div x-show="!collapsed" class="nav-section-title">
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Principal</span>
             </div>
-            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" 
-                        class="nav-item-modern {{ request()->routeIs('dashboard') ? 'nav-item-active' : '' }}">
+            <x-nav-link :href="Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard')" 
+                        :active="request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard')" 
+                        class="nav-item-modern {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}">
                 <div class="nav-icon">
                     <i class="fas fa-home"></i>
                 </div>

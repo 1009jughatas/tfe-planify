@@ -6,7 +6,7 @@
                 <p class="text-sm text-gray-600 mt-1">Vue Kanban - Gérez vos projets par statut</p>
             </div>
             @php
-                $canCreate = Auth::user() && (Auth::user()->is_admin() || 
+                $canCreate = Auth::user() && (Auth::user()->isAdminEntreprise() || Auth::user()->isUserEntreprise() || 
                              Auth::user()->is_premium() || 
                              Auth::user()->projects()->count() < 3);
             @endphp
@@ -27,7 +27,7 @@
     <!-- Contenu principal -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Alertes de limitation -->
-        @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
+        @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium())
             @php
                 $projectCount = Auth::user() ? Auth::user()->projects()->count() : 0;
                 $projectLimit = 3;
