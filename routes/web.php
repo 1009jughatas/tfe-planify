@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyInvitationController;
 use App\Http\Controllers\CompanyAdminController;
 use App\Http\Controllers\EntrepriseRegisterController;
+use App\Http\Controllers\EntrepriseAuthController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
