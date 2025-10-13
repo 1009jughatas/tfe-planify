@@ -70,6 +70,11 @@ class TaskController extends Controller
             $taskData['company_id'] = $project->company_id;
         }
 
+        // Pour les utilisateurs indépendants, assigner automatiquement à eux-mêmes
+        if ($user->isUserIndependant() && !$request->has('assigned_to')) {
+            $taskData['assigned_to'] = $user->id;
+        }
+
         Task::create($taskData);
         return redirect()->route('projects.tasks', $project->id)->with('success', 'Tâche créée avec succès.');
     }

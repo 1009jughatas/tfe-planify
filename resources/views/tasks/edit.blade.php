@@ -118,26 +118,31 @@
                         </div>
                     </div>
 
-                    <!-- Assigner à -->
-                    <div>
-                        <label for="assigned_to" class="form-label-modern">
-                            <i class="fas fa-user text-gray-500 mr-1"></i>
-                            Assigner à
-                        </label>
-                        <select name="assigned_to" 
-                                id="assigned_to" 
-                                class="input-modern @error('assigned_to') border-red-300 focus:ring-red-500 @enderror">
-                            <option value="">-- Non assignée --</option>
-                            @foreach($participants as $user)
-                                <option value="{{ $user->id }}" {{ old('assigned_to', $task->assigned_to) == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('assigned_to')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <!-- Assigner à (seulement pour les utilisateurs d'entreprise) -->
+                    @if (!Auth::user()->isUserIndependant())
+                        <div>
+                            <label for="assigned_to" class="form-label-modern">
+                                <i class="fas fa-user text-gray-500 mr-1"></i>
+                                Assigner à
+                            </label>
+                            <select name="assigned_to" 
+                                    id="assigned_to" 
+                                    class="input-modern @error('assigned_to') border-red-300 focus:ring-red-500 @enderror">
+                                <option value="">-- Non assignée --</option>
+                                @foreach($participants as $user)
+                                    <option value="{{ $user->id }}" {{ old('assigned_to', $task->assigned_to) == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('assigned_to')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @else
+                        <!-- Pour les utilisateurs indépendants, garder l'assignation actuelle -->
+                        <input type="hidden" name="assigned_to" value="{{ $task->assigned_to ?? Auth::id() }}">
+                    @endif
 
                     <!-- Statut -->
                     <div>

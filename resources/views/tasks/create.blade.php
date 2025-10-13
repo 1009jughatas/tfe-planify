@@ -112,43 +112,48 @@
                         </div>
                     </div>
 
-                    <!-- Assigner à -->
-                    <div>
-                        <label for="assigned_to" class="form-label-modern">
-                            <i class="fas fa-user text-gray-500 mr-1"></i>
-                            Assigner à
-                            @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium())
-                                <span class="badge-warning ml-2">
-                                    <i class="fas fa-crown mr-1"></i>Premium
-                                </span>
+                    <!-- Assigner à (seulement pour les utilisateurs d'entreprise) -->
+                    @if (!Auth::user()->isUserIndependant())
+                        <div>
+                            <label for="assigned_to" class="form-label-modern">
+                                <i class="fas fa-user text-gray-500 mr-1"></i>
+                                Assigner à
+                                @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+                                    <span class="badge-warning ml-2">
+                                        <i class="fas fa-crown mr-1"></i>Premium
+                                    </span>
+                                @endif
+                            </label>
+                            <select name="assigned_to" 
+                                    id="assigned_to" 
+                                    class="input-modern @error('assigned_to') border-red-300 focus:ring-red-500 @enderror"
+                                    @if (!Auth::user()->is_premium() && !Auth::user()->is_admin()) disabled @endif>
+                                <option value="">-- Non assignée --</option>
+                                @foreach($participants as $user)
+                                    <option value="{{ $user->id }}" {{ old('assigned_to') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+                                <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <p class="text-sm text-yellow-700">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        L'assignation de tâches est une fonctionnalité premium. 
+                                        <a href="{{ route('premium.show') }}" class="text-yellow-800 hover:text-yellow-900 underline font-medium">
+                                            Passez à Premium
+                                        </a>
+                                    </p>
+                                </div>
                             @endif
-                        </label>
-                        <select name="assigned_to" 
-                                id="assigned_to" 
-                                class="input-modern @error('assigned_to') border-red-300 focus:ring-red-500 @enderror"
-                                @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium()) disabled @endif>
-                            <option value="">-- Non assignée --</option>
-                            @foreach($participants as $user)
-                                <option value="{{ $user->id }}" {{ old('assigned_to') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
-                            <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                <p class="text-sm text-yellow-700">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    L'assignation de tâches est une fonctionnalité premium. 
-                                    <a href="{{ route('premium.show') }}" class="text-yellow-800 hover:text-yellow-900 underline font-medium">
-                                        Passez à Premium
-                                    </a>
-                                </p>
-                            </div>
-                        @endif
-                        @error('assigned_to')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                            @error('assigned_to')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @else
+                        <!-- Pour les utilisateurs indépendants, assigner automatiquement à eux-mêmes -->
+                        <input type="hidden" name="assigned_to" value="{{ Auth::id() }}">
+                    @endif
 
                     <!-- Boutons -->
                     <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
