@@ -7,7 +7,12 @@
                 </div>
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900">{{ $task->title }}</h1>
-                    <p class="text-sm text-gray-600 mt-1">Projet : {{ $task->project->name }}</p>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Projet : 
+                        <a href="{{ route('projects.show', $task->project->id) }}" class="text-primary-600 hover:text-primary-700 font-medium underline">
+                            {{ $task->project->name }}
+                        </a>
+                    </p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
