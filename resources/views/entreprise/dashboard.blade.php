@@ -1,9 +1,9 @@
-@extends('layouts.app')
-
-@section('title', 'Dashboard Entreprise')
-@section('page-title', 'Dashboard Entreprise')
-
-@section('content')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Dashboard Entreprise
+        </h2>
+    </x-slot>
 <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
@@ -158,4 +158,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-app-layout>
