@@ -32,72 +32,22 @@
                 </div>
                 
                 <!-- Navigation -->
-                <nav class="hidden md:flex items-center space-x-6">
+                <nav class="hidden md:flex items-center space-x-4">
                     @auth
                         <a href="{{ Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="text-gray-600 hover:text-gray-900 font-medium">Dashboard</a>
                         <a href="{{ url('/projects') }}" class="text-gray-600 hover:text-gray-900 font-medium">Projets</a>
                     @else
-                        <!-- Dropdown Connexion -->
-                        <div class="relative group">
-                            <button class="flex items-center text-gray-600 hover:text-gray-900 font-medium">
-                                <i class="fas fa-sign-in-alt mr-2"></i>
-                                Connexion
-                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                            </button>
-                            <div class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <div class="py-2">
-                                    <a href="{{ route('login') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                                            <i class="fas fa-user text-green-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-medium">Indépendant</div>
-                                            <div class="text-xs text-gray-500">Espace personnel</div>
-                                        </div>
-                                    </a>
-                                    <a href="{{ route('entreprise.login') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                            <i class="fas fa-building text-blue-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-medium">Entreprise</div>
-                                            <div class="text-xs text-gray-500">Espace d'équipe</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Bouton Connexion Indépendant -->
+                        <a href="{{ route('login') }}" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                            <i class="fas fa-user mr-2"></i>
+                            Connexion Indépendant
+                        </a>
                         
-                        <!-- Dropdown Inscription -->
-                        <div class="relative group">
-                            <button class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                                <i class="fas fa-user-plus mr-2"></i>
-                                S'inscrire
-                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                            </button>
-                            <div class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <div class="py-2">
-                                    <a href="{{ route('register') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                                            <i class="fas fa-user text-green-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-medium">Indépendant</div>
-                                            <div class="text-xs text-gray-500">Compte gratuit</div>
-                                        </div>
-                                    </a>
-                                    <a href="{{ route('entreprise.register') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                            <i class="fas fa-building text-blue-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <div class="font-medium">Entreprise</div>
-                                            <div class="text-xs text-gray-500">À partir de 399€/mois</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Bouton Connexion Entreprise -->
+                        <a href="{{ route('entreprise.login') }}" class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                            <i class="fas fa-building mr-2"></i>
+                            Connexion Entreprise
+                        </a>
                     @endauth
                 </nav>
             </div>
