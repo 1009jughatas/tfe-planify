@@ -11,6 +11,10 @@ use App\Http\Controllers\CompanyAdminController;
 use App\Http\Controllers\AuthIndepController;
 use App\Http\Controllers\AuthEntrepriseController;
 use App\Http\Controllers\EmployeeInvitationController;
+use App\Http\Controllers\Entreprise\EntrepriseDashboardController;
+use App\Http\Controllers\Entreprise\EntrepriseProjetController;
+use App\Http\Controllers\Entreprise\EntrepriseUserController;
+use App\Http\Controllers\Entreprise\EntrepriseSubscriptionController;
 use App\Http\Middleware\IsIndependant;
 use App\Http\Middleware\IsEntreprise;
 use App\Http\Middleware\IsAdminEntreprise;
@@ -60,6 +64,32 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
     Route::get('/payment/success', [AuthEntrepriseController::class, 'paymentSuccess'])->name('payment.success');
     Route::get('/payment/failed', [AuthEntrepriseController::class, 'paymentFailed'])->name('payment.failed');
     Route::post('/stripe/webhook', [AuthEntrepriseController::class, 'stripeWebhook'])->name('stripe.webhook');
+});
+
+// ========================================
+// ROUTES ENTREPRISE (PROTÉGÉES)
+// ========================================
+Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntrepriseAccess'])->group(function () {
+    // Dashboard entreprise
+    Route::get('/dashboard', [EntrepriseDashboardController::class, 'index'])->name('dashboard');
+    
+    // Gestion des projets
+    Route::resource('projets', EntrepriseProjetController::class);
+    
+    // Gestion des utilisateurs (Admin seulement)
+    Route::middleware('ensureUserIsAdminEntreprise')->group(function () {
+        Route::get('/utilisateurs', [EntrepriseUserController::class, 'index'])->name('utilisateurs.index');
+        Route::get('/utilisateurs/inviter', [EntrepriseUserController::class, 'createInvitation'])->name('utilisateurs.inviter');
+        Route::post('/utilisateurs/inviter', [EntrepriseUserController::class, 'sendInvitation'])->name('utilisateurs.inviter.store');
+        Route::delete('/utilisateurs/{user}', [EntrepriseUserController::class, 'destroy'])->name('utilisateurs.destroy');
+        Route::patch('/utilisateurs/{user}/role', [EntrepriseUserController::class, 'updateRole'])->name('utilisateurs.update-role');
+        Route::delete('/invitations/{invitation}/cancel', [EntrepriseUserController::class, 'cancelInvitation'])->name('invitations.cancel');
+        
+        // Gestion des abonnements
+        Route::get('/abonnement', [EntrepriseSubscriptionController::class, 'index'])->name('abonnement.index');
+        Route::patch('/abonnement', [EntrepriseSubscriptionController::class, 'update'])->name('abonnement.update');
+        Route::delete('/abonnement', [EntrepriseSubscriptionController::class, 'cancel'])->name('abonnement.cancel');
+    });
 });
 
 // ========================================
