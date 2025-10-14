@@ -1,6 +1,3 @@
-<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
 
 <x-app-layout>
     <x-slot name="header">
@@ -194,82 +191,211 @@
         </div>
 
         <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <!-- Calendar Section -->
-            <div class="lg:col-span-2">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Calendrier Simple -->
+            <div>
                 <div class="modern-card">
                     <div class="modern-card-header">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
-                                    <i class="fas fa-calendar-alt text-white"></i>
-                                </div>
-                                Calendrier des Projets et Tâches
-                            </h3>
-                            <div class="flex space-x-2">
-                                <span class="badge-primary">📁 Projets</span>
-                                <span class="badge-success">✓ Terminées</span>
-                                <span class="badge-warning">✓ En cours</span>
-                                <span class="badge-danger">✓ En attente</span>
+                        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                                <i class="fas fa-calendar-alt text-white"></i>
                             </div>
-                        </div>
+                            Calendrier des Échéances
+                        </h3>
                     </div>
                     <div class="modern-card-body">
-                        <div id="taskCalendar" class="min-h-96"></div>
-                        <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
-                            <div class="flex items-start">
-                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                                    <i class="fas fa-lightbulb text-white text-sm"></i>
+                        <!-- Calendrier Simple -->
+                        <div class="simple-calendar">
+                            <div class="calendar-header">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-gray-800" id="current-month">{{ date('F Y') }}</h4>
+                                    <div class="flex space-x-2">
+                                        <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                                            <i class="fas fa-chevron-left text-gray-600"></i>
+                                        </button>
+                                        <button onclick="goToToday()" class="px-3 py-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-sm font-medium">
+                                            Aujourd'hui
+                                        </button>
+                                        <button onclick="changeMonth(1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                                            <i class="fas fa-chevron-right text-gray-600"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-blue-900 mb-1">💡 Astuce</p>
-                                    <p class="text-sm text-blue-700">
-                                        Cliquez sur un projet (📁) pour voir ses tâches, ou sur une tâche (✓) pour voir ses détails.
-                                    </p>
+                            </div>
+                            
+                            <!-- Légende -->
+                            <div class="flex flex-wrap gap-3 mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                                    <span class="text-sm text-gray-600">Projets</span>
                                 </div>
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                                    <span class="text-sm text-gray-600">Tâches terminées</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-orange-500 rounded mr-2"></div>
+                                    <span class="text-sm text-gray-600">Tâches en cours</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                                    <span class="text-sm text-gray-600">Tâches en retard</span>
+                                </div>
+                            </div>
+
+                            <!-- Grille du calendrier -->
+                            <div class="calendar-grid" id="calendar-grid">
+                                <!-- Les jours de la semaine -->
+                                <div class="calendar-weekdays">
+                                    <div class="calendar-weekday">Lun</div>
+                                    <div class="calendar-weekday">Mar</div>
+                                    <div class="calendar-weekday">Mer</div>
+                                    <div class="calendar-weekday">Jeu</div>
+                                    <div class="calendar-weekday">Ven</div>
+                                    <div class="calendar-weekday">Sam</div>
+                                    <div class="calendar-weekday">Dim</div>
+                                </div>
+                                
+                                <!-- Les jours du mois seront générés par JavaScript -->
+                                <div class="calendar-days" id="calendar-days"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Chart Section -->
+            <!-- Liste des Projets et Tâches -->
             <div>
                 <div class="modern-card">
                     <div class="modern-card-header">
                         <h3 class="text-xl font-bold text-gray-900 flex items-center">
                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
-                                <i class="fas fa-chart-pie text-white"></i>
+                                <i class="fas fa-list text-white"></i>
                             </div>
-                            Statut des Projets
+                            Projets et Tâches
                         </h3>
                     </div>
                     <div class="modern-card-body">
-                        <div class="h-64 flex items-center justify-center">
-                            <canvas id="projectStatusChart"></canvas>
+                        <!-- Projets Actifs -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                                <i class="fas fa-project-diagram text-blue-500 mr-2"></i>
+                                Mes Projets
+                            </h4>
+                            @if($projects->count() > 0)
+                                <div class="space-y-3">
+                                    @foreach($projects->take(5) as $project)
+                                        <div class="project-item p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-all">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex-1">
+                                                    <h5 class="font-medium text-gray-900">{{ $project->name }}</h5>
+                                                    <div class="flex items-center space-x-4 mt-1">
+                                                        <span class="text-sm text-gray-500">
+                                                            <i class="fas fa-tasks mr-1"></i>
+                                                            {{ $project->tasks->count() }} tâches
+                                                        </span>
+                                                        @if($project->start_date)
+                                                            <span class="text-sm text-gray-500">
+                                                                <i class="fas fa-calendar mr-1"></i>
+                                                                {{ \Carbon\Carbon::parse($project->start_date)->format('d/m/Y') }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                                        @if($project->status === 'completed') bg-green-100 text-green-800
+                                                        @elseif($project->status === 'in-progress') bg-blue-100 text-blue-800
+                                                        @else bg-gray-100 text-gray-800 @endif">
+                                                        {{ ucfirst($project->status) }}
+                                                    </span>
+                                                    <a href="{{ route('projects.show', $project->id) }}" class="text-blue-600 hover:text-blue-800">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @if($projects->count() > 5)
+                                    <div class="mt-4 text-center">
+                                        <a href="{{ route('projects.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                            Voir tous les projets ({{ $projects->count() }})
+                                        </a>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="text-center py-8 text-gray-500">
+                                    <i class="fas fa-project-diagram text-4xl mb-3"></i>
+                                    <p>Aucun projet créé</p>
+                                    <a href="{{ route('projects.create') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        Créer votre premier projet
+                                    </a>
+                                </div>
+                            @endif
                         </div>
-                        <div class="mt-6 space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mr-3"></div>
-                                    <span class="text-sm font-medium text-gray-700">Projets actifs</span>
+
+                        <!-- Tâches Récentes -->
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                                <i class="fas fa-tasks text-orange-500 mr-2"></i>
+                                Tâches Récentes
+                            </h4>
+                            @if($tasks->count() > 0)
+                                <div class="space-y-3">
+                                    @foreach($tasks->take(5) as $task)
+                                        <div class="task-item p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-all">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex-1">
+                                                    <h5 class="font-medium text-gray-900">{{ $task->title }}</h5>
+                                                    <div class="flex items-center space-x-4 mt-1">
+                                                        <span class="text-sm text-gray-500">
+                                                            <i class="fas fa-folder mr-1"></i>
+                                                            {{ $task->project->name }}
+                                                        </span>
+                                                        @if($task->due_date)
+                                                            <span class="text-sm text-gray-500">
+                                                                <i class="fas fa-clock mr-1"></i>
+                                                                {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                                        @if($task->status === 'completed') bg-green-100 text-green-800
+                                                        @elseif($task->status === 'in-progress') bg-orange-100 text-orange-800
+                                                        @else bg-gray-100 text-gray-800 @endif">
+                                                        {{ ucfirst($task->status) }}
+                                                    </span>
+                                                    <a href="{{ route('tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <span class="font-bold text-gray-900 text-lg">{{ $activeProjectsCount }}</span>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-xl">
-                                <div class="flex items-center">
-                                    <div class="w-4 h-4 bg-gradient-to-r from-green-500 to-green-600 rounded-full mr-3"></div>
-                                    <span class="text-sm font-medium text-gray-700">Projets terminés</span>
+                                @if($tasks->count() > 5)
+                                    <div class="mt-4 text-center">
+                                        <a href="{{ route('tasks.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                            Voir toutes les tâches ({{ $tasks->count() }})
+                                        </a>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="text-center py-8 text-gray-500">
+                                    <i class="fas fa-tasks text-4xl mb-3"></i>
+                                    <p>Aucune tâche créée</p>
                                 </div>
-                                <span class="font-bold text-gray-900 text-lg">{{ $completedProjectsCount }}</span>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
+        <!-- Actions Rapides -->
         <div class="modern-card">
             <div class="modern-card-header">
                 <h3 class="text-xl font-bold text-gray-900 flex items-center">
@@ -280,7 +406,7 @@
                 </h3>
             </div>
             <div class="modern-card-body">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <a href="{{ route('projects.create') }}" class="group p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                         <div class="text-center">
                             <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
@@ -322,158 +448,310 @@
                             </div>
                         </a>
                     @endif
-                    
-                    <a href="{{ route('profile.edit') }}" class="group p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div class="text-center">
-                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                                <i class="fas fa-cog text-white"></i>
-                            </div>
-                            <h4 class="font-semibold text-gray-900">Paramètres</h4>
-                            <p class="text-sm text-gray-600 mt-1">Configurer l'interface</p>
-                        </div>
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <style>
-        .fc-event {
-            cursor: pointer;
-            border-radius: 8px;
-            padding: 4px 8px;
+        /* Calendrier Simple */
+        .simple-calendar {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .calendar-grid {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .calendar-weekday {
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
             font-size: 0.875rem;
-            border: none !important;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #6b7280;
+            border-right: 1px solid #e5e7eb;
+        }
+        
+        .calendar-weekday:last-child {
+            border-right: none;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        
+        .calendar-day {
+            min-height: 80px;
+            padding: 8px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+            background: white;
             transition: all 0.2s ease;
         }
-        .fc-event:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        
+        .calendar-day:nth-child(7n) {
+            border-right: none;
         }
-        .project-event {
+        
+        .calendar-day:hover {
+            background: #f8fafc;
+        }
+        
+        .calendar-day.other-month {
+            background: #f9fafb;
+            color: #9ca3af;
+        }
+        
+        .calendar-day.today {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+        }
+        
+        .calendar-day-number {
             font-weight: 600;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+            font-size: 0.875rem;
+            margin-bottom: 4px;
         }
-        .task-event {
-            font-size: 0.8rem;
+        
+        .calendar-events {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
-        .fc-button {
-            border-radius: 12px !important;
-            font-weight: 500 !important;
-            transition: all 0.2s ease !important;
+        
+        .calendar-event {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .fc-button-primary {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
-            border: none !important;
+        
+        .calendar-event:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .fc-button-primary:hover {
-            background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+        
+        .calendar-event.project {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .calendar-event.task-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .calendar-event.task-in-progress {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+        
+        .calendar-event.task-overdue {
+            background: #fecaca;
+            color: #991b1b;
+        }
+        
+        .calendar-event.task-pending {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        /* Projets et Tâches */
+        .project-item, .task-item {
+            transition: all 0.2s ease;
+        }
+        
+        .project-item:hover, .task-item:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-        }
-        .fc-today-button {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0) !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #475569 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
     </style>
 
-    <script>
-        // Modern Chart Configuration
-        const ctx = document.getElementById('projectStatusChart').getContext('2d');
-        const projectStatusChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Projets actifs', 'Projets terminés'],
-                datasets: [{
-                    data: [{{ $activeProjectsCount }}, {{ $completedProjectsCount }}],
-                    backgroundColor: [
-                        'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-                        'linear-gradient(135deg, #10b981, #059669)'
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                cutout: '65%',
-                animation: {
-                    animateRotate: true,
-                    duration: 2000
-                }
-            }
-        });
-    </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('taskCalendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                height: 'auto',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,listWeek'
-                },
-                locale: 'fr',
-                buttonText: {
-                    today: 'Aujourd\'hui',
-                    month: 'Mois',
-                    week: 'Semaine',
-                    day: 'Jour',
-                    list: 'Liste'
-                },
-                events: [
-                    // Afficher les projets (date de début et fin)
-                    @foreach($projects as $project)
-                        @if($project->start_date)
-                            {
-                                title: '📁 {{ addslashes($project->name) }}',
-                                start: '{{ $project->start_date }}',
-                                @if($project->end_date)
-                                end: '{{ $project->end_date }}',
-                                @endif
-                                color: '#3b82f6',
-                                url: '{{ route('projects.tasks', $project->id) }}',
-                                classNames: ['project-event']
-                            },
-                        @endif
-                    @endforeach
-                    
-                    // Afficher les tâches
-                    @foreach($tasks as $task)
-                        @if($task->due_date)
-                            {
-                                title: '✓ {{ addslashes($task->title) }}',
-                                start: '{{ $task->due_date }}',
-                                color: '{{ $task->status === "completed" || $task->status === "done" ? "#10b981" : ($task->status === "in-progress" ? "#f59e0b" : "#ef4444") }}',
-                                url: '{{ route('tasks.show', $task->id) }}',
-                                classNames: ['task-event']
-                            },
-                        @endif
-                    @endforeach
-                ],
-                eventClick: function(info) {
-                    // Rediriger vers le projet ou la tâche
-                    if (info.event.url) {
-                        window.location.href = info.event.url;
-                        info.jsEvent.preventDefault();
-                    }
-                },
-                dayMaxEvents: 3,
-                moreLinkClick: 'popover'
+        // Données du calendrier
+        const calendarData = {
+            projects: [
+                @foreach($projects as $project)
+                    @if($project->start_date)
+                        {
+                            id: {{ $project->id }},
+                            name: '{{ addslashes($project->name) }}',
+                            startDate: '{{ $project->start_date }}',
+                            endDate: '{{ $project->end_date ?? null }}',
+                            url: '{{ route('projects.show', $project->id) }}',
+                            type: 'project'
+                        },
+                    @endif
+                @endforeach
+            ],
+            tasks: [
+                @foreach($tasks as $task)
+                    @if($task->due_date)
+                        {
+                            id: {{ $task->id }},
+                            title: '{{ addslashes($task->title) }}',
+                            dueDate: '{{ $task->due_date }}',
+                            status: '{{ $task->status }}',
+                            url: '{{ route('tasks.show', $task->id) }}',
+                            type: 'task'
+                        },
+                    @endif
+                @endforeach
+            ]
+        };
+
+        let currentDate = new Date();
+        
+        // Noms des mois en français
+        const monthNames = [
+            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+        ];
+
+        // Générer le calendrier
+        function generateCalendar(year, month) {
+            const calendarDays = document.getElementById('calendar-days');
+            const currentMonthElement = document.getElementById('current-month');
+            
+            // Mettre à jour le titre du mois
+            currentMonthElement.textContent = `${monthNames[month]} ${year}`;
+            
+            // Obtenir le premier jour du mois et le nombre de jours
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Obtenir le jour de la semaine du premier jour (0 = dimanche, 1 = lundi, etc.)
+            let startDay = firstDay.getDay();
+            // Convertir pour commencer le lundi (1) au lieu du dimanche (0)
+            startDay = startDay === 0 ? 6 : startDay - 1;
+            
+            // Obtenir le nombre de jours du mois précédent
+            const prevMonth = new Date(year, month, 0);
+            const daysInPrevMonth = prevMonth.getDate();
+            
+            calendarDays.innerHTML = '';
+            
+            // Générer les jours du mois précédent (si nécessaire)
+            for (let i = startDay - 1; i >= 0; i--) {
+                const dayElement = createDayElement(daysInPrevMonth - i, year, month - 1, true);
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Générer les jours du mois actuel
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = createDayElement(day, year, month, false);
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Générer les jours du mois suivant pour compléter la grille
+            const totalCells = calendarDays.children.length;
+            const remainingCells = 42 - totalCells; // 6 semaines × 7 jours = 42 cellules
+            
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayElement = createDayElement(day, year, month + 1, true);
+                calendarDays.appendChild(dayElement);
+            }
+        }
+        
+        // Créer un élément de jour
+        function createDayElement(day, year, month, isOtherMonth) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            
+            if (isOtherMonth) {
+                dayElement.classList.add('other-month');
+            }
+            
+            // Vérifier si c'est aujourd'hui
+            const today = new Date();
+            const currentDay = new Date(year, month, day);
+            if (currentDay.toDateString() === today.toDateString()) {
+                dayElement.classList.add('today');
+            }
+            
+            // Numéro du jour
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'calendar-day-number';
+            dayNumber.textContent = day;
+            dayElement.appendChild(dayNumber);
+            
+            // Événements du jour
+            const eventsContainer = document.createElement('div');
+            eventsContainer.className = 'calendar-events';
+            
+            const dayString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            
+            // Ajouter les projets
+            calendarData.projects.forEach(project => {
+                if (project.startDate === dayString || (project.endDate && dayString >= project.startDate && dayString <= project.endDate)) {
+                    const eventElement = createEventElement(project.name, 'project', project.url);
+                    eventsContainer.appendChild(eventElement);
+                }
             });
-            calendar.render();
+            
+            // Ajouter les tâches
+            calendarData.tasks.forEach(task => {
+                if (task.dueDate === dayString) {
+                    let statusClass = 'task-pending';
+                    if (task.status === 'completed') statusClass = 'task-completed';
+                    else if (task.status === 'in-progress') statusClass = 'task-in-progress';
+                    else if (new Date(task.dueDate) < today) statusClass = 'task-overdue';
+                    
+                    const eventElement = createEventElement(task.title, statusClass, task.url);
+                    eventsContainer.appendChild(eventElement);
+                }
+            });
+            
+            dayElement.appendChild(eventsContainer);
+            return dayElement;
+        }
+        
+        // Créer un élément d'événement
+        function createEventElement(title, className, url) {
+            const eventElement = document.createElement('div');
+            eventElement.className = `calendar-event ${className}`;
+            eventElement.textContent = title;
+            eventElement.onclick = () => {
+                if (url) {
+                    window.location.href = url;
+                }
+            };
+            return eventElement;
+        }
+        
+        // Changer de mois
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        }
+        
+        // Aller à aujourd'hui
+        function goToToday() {
+            currentDate = new Date();
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        }
+        
+        // Initialiser le calendrier
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
         });
     </script>
 
