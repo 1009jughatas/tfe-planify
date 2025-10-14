@@ -1,3 +1,28 @@
+<div x-data="{ 
+    sidebarOpen: false,
+    isDarkMode: false,
+    
+    init() {
+        // Vérifier le mode sombre depuis le localStorage
+        this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+        this.applyDarkMode();
+    },
+    
+    toggleDarkMode() {
+        this.isDarkMode = !this.isDarkMode;
+        localStorage.setItem('darkMode', this.isDarkMode);
+        this.applyDarkMode();
+    },
+    
+    applyDarkMode() {
+        if (this.isDarkMode) {
+            document.documentElement.classList.add('dark-mode');
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+        }
+    }
+}" x-init="init()">
+
 <!-- Menu Hamburger Button -->
 <button @click="sidebarOpen = !sidebarOpen" 
         class="fixed top-4 left-4 z-50 p-3 bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 group">
@@ -63,11 +88,20 @@
                     </div>
                 </div>
             </div>
-            <button @click="sidebarOpen = false" class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <div class="flex items-center space-x-2">
+                <!-- Toggle Mode Sombre -->
+                <button @click="toggleDarkMode()" 
+                        class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
+                        title="Basculer le mode sombre">
+                    <i class="fas text-white text-lg transition-transform duration-300" 
+                       :class="isDarkMode ? 'fa-sun' : 'fa-moon'"></i>
+                </button>
+                <button @click="sidebarOpen = false" class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -387,3 +421,42 @@
         @apply outline-none ring-2 ring-blue-500 ring-opacity-50;
     }
 </style>
+
+<script>
+// Système de mode sombre simple
+document.addEventListener('alpine:init', () => {
+    Alpine.data('darkMode', () => ({
+        isDarkMode: false,
+        
+        init() {
+            // Vérifier le mode sombre depuis le localStorage
+            this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+            this.applyDarkMode();
+        },
+        
+        toggleDarkMode() {
+            this.isDarkMode = !this.isDarkMode;
+            localStorage.setItem('darkMode', this.isDarkMode);
+            this.applyDarkMode();
+        },
+        
+        applyDarkMode() {
+            if (this.isDarkMode) {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        }
+    }));
+});
+
+// Appliquer le mode sombre au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.documentElement.classList.add('dark-mode');
+    }
+});
+</script>
+
+</div>

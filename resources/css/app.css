@@ -382,3 +382,22 @@
 .feature-icon:hover {
     @apply transform scale-110;
 }
+
+/* Mode Sombre Simple - Inversion des couleurs */
+.dark-mode {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Préserver les images en mode sombre */
+.dark-mode img,
+.dark-mode video,
+.dark-mode iframe,
+.dark-mode canvas,
+.dark-mode svg {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Préserver les éléments qui ne doivent pas être inversés */
+.dark-mode .no-invert {
+    filter: invert(1) hue-rotate(180deg);
+}
