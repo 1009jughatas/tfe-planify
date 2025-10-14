@@ -6,9 +6,15 @@
                 <p class="text-sm text-gray-600 mt-1">Personnalisez votre expérience Planify</p>
             </div>
             <div class="flex items-center space-x-3">
-                <span class="badge-warning">
-                    <i class="fas fa-crown mr-1"></i>Premium
-                </span>
+                @if(Auth::user() && Auth::user()->is_premium())
+                    <span class="badge-premium">
+                        <i class="fas fa-crown mr-1"></i>Premium
+                    </span>
+                @else
+                    <a href="{{ route('premium.show') }}" class="badge-upgrade">
+                        <i class="fas fa-crown mr-1"></i>Passer Premium
+                    </a>
+                @endif
             </div>
         </div>
     </x-slot>
@@ -42,29 +48,51 @@
                 </div>
                 <div class="modern-card-body">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Mode sombre -->
+                        <!-- Mode sombre (Premium) -->
                         <div class="space-y-3">
                             <label class="form-label-modern">Mode d'Affichage</label>
-                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-moon text-white"></i>
+                            @if(Auth::user() && Auth::user()->is_premium())
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-moon text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">Mode Sombre</h4>
+                                            <p class="text-sm text-gray-600">Interface sombre pour une meilleure visibilité</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 class="font-medium text-gray-900">Mode Sombre</h4>
-                                        <p class="text-sm text-gray-600">Interface sombre pour une meilleure visibilité</p>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" 
+                                               class="sr-only peer" 
+                                               id="dark_mode" 
+                                               name="dark_mode" 
+                                               value="1"
+                                               {{ old('dark_mode', $preferences->dark_mode ?? false) ? 'checked' : '' }}>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                                    </label>
+                                </div>
+                            @else
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 opacity-50">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-moon text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">Mode Sombre</h4>
+                                            <p class="text-sm text-gray-600">Interface sombre pour une meilleure visibilité</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-11 h-6 bg-gray-200 rounded-full flex items-center justify-end pr-1">
+                                            <div class="w-5 h-5 bg-white rounded-full shadow"></div>
+                                        </div>
+                                        <a href="{{ route('premium.show') }}" class="text-xs bg-yellow-500 text-white px-2 py-1 rounded-full">
+                                            <i class="fas fa-crown mr-1"></i>Premium
+                                        </a>
                                     </div>
                                 </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" 
-                                           class="sr-only peer" 
-                                           id="dark_mode" 
-                                           name="dark_mode" 
-                                           value="1"
-                                           {{ old('dark_mode', $preferences->dark_mode ?? false) ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                                </label>
-                            </div>
+                            @endif
                         </div>
 
                         <!-- Couleur du thème -->
@@ -331,6 +359,14 @@
         
         .badge-warning {
             @apply inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full;
+        }
+        
+        .badge-premium {
+            @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-medium rounded-full shadow-sm;
+        }
+        
+        .badge-upgrade {
+            @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-medium rounded-full shadow-sm hover:shadow-md transition-all duration-200;
         }
         
         /* Animations pour les switches */

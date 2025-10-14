@@ -79,6 +79,10 @@
                         <i class="fas fa-user mr-2"></i>
                         Inscription Indépendant
                     </a>
+                    <a href="{{ route('premium.show') }}" class="btn-premium-modern px-8 py-4 text-lg font-semibold">
+                        <i class="fas fa-crown mr-2"></i>
+                        Découvrir Premium
+                    </a>
                 </div>
                 
                 <!-- Stats -->
@@ -148,6 +152,15 @@
                     </div>
                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Plans Flexibles</h3>
                     <p class="text-gray-600">3 plans tarifaires adaptés à votre taille : Starter, Growth, Enterprise.</p>
+                </div>
+
+                <!-- Premium Features -->
+                <div class="modern-card hover-lift text-center card-hover">
+                    <div class="feature-icon bg-gradient-to-br from-yellow-400 to-orange-500">
+                        <i class="fas fa-crown text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Premium Indépendants</h3>
+                    <p class="text-gray-600">Projets illimités, export de données, thème sombre, analyses détaillées.</p>
                 </div>
 
                 <!-- Gestion Avancée -->
@@ -746,5 +759,12 @@
             </div>
         </div>
     </footer>
+
+    <style>
+        /* Boutons Premium */
+        .btn-premium-modern {
+            @apply inline-flex items-center px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300;
+        }
+    </style>
 </body>
 </html>

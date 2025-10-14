@@ -17,12 +17,22 @@
                     </p>
                 </div>
             </div>
-            @if (Auth::user() && Auth::user()->is_premium())
-                <a href="{{ route('dashboard.exportReport') }}" class="btn-primary-modern">
-                    <i class="fas fa-file-pdf mr-2"></i>
-                    Exporter PDF
-                </a>
-            @endif
+            <div class="flex items-center space-x-3">
+                @if (Auth::user() && Auth::user()->is_premium())
+                    <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
+                        <i class="fas fa-download mr-2"></i>
+                        Exporter Dashboard
+                    </a>
+                    <span class="badge-premium">
+                        <i class="fas fa-crown mr-1"></i>Premium
+                    </span>
+                @else
+                    <a href="{{ route('premium.show') }}" class="btn-primary-modern">
+                        <i class="fas fa-crown mr-2"></i>
+                        Passer Premium
+                    </a>
+                @endif
+            </div>
         </div>
     </x-slot>
 
@@ -49,6 +59,51 @@
                 </div>
             </div>
         </div>
+
+        <!-- Section Premium -->
+        @if (Auth::user() && Auth::user()->is_premium())
+            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-crown text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Fonctionnalités Premium Actives</h3>
+                            <p class="text-sm text-gray-600">Vous bénéficiez de toutes les fonctionnalités Premium</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
+                            <i class="fas fa-download mr-2"></i>
+                            Exporter Dashboard
+                        </a>
+                        <a href="{{ route('preferences.edit') }}" class="btn-premium-modern">
+                            <i class="fas fa-palette mr-2"></i>
+                            Thème Sombre
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-crown text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Débloquez Premium</h3>
+                            <p class="text-sm text-gray-600">Export de données, analyses détaillées, thème sombre et plus</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('premium.show') }}" class="btn-primary-modern">
+                        <i class="fas fa-crown mr-2"></i>
+                        Passer Premium
+                    </a>
+                </div>
+            </div>
+        @endif
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -421,4 +476,15 @@
             calendar.render();
         });
     </script>
+
+    <style>
+        /* Boutons Premium */
+        .btn-premium-modern {
+            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200;
+        }
+        
+        .badge-premium {
+            @apply inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-medium rounded-full shadow-sm;
+        }
+    </style>
 </x-app-layout>

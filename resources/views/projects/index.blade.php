@@ -51,6 +51,51 @@
             @endif
         @endif
 
+        <!-- Section Premium -->
+        @if (Auth::user() && Auth::user()->is_premium())
+            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-crown text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Fonctionnalités Premium</h3>
+                            <p class="text-sm text-gray-600">Exportez vos projets et analyses détaillées</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <a href="{{ route('export.projects') }}" class="btn-premium-export">
+                            <i class="fas fa-download mr-2"></i>
+                            Exporter Projets
+                        </a>
+                        <a href="{{ route('export.dashboard') }}" class="btn-premium-export">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Analyses Détaillées
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-crown text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Débloquez Premium</h3>
+                            <p class="text-sm text-gray-600">Export de données, analyses détaillées, thème sombre et plus</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('premium.show') }}" class="btn-primary-modern">
+                        <i class="fas fa-crown mr-2"></i>
+                        Passer Premium
+                    </a>
+                </div>
+            </div>
+        @endif
+
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- En Planification -->
@@ -527,6 +572,11 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+        
+        /* Boutons Premium */
+        .btn-premium-export {
+            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200;
         }
     </style>
 
