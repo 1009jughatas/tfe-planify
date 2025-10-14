@@ -24,7 +24,10 @@ class User extends Authenticatable
         'company_id',
         'position',
         'department',
-        'is_active'
+        'is_active',
+        'is_premium',
+        'stripe_customer_id',
+        'stripe_subscription_id'
     ];
 
     /**

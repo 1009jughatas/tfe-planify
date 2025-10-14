@@ -21,6 +21,32 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Messages de succès/erreur -->
+            @if (session('success'))
+                <div class="mb-8 bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="mb-8 bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
             <!-- Hero Section -->
             <div class="text-center mb-12">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-6 shadow-lg">
@@ -121,7 +147,7 @@
                         
                         <div class="mb-8">
                             <div class="flex items-center justify-center mb-2">
-                                <span class="text-5xl font-bold text-gray-900">10</span>
+                                <span class="text-5xl font-bold text-gray-900">99</span>
                                 <span class="text-2xl text-gray-500 ml-2">€</span>
                                 <span class="text-gray-500 ml-2">/ mois</span>
                             </div>

@@ -17,6 +17,11 @@ return [
     'currency' => 'eur',
     
     'plans' => [
+        'premium' => [
+            'name' => 'Premium',
+            'price' => 9900, // 99€ en centimes
+            'description' => 'Accès complet à toutes les fonctionnalités',
+        ],
         'starter' => [
             'name' => 'Starter',
             'price' => 399,
