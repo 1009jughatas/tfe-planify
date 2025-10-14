@@ -104,20 +104,25 @@
     </div>
 
     <!-- Navigation Menu -->
-    <nav class="flex-1 p-6 space-y-6">
-        <!-- Principal -->
+    <nav class="flex-1 p-6 space-y-8">
+        <!-- Accueil -->
         <div class="nav-section">
-            <h3 class="nav-section-title">Principal</h3>
+            <div class="nav-section-header">
+                <div class="nav-section-icon">
+                    <i class="fas fa-home text-blue-500"></i>
+                </div>
+                <h3 class="nav-section-title">Accueil</h3>
+            </div>
             <div class="space-y-1">
                 <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" 
                    class="nav-item {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
                     <div class="nav-icon">
-                        <i class="fas fa-home"></i>
+                        <i class="fas fa-tachometer-alt"></i>
                     </div>
                     <div class="nav-content">
-                        <span class="nav-text">Dashboard</span>
-                        <span class="nav-desc">Vue d'ensemble</span>
+                        <span class="nav-text">Tableau de bord</span>
+                        <span class="nav-desc">Vue d'ensemble de vos activités</span>
                     </div>
                     <div class="nav-arrow">
                         <i class="fas fa-chevron-right"></i>
@@ -126,20 +131,25 @@
             </div>
         </div>
 
-        <!-- Gestion -->
+        <!-- Projets -->
         @auth
         <div class="nav-section">
-            <h3 class="nav-section-title">Gestion</h3>
+            <div class="nav-section-header">
+                <div class="nav-section-icon">
+                    <i class="fas fa-project-diagram text-green-500"></i>
+                </div>
+                <h3 class="nav-section-title">Projets</h3>
+            </div>
             <div class="space-y-1">
                 <a href="{{ route('projects.index') }}" 
                    class="nav-item {{ request()->routeIs('projects.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
                     <div class="nav-icon">
-                        <i class="fas fa-project-diagram"></i>
+                        <i class="fas fa-folder-open"></i>
                     </div>
                     <div class="nav-content">
                         <span class="nav-text">Mes Projets</span>
-                        <span class="nav-desc">Gérer vos projets</span>
+                        <span class="nav-desc">Gérer et suivre vos projets</span>
                     </div>
                     <div class="nav-arrow">
                         <i class="fas fa-chevron-right"></i>
@@ -152,16 +162,21 @@
         <!-- Premium -->
         @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
         <div class="nav-section">
-            <h3 class="nav-section-title">Premium</h3>
+            <div class="nav-section-header">
+                <div class="nav-section-icon">
+                    <i class="fas fa-crown text-yellow-500"></i>
+                </div>
+                <h3 class="nav-section-title">Premium</h3>
+            </div>
             <div class="space-y-1">
                 <a href="{{ route('premium.show') }}" 
                    class="nav-item nav-item-premium {{ request()->routeIs('premium.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
                     <div class="nav-icon nav-icon-premium">
-                        <i class="fas fa-crown"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                     <div class="nav-content">
-                        <span class="nav-text">Devenir Premium</span>
+                        <span class="nav-text">Passer Premium</span>
                         <span class="nav-desc">Débloquez toutes les fonctionnalités</span>
                     </div>
                     <div class="nav-arrow">
@@ -175,17 +190,22 @@
         <!-- Paramètres -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
         <div class="nav-section">
-            <h3 class="nav-section-title">Paramètres</h3>
+            <div class="nav-section-header">
+                <div class="nav-section-icon">
+                    <i class="fas fa-cog text-gray-500"></i>
+                </div>
+                <h3 class="nav-section-title">Paramètres</h3>
+            </div>
             <div class="space-y-1">
                 <a href="{{ route('preferences.edit') }}" 
                    class="nav-item {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
                     <div class="nav-icon">
-                        <i class="fas fa-cog"></i>
+                        <i class="fas fa-sliders-h"></i>
                     </div>
                     <div class="nav-content">
                         <span class="nav-text">Préférences</span>
-                        <span class="nav-desc">Personnaliser l'interface</span>
+                        <span class="nav-desc">Personnaliser votre expérience</span>
                     </div>
                     <div class="nav-arrow">
                         <i class="fas fa-chevron-right"></i>
@@ -198,13 +218,18 @@
         <!-- Administration -->
         @if (Auth::user() && Auth::user()->is_admin())
         <div class="nav-section">
-            <h3 class="nav-section-title">Administration</h3>
+            <div class="nav-section-header">
+                <div class="nav-section-icon">
+                    <i class="fas fa-shield-alt text-red-500"></i>
+                </div>
+                <h3 class="nav-section-title">Administration</h3>
+            </div>
             <div class="space-y-1">
                 <a href="{{ route('admin.dashboard') }}" 
                    class="nav-item nav-item-admin {{ request()->routeIs('admin.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
                     <div class="nav-icon nav-icon-admin">
-                        <i class="fas fa-shield-alt"></i>
+                        <i class="fas fa-tools"></i>
                     </div>
                     <div class="nav-content">
                         <span class="nav-text">Panneau Admin</span>
@@ -218,15 +243,20 @@
         </div>
         @endif
 
-        <!-- Compte -->
+        <!-- Mon Compte -->
         <div class="nav-section">
-            <h3 class="nav-section-title">Compte</h3>
+            <div class="nav-section-header">
+                <div class="nav-section-icon">
+                    <i class="fas fa-user-circle text-indigo-500"></i>
+                </div>
+                <h3 class="nav-section-title">Mon Compte</h3>
+            </div>
             <div class="space-y-1">
                 <a href="{{ route('profile.edit') }}" 
                    class="nav-item {{ request()->routeIs('profile.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
                     <div class="nav-icon">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user-edit"></i>
                     </div>
                     <div class="nav-content">
                         <span class="nav-text">Mon Profil</span>
@@ -244,8 +274,8 @@
                             <i class="fas fa-sign-out-alt"></i>
                         </div>
                         <div class="nav-content">
-                            <span class="nav-text">Déconnexion</span>
-                            <span class="nav-desc">Se déconnecter</span>
+                            <span class="nav-text">Se déconnecter</span>
+                            <span class="nav-desc">Fermer ma session</span>
                         </div>
                         <div class="nav-arrow">
                             <i class="fas fa-chevron-right"></i>
@@ -277,11 +307,19 @@
 <style>
     /* Navigation Styles */
     .nav-section {
-        @apply mb-6;
+        @apply mb-8;
+    }
+    
+    .nav-section-header {
+        @apply flex items-center space-x-3 mb-4 px-2;
+    }
+    
+    .nav-section-icon {
+        @apply w-6 h-6 flex items-center justify-center;
     }
     
     .nav-section-title {
-        @apply text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-1;
+        @apply text-sm font-semibold text-gray-700 tracking-wide;
     }
     
     .nav-item {
