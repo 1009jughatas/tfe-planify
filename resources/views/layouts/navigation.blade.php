@@ -138,11 +138,14 @@
     </div>
 
     <!-- Navigation Menu -->
-    <nav class="flex-1 p-6 space-y-6">
+    <nav class="flex-1 p-6 space-y-8">
         <!-- Accueil -->
         <div class="nav-section">
-            <h3 class="nav-section-title">Accueil</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Accueil</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                 <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" 
                    class="nav-item {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
@@ -159,8 +162,11 @@
         <!-- Projets -->
         @auth
         <div class="nav-section">
-            <h3 class="nav-section-title">Projets</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Projets</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                 <a href="{{ route('projects.index') }}" 
                    class="nav-item {{ request()->routeIs('projects.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
@@ -178,8 +184,11 @@
         <!-- Premium -->
         @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
         <div class="nav-section">
-            <h3 class="nav-section-title">Premium</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Premium</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                 <a href="{{ route('premium.show') }}" 
                    class="nav-item nav-item-premium {{ request()->routeIs('premium.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
@@ -197,8 +206,11 @@
         <!-- Paramètres -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
         <div class="nav-section">
-            <h3 class="nav-section-title">Paramètres</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Paramètres</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                 <a href="{{ route('preferences.edit') }}" 
                    class="nav-item {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
@@ -216,8 +228,11 @@
         <!-- Administration -->
         @if (Auth::user() && Auth::user()->is_admin())
         <div class="nav-section">
-            <h3 class="nav-section-title">Administration</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Administration</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                 <a href="{{ route('admin.dashboard') }}" 
                    class="nav-item nav-item-admin {{ request()->routeIs('admin.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
@@ -235,8 +250,11 @@
         <!-- Export (Premium) -->
         @if (Auth::user() && Auth::user()->is_premium())
         <div class="nav-section">
-            <h3 class="nav-section-title">Export Premium</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Export Premium</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                    <a href="{{ route('export.dashboard') }}" 
                       class="nav-item nav-item-premium"
                       @click="sidebarOpen = false">
@@ -275,8 +293,11 @@
 
         <!-- Mon Compte -->
         <div class="nav-section">
-            <h3 class="nav-section-title">Mon Compte</h3>
-            <div class="space-y-1">
+            <div class="nav-section-header">
+                <h3 class="nav-section-title">Mon Compte</h3>
+                <div class="nav-section-line"></div>
+            </div>
+            <div class="space-y-2">
                 <a href="{{ route('profile.edit') }}" 
                    class="nav-item {{ request()->routeIs('profile.*') ? 'nav-item-active' : '' }}"
                    @click="sidebarOpen = false">
@@ -331,11 +352,25 @@
 <style>
     /* Navigation Styles */
     .nav-section {
-        @apply mb-6;
+        @apply mb-8;
+    }
+    
+    .nav-section-header {
+        @apply relative mb-4;
     }
     
     .nav-section-title {
-        @apply text-sm font-medium text-gray-600 mb-3 px-2;
+        @apply text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2;
+        @apply bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg py-2 px-4;
+        @apply border border-gray-200 shadow-sm;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .nav-section-line {
+        @apply absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent;
+        transform: translateY(-50%);
+        z-index: 0;
     }
     
     .nav-item {
