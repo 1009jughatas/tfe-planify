@@ -3,33 +3,29 @@
      class="h-screen bg-white border-r border-gray-200 shadow-lg flex flex-col hidden lg:flex">
     
     <!-- Header with Logo -->
-    <div class="p-6 border-b border-gray-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
-        <!-- Background decoration -->
-        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-full -translate-y-16 translate-x-16"></div>
-        <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-200/20 to-blue-200/20 rounded-full translate-y-12 -translate-x-12"></div>
-        
-        <div class="flex items-center justify-between relative z-10">
+    <div class="p-6 border-b border-gray-200 bg-white">
+        <div class="flex items-center justify-between">
             <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="flex items-center space-x-3 group">
                 <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 overflow-hidden">
                     <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
                 </div>
                 <div x-show="!collapsed" class="transition-all duration-200">
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Planify</h1>
+                    <h1 class="text-xl font-bold text-gray-900">Planify</h1>
                     <div class="flex items-center space-x-2 mt-1">
                         @if (Auth::user() && Auth::user()->isAdminEntreprise())
-                            <span class="text-xs font-semibold text-purple-700 bg-gradient-to-r from-purple-100 to-purple-200 px-3 py-1 rounded-full border border-purple-200/50">
+                            <span class="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-building mr-1"></i>Admin Entreprise
                             </span>
                         @elseif (Auth::user() && Auth::user()->isUserEntreprise())
-                            <span class="text-xs font-semibold text-blue-700 bg-gradient-to-r from-blue-100 to-blue-200 px-3 py-1 rounded-full border border-blue-200/50">
+                            <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-users mr-1"></i>Équipe
                             </span>
                         @elseif (Auth::user() && Auth::user()->isUserIndependant())
-                            <span class="text-xs font-semibold text-green-700 bg-gradient-to-r from-green-100 to-green-200 px-3 py-1 rounded-full border border-green-200/50">
+                            <span class="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-user mr-1"></i>Indépendant
                             </span>
                         @else
-                            <span class="text-xs font-semibold text-gray-700 bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1 rounded-full border border-gray-200/50">
+                            <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
                                 <i class="fas fa-user mr-1"></i>Utilisateur
                             </span>
                         @endif
@@ -180,20 +176,15 @@
         }
         
         .nav-item-modern {
-            @apply flex items-center px-4 py-4 text-gray-700 rounded-2xl transition-all duration-300 group relative mx-2 hover:scale-105;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.1);
+            @apply flex items-center px-3 py-3 text-gray-700 rounded-lg transition-all duration-200 group relative mx-1;
         }
         
         .nav-item-modern:hover {
-            @apply bg-white/80 text-gray-900 shadow-lg;
-            transform: translateX(4px) scale(1.02);
+            @apply bg-gray-100 text-gray-900;
         }
         
         .nav-item-active {
-            @apply bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-r-4 border-blue-500 shadow-lg;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-            transform: translateX(4px);
+            @apply bg-blue-50 text-blue-700 border-r-2 border-blue-500;
         }
         
         .nav-item-premium {

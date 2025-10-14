@@ -146,19 +146,19 @@
 
 <style>
     .kanban-column {
-        @apply bg-gray-50 rounded-xl border border-gray-200;
+        @apply bg-gray-50 rounded-lg border border-gray-200 shadow-sm;
     }
     
     .kanban-header {
-        @apply p-4 rounded-t-xl border-b border-gray-200;
+        @apply p-3 rounded-t-lg border-b border-gray-200;
     }
     
     .kanban-content {
-        @apply p-4 space-y-3 min-h-96;
+        @apply p-3 space-y-3 min-h-80;
     }
     
     .empty-column {
-        @apply flex flex-col items-center justify-center py-8 text-center;
+        @apply flex flex-col items-center justify-center py-6 text-center;
     }
     
     @media (max-width: 768px) {

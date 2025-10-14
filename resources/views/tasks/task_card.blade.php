@@ -112,16 +112,15 @@
 
 <style>
     .task-card {
-        @apply bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-primary-200 transition-all duration-200;
-        background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+        @apply bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200;
     }
     
     .task-card-header {
-        @apply p-4 border-b border-gray-100;
+        @apply p-3 border-b border-gray-100;
     }
     
     .task-title {
-        @apply text-sm font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight;
+        @apply text-sm font-medium text-gray-900 mb-2 line-clamp-2 leading-tight;
     }
     
     .task-status-badge {
@@ -149,7 +148,7 @@
     }
     
     .task-card-body {
-        @apply p-4 flex-1;
+        @apply p-3 flex-1;
     }
     
     .task-description {
@@ -169,11 +168,11 @@
     }
     
     .task-card-footer {
-        @apply p-4 border-t border-gray-100;
+        @apply p-3 border-t border-gray-100;
     }
     
     .task-view-btn {
-        @apply text-xs text-primary-600 hover:text-primary-700 font-medium px-2 py-1 rounded-md transition-all duration-200;
+        @apply text-xs text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded-md transition-all duration-200;
     }
     
     .line-clamp-2 {
@@ -185,20 +184,16 @@
     
     /* Responsive adjustments */
     @media (max-width: 640px) {
-        .task-card {
-            @apply p-3;
-        }
-        
         .task-card-header {
-            @apply p-3;
+            @apply p-2;
         }
         
         .task-card-body {
-            @apply p-3;
+            @apply p-2;
         }
         
         .task-card-footer {
-            @apply p-3;
+            @apply p-2;
         }
         
         .task-title {

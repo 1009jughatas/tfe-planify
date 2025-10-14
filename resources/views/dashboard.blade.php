@@ -5,14 +5,12 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg float">
-                    <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-10 h-10 object-contain filter brightness-0 invert">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                    <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                        Dashboard Personnel
-                    </h1>
+                    <h1 class="text-2xl font-bold text-gray-900">Dashboard Personnel</h1>
                     <p class="text-gray-600 mt-1 flex items-center">
                         <i class="fas fa-user-circle mr-2 text-blue-500"></i>
                         Gérez vos projets et tâches personnels
@@ -30,15 +28,15 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Hero Section -->
-        <div class="mb-12">
-            <div class="modern-card bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-0">
-                <div class="modern-card-body text-center py-12">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl float">
-                        <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-12 h-12 object-contain filter brightness-0 invert">
+        <div class="mb-8">
+            <div class="modern-card bg-blue-50 border-blue-200">
+                <div class="modern-card-body text-center py-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
+                        <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-10 h-10 object-contain filter brightness-0 invert">
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Bienvenue, {{ Auth::user()->name }} !</h2>
-                    <p class="text-gray-600 text-lg">Votre espace de travail personnel pour organiser vos projets et tâches</p>
-                    <div class="flex justify-center mt-6 space-x-4">
+                    <h2 class="text-xl font-bold text-gray-900 mb-2">Bienvenue, {{ Auth::user()->name }} !</h2>
+                    <p class="text-gray-600 mb-4">Votre espace de travail personnel pour organiser vos projets et tâches</p>
+                    <div class="flex justify-center space-x-3">
                         <a href="{{ route('projects.create') }}" class="btn-primary-modern">
                             <i class="fas fa-plus mr-2"></i>
                             Nouveau Projet
@@ -53,20 +51,20 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Active Projects -->
             <div class="stats-card hover-lift group">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 mb-1">Projets Actifs</p>
-                        <p class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{{ $activeProjectsCount }}</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $activeProjectsCount }}</p>
                         <p class="text-xs text-gray-500 mt-1 flex items-center">
                             <i class="fas fa-arrow-up text-green-500 mr-1"></i>
                             En cours
                         </p>
                     </div>
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-project-diagram text-white text-xl"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-project-diagram text-white text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -76,14 +74,14 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 mb-1">Tâches Ouvertes</p>
-                        <p class="text-4xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">{{ $openTasksCount }}</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $openTasksCount }}</p>
                         <p class="text-xs text-gray-500 mt-1 flex items-center">
                             <i class="fas fa-clock text-orange-500 mr-1"></i>
                             À faire
                         </p>
                     </div>
-                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-tasks text-white text-xl"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-tasks text-white text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -93,14 +91,14 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 mb-1">Projets Terminés</p>
-                        <p class="text-4xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">{{ $completedProjectsCount }}</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $completedProjectsCount }}</p>
                         <p class="text-xs text-gray-500 mt-1 flex items-center">
                             <i class="fas fa-check-circle text-green-500 mr-1"></i>
                             Finalisés
                         </p>
                     </div>
-                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-check-circle text-white text-xl"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-check-circle text-white text-lg"></i>
                     </div>
                 </div>
             </div>
