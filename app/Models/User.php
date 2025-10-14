@@ -50,6 +50,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_premium' => 'boolean',
+            'is_admin' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -112,7 +115,7 @@ class User extends Authenticatable
     public function is_premium()
     {
         // Un utilisateur est premium s'il a payé l'abonnement Premium
-        return $this && $this->is_premium === true;
+        return $this && (bool) $this->getAttribute('is_premium');
     }
 
     public function company()
