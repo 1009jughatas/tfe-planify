@@ -138,189 +138,134 @@
     </div>
 
     <!-- Navigation Menu -->
-    <nav class="flex-1 p-6 space-y-8">
+    <nav class="flex-1 p-6 space-y-6">
         <!-- Accueil -->
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Accueil</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" 
-                   class="nav-item {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}"
-                   @click="sidebarOpen = false">
-                    <div class="nav-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <div class="nav-content">
-                        <span class="nav-text">Tableau de bord</span>
-                    </div>
-                </a>
-            </div>
+            <h3 class="nav-section-title">Accueil</h3>
+            <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" 
+               class="nav-item {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span class="nav-text">Tableau de bord</span>
+            </a>
         </div>
 
         <!-- Projets -->
         @auth
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Projets</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                <a href="{{ route('projects.index') }}" 
-                   class="nav-item {{ request()->routeIs('projects.*') ? 'nav-item-active' : '' }}"
-                   @click="sidebarOpen = false">
-                    <div class="nav-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="nav-content">
-                        <span class="nav-text">Mes Projets</span>
-                    </div>
-                </a>
-            </div>
+            <h3 class="nav-section-title">Projets</h3>
+            <a href="{{ route('projects.index') }}" 
+               class="nav-item {{ request()->routeIs('projects.*') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <span class="nav-text">Mes Projets</span>
+            </a>
         </div>
         @endauth
 
         <!-- Premium -->
         @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Premium</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                <a href="{{ route('premium.show') }}" 
-                   class="nav-item nav-item-premium {{ request()->routeIs('premium.*') ? 'nav-item-active' : '' }}"
-                   @click="sidebarOpen = false">
-                    <div class="nav-icon nav-icon-premium">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <div class="nav-content">
-                        <span class="nav-text">Passer Premium</span>
-                    </div>
-                </a>
-            </div>
+            <h3 class="nav-section-title">Premium</h3>
+            <a href="{{ route('premium.show') }}" 
+               class="nav-item nav-item-premium {{ request()->routeIs('premium.*') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon nav-icon-premium">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <span class="nav-text">Passer Premium</span>
+            </a>
         </div>
         @endif
 
         <!-- Paramètres -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Paramètres</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                <a href="{{ route('preferences.edit') }}" 
-                   class="nav-item {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
-                   @click="sidebarOpen = false">
-                    <div class="nav-icon">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="nav-content">
-                        <span class="nav-text">Préférences</span>
-                    </div>
-                </a>
-            </div>
+            <h3 class="nav-section-title">Paramètres</h3>
+            <a href="{{ route('preferences.edit') }}" 
+               class="nav-item {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <span class="nav-text">Préférences</span>
+            </a>
         </div>
         @endif
 
         <!-- Administration -->
         @if (Auth::user() && Auth::user()->is_admin())
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Administration</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="nav-item nav-item-admin {{ request()->routeIs('admin.*') ? 'nav-item-active' : '' }}"
-                   @click="sidebarOpen = false">
-                    <div class="nav-icon nav-icon-admin">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div class="nav-content">
-                        <span class="nav-text">Panneau Admin</span>
-                    </div>
-                </a>
-            </div>
+            <h3 class="nav-section-title">Administration</h3>
+            <a href="{{ route('admin.dashboard') }}" 
+               class="nav-item nav-item-admin {{ request()->routeIs('admin.*') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon nav-icon-admin">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <span class="nav-text">Panneau Admin</span>
+            </a>
         </div>
         @endif
 
         <!-- Export (Premium) -->
         @if (Auth::user() && Auth::user()->is_premium())
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Export Premium</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                   <a href="{{ route('export.dashboard') }}" 
-                      class="nav-item nav-item-premium"
-                      @click="sidebarOpen = false">
-                       <div class="nav-icon nav-icon-premium">
-                           <i class="fas fa-file-pdf"></i>
-                       </div>
-                       <div class="nav-content">
-                           <span class="nav-text">Export Dashboard PDF</span>
-                       </div>
-                   </a>
-                   
-                   <a href="{{ route('export.projects') }}" 
-                      class="nav-item nav-item-premium"
-                      @click="sidebarOpen = false">
-                       <div class="nav-icon nav-icon-premium">
-                           <i class="fas fa-file-pdf"></i>
-                       </div>
-                       <div class="nav-content">
-                           <span class="nav-text">Export Projets PDF</span>
-                       </div>
-                   </a>
-                   
-                   <a href="{{ route('export.tasks') }}" 
-                      class="nav-item nav-item-premium"
-                      @click="sidebarOpen = false">
-                       <div class="nav-icon nav-icon-premium">
-                           <i class="fas fa-file-pdf"></i>
-                       </div>
-                       <div class="nav-content">
-                           <span class="nav-text">Export Tâches PDF</span>
-                       </div>
-                   </a>
-            </div>
+            <h3 class="nav-section-title">Export Premium</h3>
+            <a href="{{ route('export.dashboard') }}" 
+               class="nav-item nav-item-premium"
+               @click="sidebarOpen = false">
+                <div class="nav-icon nav-icon-premium">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <span class="nav-text">Export Dashboard PDF</span>
+            </a>
+            
+            <a href="{{ route('export.projects') }}" 
+               class="nav-item nav-item-premium"
+               @click="sidebarOpen = false">
+                <div class="nav-icon nav-icon-premium">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <span class="nav-text">Export Projets PDF</span>
+            </a>
+            
+            <a href="{{ route('export.tasks') }}" 
+               class="nav-item nav-item-premium"
+               @click="sidebarOpen = false">
+                <div class="nav-icon nav-icon-premium">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <span class="nav-text">Export Tâches PDF</span>
+            </a>
         </div>
         @endif
 
         <!-- Mon Compte -->
         <div class="nav-section">
-            <div class="nav-section-header">
-                <h3 class="nav-section-title">Mon Compte</h3>
-                <div class="nav-section-line"></div>
-            </div>
-            <div class="space-y-2">
-                <a href="{{ route('profile.edit') }}" 
-                   class="nav-item {{ request()->routeIs('profile.*') ? 'nav-item-active' : '' }}"
-                   @click="sidebarOpen = false">
-                    <div class="nav-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="nav-content">
-                        <span class="nav-text">Mon Profil</span>
-                    </div>
-                </a>
+            <h3 class="nav-section-title">Mon Compte</h3>
+            <a href="{{ route('profile.edit') }}" 
+               class="nav-item {{ request()->routeIs('profile.*') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="nav-text">Mon Profil</span>
+            </a>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full nav-item nav-item-logout" @click="sidebarOpen = false">
-                        <div class="nav-icon">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </div>
-                        <div class="nav-content">
-                            <span class="nav-text">Se déconnecter</span>
-                        </div>
-                    </button>
-                </form>
-            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="w-full nav-item nav-item-logout" @click="sidebarOpen = false">
+                    <div class="nav-icon">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <span class="nav-text">Se déconnecter</span>
+                </button>
+            </form>
         </div>
 
         <!-- Toggle Thème Premium -->
@@ -350,73 +295,61 @@
 </div>
 
 <style>
-    /* Navigation Styles */
+    /* Navigation Styles - Simple et Direct */
     .nav-section {
-        @apply mb-8;
-    }
-    
-    .nav-section-header {
-        @apply relative mb-4;
+        @apply mb-6;
     }
     
     .nav-section-title {
-        @apply text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2;
-        @apply bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg py-2 px-4;
-        @apply border border-gray-200 shadow-sm;
-        position: relative;
-        z-index: 1;
-    }
-    
-    .nav-section-line {
-        @apply absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent;
-        transform: translateY(-50%);
-        z-index: 0;
+        @apply text-sm font-semibold text-gray-700 mb-3 px-2;
+        @apply border-l-4 border-blue-500 pl-3;
     }
     
     .nav-item {
-        @apply flex items-center p-4 rounded-xl transition-all duration-200 group cursor-pointer;
-        @apply bg-white border border-gray-100 hover:border-gray-200;
+        @apply flex items-center p-3 rounded-lg transition-all duration-200 cursor-pointer;
+        @apply bg-white border border-gray-200 hover:bg-gray-50 hover:border-blue-300;
+        @apply mb-2;
     }
     
     .nav-item:hover {
-        @apply bg-gray-50 transform translate-x-1 shadow-sm;
+        @apply shadow-sm transform translate-x-1;
     }
     
     .nav-item-active {
-        @apply bg-blue-50 border-blue-200 text-blue-700;
+        @apply bg-blue-50 border-blue-300 text-blue-700 shadow-sm;
     }
     
     .nav-item-premium {
-        @apply bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200;
+        @apply bg-purple-50 border-purple-200 text-purple-700;
     }
     
     .nav-item-premium:hover {
-        @apply bg-gradient-to-r from-purple-100 to-pink-100 transform translate-x-1;
+        @apply bg-purple-100 border-purple-300;
     }
     
     .nav-item-admin {
-        @apply bg-red-50 text-red-700 border-red-200;
+        @apply bg-red-50 border-red-200 text-red-700;
     }
     
     .nav-item-admin:hover {
-        @apply bg-red-100 transform translate-x-1;
+        @apply bg-red-100 border-red-300;
     }
     
     .nav-item-logout {
-        @apply text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-200;
-    }
-    
-    .nav-item-logout:hover {
-        @apply transform translate-x-1;
+        @apply text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300;
     }
     
     .nav-icon {
-        @apply w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 mr-4;
+        @apply w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mr-3;
         @apply bg-gray-100 text-gray-600 transition-all duration-200;
     }
     
     .nav-item:hover .nav-icon {
-        @apply bg-gray-200 text-gray-700 transform scale-110;
+        @apply bg-gray-200 text-gray-700;
+    }
+    
+    .nav-item-active .nav-icon {
+        @apply bg-blue-200 text-blue-700;
     }
     
     .nav-icon-premium {
@@ -427,28 +360,19 @@
         @apply bg-red-100 text-red-600;
     }
     
-    .nav-content {
-        @apply flex-1 min-w-0;
-    }
-    
     .nav-text {
-        @apply block text-base font-medium;
+        @apply text-sm font-medium;
     }
     
     /* Responsive adjustments */
     @media (max-width: 640px) {
         .nav-item {
-            @apply p-3;
+            @apply p-2;
         }
         
         .nav-icon {
-            @apply w-10 h-10 mr-3;
+            @apply w-8 h-8 mr-2;
         }
-    }
-    
-    /* Smooth transitions */
-    .nav-item {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     /* Focus states for accessibility */
