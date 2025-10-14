@@ -6,7 +6,7 @@
     <div class="p-6 border-b border-gray-200 bg-white">
         <div class="flex items-center justify-between">
             <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="flex items-center space-x-3 group">
-                <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 overflow-hidden">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 overflow-hidden">
                     <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
                 </div>
                 <div x-show="!collapsed" class="transition-all duration-200">
@@ -35,7 +35,7 @@
             
             <!-- Toggle Button -->
             <button @click="collapsed = !collapsed; localStorage.setItem('collapsed', JSON.stringify(collapsed));" 
-                    class="p-2 hover:bg-white/50 rounded-lg transition-all duration-200 group">
+                    class="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group">
                 <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -44,7 +44,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <div class="flex-1 px-4 py-6 space-y-1">
+    <div class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
         <!-- Dashboard -->
         <div class="nav-section">
             <div x-show="!collapsed" class="nav-section-title">
@@ -57,7 +57,7 @@
                     <i class="fas fa-home"></i>
                 </div>
                 <span x-show="!collapsed" class="nav-text">Dashboard</span>
-                <div x-show="!collapsed && request()->routeIs('dashboard')" class="nav-indicator"></div>
+                <div x-show="!collapsed && (request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard'))" class="nav-indicator"></div>
             </x-nav-link>
         </div>
 
@@ -90,7 +90,7 @@
                     <i class="fas fa-crown"></i>
                 </div>
                 <span x-show="!collapsed" class="nav-text">Devenir Premium</span>
-                <div x-show="!collapsed && request()->routeIs('premium.*')" class="nav-indicator"></div>
+                <div x-show="!collapsed && request()->routeIs('premium.*')" class="nav-indicator nav-indicator-premium"></div>
             </x-nav-link>
         </div>
         @endif
@@ -133,8 +133,8 @@
     <!-- User Section -->
     <div class="p-4 border-t border-gray-200 bg-gray-50">
         <!-- User Info -->
-        <div x-show="!collapsed" class="flex items-center space-x-3 mb-4 p-3 bg-white rounded-lg border border-gray-200">
-            <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+        <div x-show="!collapsed" class="flex items-center space-x-3 mb-4 p-3 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
                 <span class="text-white font-semibold text-sm">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
             </div>
             <div class="flex-1 min-w-0">
@@ -151,6 +151,7 @@
                     <i class="fas fa-user"></i>
                 </div>
                 <span x-show="!collapsed" class="nav-text">Mon Profil</span>
+                <div x-show="!collapsed && request()->routeIs('profile.*')" class="nav-indicator"></div>
             </x-nav-link>
 
             <form method="POST" action="{{ route('logout') }}">
@@ -168,7 +169,7 @@
     <style>
         /* Navigation Styles */
         .nav-section {
-            @apply mb-8;
+            @apply mb-6;
         }
         
         .nav-section-title {
@@ -180,7 +181,7 @@
         }
         
         .nav-item-modern:hover {
-            @apply bg-gray-100 text-gray-900;
+            @apply bg-gray-100 text-gray-900 transform translate-x-1;
         }
         
         .nav-item-active {
@@ -189,63 +190,63 @@
         
         .nav-item-premium {
             @apply bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border border-purple-200/50;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
         }
         
         .nav-item-premium:hover {
-            @apply bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            @apply bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 transform translate-x-1;
         }
         
         .nav-item-admin {
             @apply bg-gradient-to-r from-red-50 to-pink-50 text-red-700 border border-red-200/50;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
         }
         
         .nav-item-admin:hover {
-            @apply bg-gradient-to-r from-red-100 to-pink-100 text-red-800;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            @apply bg-gradient-to-r from-red-100 to-pink-100 text-red-800 transform translate-x-1;
         }
         
         .nav-item-user:hover {
-            @apply bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            @apply bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 transform translate-x-1;
         }
         
         .nav-item-logout {
             @apply text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 hover:text-red-700;
         }
         
+        .nav-item-logout:hover {
+            @apply transform translate-x-1;
+        }
+        
         .nav-icon {
-            @apply w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-lg transition-all duration-300;
-            background: rgba(255, 255, 255, 0.2);
+            @apply w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-lg transition-all duration-200;
+            @apply bg-gray-100 text-gray-600;
         }
         
         .nav-item-modern:hover .nav-icon {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.1);
+            @apply bg-gray-200 text-gray-700 transform scale-110;
         }
         
         .nav-icon-premium {
-            @apply text-purple-600;
-            background: rgba(147, 51, 234, 0.1);
+            @apply bg-purple-100 text-purple-600;
         }
         
         .nav-icon-admin {
-            @apply text-red-600;
-            background: rgba(239, 68, 68, 0.1);
+            @apply bg-red-100 text-red-600;
         }
         
         .nav-text {
-            @apply ml-4 font-semibold text-sm;
+            @apply ml-4 font-medium text-sm;
         }
         
         .nav-indicator {
-            @apply absolute right-3 w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-sm;
+            @apply absolute right-3 w-2 h-2 bg-blue-500 rounded-full;
+        }
+        
+        .nav-indicator-premium {
+            @apply bg-purple-500;
         }
         
         .nav-indicator-admin {
-            @apply bg-gradient-to-r from-red-500 to-pink-500;
+            @apply bg-red-500;
         }
         
         /* Collapsed state */
@@ -264,24 +265,14 @@
             }
         }
         
-        /* Animation for section titles */
-        .nav-section-title span {
-            @apply relative;
+        /* Smooth transitions */
+        .nav-item-modern {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .nav-section-title span::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-section:hover .nav-section-title span::after {
-            width: 100%;
+        /* Focus states for accessibility */
+        .nav-item-modern:focus {
+            @apply outline-none ring-2 ring-blue-500 ring-opacity-50;
         }
     </style>
 </nav>

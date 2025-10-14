@@ -34,7 +34,7 @@
          class="fixed top-0 left-0 w-80 h-full bg-white shadow-2xl z-50 overflow-y-auto">
         
         <!-- Mobile menu header -->
-        <div class="sticky top-0 bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6 border-b border-primary-700">
+        <div class="sticky top-0 bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 border-b border-blue-700">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
@@ -43,8 +43,20 @@
                     <div>
                         <h1 class="text-xl font-bold text-white">Planify</h1>
                         <div class="flex items-center space-x-2">
-                            @if (Auth::user() && Auth::user()->is_premium())
-                                <span class="text-xs font-medium bg-accent-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                            @if (Auth::user() && Auth::user()->isAdminEntreprise())
+                                <span class="text-xs font-medium bg-purple-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                                    <i class="fas fa-building mr-1"></i>Admin Entreprise
+                                </span>
+                            @elseif (Auth::user() && Auth::user()->isUserEntreprise())
+                                <span class="text-xs font-medium bg-blue-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                                    <i class="fas fa-users mr-1"></i>Équipe
+                                </span>
+                            @elseif (Auth::user() && Auth::user()->isUserIndependant())
+                                <span class="text-xs font-medium bg-green-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                                    <i class="fas fa-user mr-1"></i>Indépendant
+                                </span>
+                            @elseif (Auth::user() && Auth::user()->is_premium())
+                                <span class="text-xs font-medium bg-yellow-500/20 backdrop-blur-sm px-2 py-1 rounded-full">
                                     <i class="fas fa-crown mr-1"></i>Premium
                                 </span>
                             @elseif (Auth::user() && Auth::user()->is_admin())
@@ -70,7 +82,7 @@
         <!-- User Info Section -->
         <div class="p-6 bg-gray-50 border-b border-gray-200">
             <div class="flex items-center space-x-4">
-                <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                     <span class="text-white font-bold text-lg">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -105,8 +117,9 @@
             <div class="nav-section">
                 <h3 class="nav-section-title">Principal</h3>
                 <div class="space-y-1">
-                    <x-nav-link :href="Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard')" 
-                               class="mobile-nav-item {{ request()->routeIs('dashboard') ? 'mobile-nav-active' : '' }}">
+                    <x-nav-link :href="Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard')" 
+                               :active="request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard')" 
+                               class="mobile-nav-item {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'mobile-nav-active' : '' }}">
                         <div class="mobile-nav-icon">
                             <i class="fas fa-home"></i>
                         </div>
@@ -249,11 +262,16 @@
         <!-- Footer -->
         <div class="p-6 bg-gray-50 border-t border-gray-200">
             <div class="text-center">
+                <div class="flex justify-center mb-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-5 h-5 object-contain filter brightness-0 invert">
+                    </div>
+                </div>
                 <p class="text-xs text-gray-500">© 2025 Planify. Tous droits réservés.</p>
                 <div class="flex justify-center space-x-4 mt-2">
-                    <a href="#" class="text-xs text-gray-400 hover:text-gray-600">Aide</a>
-                    <a href="#" class="text-xs text-gray-400 hover:text-gray-600">Support</a>
-                    <a href="#" class="text-xs text-gray-400 hover:text-gray-600">Mentions légales</a>
+                    <a href="#" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Aide</a>
+                    <a href="#" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Support</a>
+                    <a href="#" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Mentions légales</a>
                 </div>
             </div>
         </div>
@@ -270,44 +288,53 @@
         }
         
         .mobile-nav-item {
-            @apply flex items-center p-4 rounded-xl transition-all duration-200 group;
+            @apply flex items-center p-4 rounded-xl transition-all duration-200 group cursor-pointer;
+            @apply bg-white border border-gray-100 hover:border-gray-200;
         }
         
         .mobile-nav-item:hover {
-            @apply bg-gray-100 transform translate-x-1;
+            @apply bg-gray-50 transform translate-x-1 shadow-sm;
         }
         
         .mobile-nav-active {
-            @apply bg-primary-50 border border-primary-200 text-primary-700;
+            @apply bg-blue-50 border-blue-200 text-blue-700;
         }
         
         .mobile-nav-premium {
-            @apply bg-gradient-to-r from-accent-50 to-accent-100 text-accent-700 border border-accent-200;
+            @apply bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border-purple-200;
         }
         
         .mobile-nav-premium:hover {
-            @apply bg-gradient-to-r from-accent-100 to-accent-200;
+            @apply bg-gradient-to-r from-purple-100 to-pink-100 transform translate-x-1;
         }
         
         .mobile-nav-admin {
-            @apply bg-red-50 text-red-700 border border-red-200;
+            @apply bg-red-50 text-red-700 border-red-200;
         }
         
         .mobile-nav-admin:hover {
-            @apply bg-red-100;
+            @apply bg-red-100 transform translate-x-1;
         }
         
         .mobile-nav-logout {
-            @apply text-red-600 hover:bg-red-50 hover:text-red-700;
+            @apply text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-200;
+        }
+        
+        .mobile-nav-logout:hover {
+            @apply transform translate-x-1;
         }
         
         .mobile-nav-icon {
             @apply w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 mr-4;
-            @apply bg-gray-100 text-gray-600;
+            @apply bg-gray-100 text-gray-600 transition-all duration-200;
+        }
+        
+        .mobile-nav-item:hover .mobile-nav-icon {
+            @apply bg-gray-200 text-gray-700 transform scale-110;
         }
         
         .mobile-nav-icon-premium {
-            @apply bg-accent-100 text-accent-600;
+            @apply bg-purple-100 text-purple-600;
         }
         
         .mobile-nav-icon-admin {
@@ -327,7 +354,7 @@
         }
         
         .mobile-nav-arrow {
-            @apply text-gray-400 group-hover:text-gray-600 transition-colors;
+            @apply text-gray-400 group-hover:text-gray-600 transition-colors duration-200;
         }
         
         /* Hamburger animation */
@@ -344,6 +371,16 @@
             .mobile-nav-icon {
                 @apply w-10 h-10 mr-3;
             }
+        }
+        
+        /* Smooth transitions */
+        .mobile-nav-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Focus states for accessibility */
+        .mobile-nav-item:focus {
+            @apply outline-none ring-2 ring-blue-500 ring-opacity-50;
         }
     </style>
 </div>
