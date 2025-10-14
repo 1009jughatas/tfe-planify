@@ -16,6 +16,8 @@ use App\Http\Middleware\IsEntreprise;
 use App\Http\Middleware\IsAdminEntreprise;
 use App\Http\Middleware\IsUserEntreprise;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 // Page d'accueil
@@ -79,6 +81,16 @@ Route::middleware(['auth', 'verified', IsIndependant::class])->group(function ()
     Route::get('/premium', [PaymentController::class, 'show'])->name('premium.show');
     Route::post('/premium/purchase', [PaymentController::class, 'purchase'])->name('premium.purchase');
     Route::get('/premium/success', [PaymentController::class, 'success'])->name('premium.success');
+    
+    // Theme routes (Premium only)
+    Route::post('/theme/toggle', [ThemeController::class, 'toggle'])->name('theme.toggle');
+    Route::get('/theme', [ThemeController::class, 'get'])->name('theme.get');
+    Route::post('/theme/set', [ThemeController::class, 'set'])->name('theme.set');
+    
+    // Export routes (Premium only)
+    Route::get('/export/projects', [ExportController::class, 'exportProjects'])->name('export.projects');
+    Route::get('/export/tasks', [ExportController::class, 'exportTasks'])->name('export.tasks');
+    Route::get('/export/dashboard', [ExportController::class, 'exportDashboard'])->name('export.dashboard');
 
     // Project Routes - Indépendants uniquement
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');

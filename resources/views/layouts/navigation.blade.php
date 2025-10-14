@@ -198,6 +198,47 @@
         </div>
         @endif
 
+        <!-- Export (Premium) -->
+        @if (Auth::user() && Auth::user()->is_premium())
+        <div class="nav-section">
+            <h3 class="nav-section-title">Export Premium</h3>
+            <div class="space-y-1">
+                <a href="{{ route('export.dashboard') }}" 
+                   class="nav-item nav-item-premium"
+                   @click="sidebarOpen = false">
+                    <div class="nav-icon nav-icon-premium">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="nav-content">
+                        <span class="nav-text">Exporter Dashboard</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('export.projects') }}" 
+                   class="nav-item nav-item-premium"
+                   @click="sidebarOpen = false">
+                    <div class="nav-icon nav-icon-premium">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="nav-content">
+                        <span class="nav-text">Exporter Projets</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('export.tasks') }}" 
+                   class="nav-item nav-item-premium"
+                   @click="sidebarOpen = false">
+                    <div class="nav-icon nav-icon-premium">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="nav-content">
+                        <span class="nav-text">Exporter Tâches</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        @endif
+
         <!-- Mon Compte -->
         <div class="nav-section">
             <h3 class="nav-section-title">Mon Compte</h3>
@@ -224,6 +265,13 @@
                         </div>
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Toggle Thème Premium -->
+        <div class="px-6 py-4 border-t border-gray-200">
+            <div class="flex items-center justify-center">
+                <x-theme-toggle />
             </div>
         </div>
     </nav>
