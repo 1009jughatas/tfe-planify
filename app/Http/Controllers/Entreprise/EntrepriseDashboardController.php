@@ -14,6 +14,11 @@ class EntrepriseDashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
+        
+        if (!$user) {
+            abort(403, 'Utilisateur non authentifié.');
+        }
+        
         $company = $user->company;
         
         if (!$company) {
@@ -40,7 +45,7 @@ class EntrepriseDashboardController extends Controller
 
         // Utilisateurs de l'entreprise
         $totalUsers = User::where('company_id', $company->id)->count();
-        $maxUsers = $company->max_users ?? 10; // Limite par défaut
+        $maxUsers = $company->user_limit ?? 10; // Limite par défaut
 
         // Projets récents
         $recentProjects = Project::where('company_id', $company->id)
