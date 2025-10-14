@@ -2,14 +2,14 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-                    <i class="fas fa-tasks text-white text-lg"></i>
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                    <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
                 </div>
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900">{{ $task->title }}</h1>
                     <p class="text-sm text-gray-600 mt-1">
                         Projet : 
-                        <a href="{{ route('projects.show', $task->project->id) }}" class="text-primary-600 hover:text-primary-700 font-medium underline">
+                        <a href="{{ route('projects.show', $task->project->id) }}" class="text-blue-600 hover:text-blue-700 font-medium underline">
                             {{ $task->project->name }}
                         </a>
                     </p>
@@ -28,137 +28,130 @@
         </div>
     </x-slot>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Contenu principal -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Informations de la tâche -->
-                <div class="modern-card">
-                    <div class="modern-card-header">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">
-                                <i class="fas fa-info-circle text-primary-600 mr-2"></i>
-                                Détails de la Tâche
-                            </h3>
-                            <div class="flex items-center space-x-2">
-                                <span class="badge-{{ 
-                                    $task->status == 'done' ? 'success' :
-                                    ($task->status == 'in-progress' ? 'warning' :
-                                    ($task->status == 'blocked' ? 'danger' : 'secondary'))
-                                }}">
-                                    @switch($task->status)
-                                        @case('todo')
-                                            📋 À faire
-                                            @break
-                                        @case('in-progress')
-                                            🔄 En cours
-                                            @break
-                                        @case('done')
-                                            ✅ Terminée
-                                            @break
-                                        @case('blocked')
-                                            🚫 Bloquée
-                                            @break
-                                        @default
-                                            ❓ Inconnu
-                                    @endswitch
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modern-card-body">
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-gray-700 leading-relaxed">{{ $task->description ?: 'Aucune description fournie.' }}</p>
-                            </div>
-                            
-                            <!-- Métadonnées -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
-                                @if($task->due_date)
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fas fa-calendar text-gray-500"></i>
-                                        <span class="text-sm text-gray-600">Échéance :</span>
-                                        <span class="text-sm font-medium text-gray-900">{{ $task->due_date->format('d/m/Y') }}</span>
-                                    </div>
-                                @endif
-                                
-                                @if($task->priority !== null)
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fas fa-flag text-gray-500"></i>
-                                        <span class="text-sm text-gray-600">Priorité :</span>
-                                        <span class="text-sm font-medium">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- En-tête de la tâche avec informations clés -->
+        <div class="modern-card mb-6">
+            <div class="modern-card-body">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Informations principales -->
+                    <div class="lg:col-span-2">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <span class="badge-{{ 
+                                        $task->status == 'done' ? 'success' :
+                                        ($task->status == 'in-progress' ? 'primary' :
+                                        ($task->status == 'blocked' ? 'danger' : 'secondary'))
+                                    }}">
+                                        @switch($task->status)
+                                            @case('todo') 📋 À faire @break
+                                            @case('in-progress') 🔄 En cours @break
+                                            @case('done') ✅ Terminée @break
+                                            @case('blocked') 🚫 Bloquée @break
+                                            @default ❓ Inconnu
+                                        @endswitch
+                                    </span>
+                                    @if($task->priority !== null)
+                                        <span class="badge-{{ 
+                                            $task->priority == 3 ? 'danger' :
+                                            ($task->priority == 2 ? 'warning' :
+                                            ($task->priority == 1 ? 'secondary' : 'success'))
+                                        }}">
                                             @switch($task->priority)
-                                                @case(0)
-                                                    <span class="text-green-600">🟢 Basse</span>
-                                                    @break
-                                                @case(1)
-                                                    <span class="text-yellow-600">🟡 Moyenne</span>
-                                                    @break
-                                                @case(2)
-                                                    <span class="text-orange-600">🟠 Haute</span>
-                                                    @break
-                                                @case(3)
-                                                    <span class="text-red-600">🔴 Urgente</span>
-                                                    @break
+                                                @case(0) 🟢 Basse @break
+                                                @case(1) 🟡 Moyenne @break
+                                                @case(2) 🟠 Haute @break
+                                                @case(3) 🔴 Urgente @break
                                             @endswitch
                                         </span>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                                 
-                                @if($task->assigned_to)
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fas fa-user text-gray-500"></i>
-                                        <span class="text-sm text-gray-600">Assignée à :</span>
-                                        <span class="text-sm font-medium text-gray-900">{{ $task->assignedUser->name ?? 'Utilisateur inconnu' }}</span>
-                                    </div>
-                                @endif
+                                <p class="text-gray-700 leading-relaxed mb-4">
+                                    {{ $task->description ?: 'Aucune description fournie.' }}
+                                </p>
                                 
-                                <div class="flex items-center space-x-2">
-                                    <i class="fas fa-clock text-gray-500"></i>
-                                    <span class="text-sm text-gray-600">Créée :</span>
-                                    <span class="text-sm font-medium text-gray-900">{{ $task->created_at->format('d/m/Y à H:i') }}</span>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600">
+                                    @if($task->due_date)
+                                        <div class="flex items-center">
+                                            <i class="fas fa-calendar mr-2"></i>
+                                            <span class="{{ \Carbon\Carbon::parse($task->due_date)->isPast() ? 'text-red-600 font-medium' : '' }}">
+                                                {{ $task->due_date->format('d/m/Y') }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @if($task->assigned_to)
+                                        <div class="flex items-center">
+                                            <i class="fas fa-user mr-2"></i>
+                                            <span>{{ $task->assignedUser->name ?? 'Utilisateur inconnu' }}</span>
+                                        </div>
+                                    @endif
+                                    <div class="flex items-center">
+                                        <i class="fas fa-clock mr-2"></i>
+                                        <span>Créée {{ $task->created_at->format('d/m/Y') }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                    <!-- Actions rapides -->
+                    <div class="space-y-3">
+                        <a href="{{ route('tasks.edit', $task->id) }}" class="btn-primary-modern w-full">
+                            <i class="fas fa-edit mr-2"></i>
+                            Modifier la Tâche
+                        </a>
+                        <a href="{{ route('tasks.create', ['project' => $task->project->id, 'parent_id' => $task->id]) }}" class="btn-secondary-modern w-full">
+                            <i class="fas fa-plus mr-2"></i>
+                            Ajouter une Sous-tâche
+                        </a>
+                        <a href="{{ route('projects.show', $task->project->id) }}" class="btn-secondary-modern w-full">
+                            <i class="fas fa-folder-open mr-2"></i>
+                            Voir le Projet
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Contenu principal -->
+            <div class="lg:col-span-2 space-y-6">
                 <!-- Sous-tâches -->
                 @if($task->subtasks && $task->subtasks->count() > 0)
                     <div class="modern-card">
                         <div class="modern-card-header">
-                            <h3 class="text-lg font-semibold text-gray-900">
-                                <i class="fas fa-list text-primary-600 mr-2"></i>
-                                Sous-tâches ({{ $task->subtasks->count() }})
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                                <i class="fas fa-list text-blue-600 mr-2"></i>
+                                Sous-tâches
+                                <span class="ml-2 badge-secondary">{{ $task->subtasks->count() }}</span>
                             </h3>
                         </div>
-                        <div class="modern-card-body p-0">
-                            <div class="divide-y divide-gray-200">
+                        <div class="modern-card-body">
+                            <div class="space-y-3">
                                 @foreach($task->subtasks as $subtask)
-                                    <div class="p-4 hover:bg-gray-50 transition-colors">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center space-x-3">
-                                                <div class="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg flex items-center justify-center">
-                                                    <i class="fas fa-tasks text-white text-xs"></i>
-                                                </div>
-                                                <div>
-                                                    <h4 class="font-medium text-gray-900">{{ $subtask->title }}</h4>
-                                                    <p class="text-sm text-gray-500">{{ Str::limit($subtask->description, 60) ?: 'Aucune description' }}</p>
-                                                </div>
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-tasks text-white text-sm"></i>
                                             </div>
-                                            <div class="flex items-center space-x-2">
-                                                <span class="badge-{{ 
-                                                    $subtask->status == 'done' ? 'success' :
-                                                    ($subtask->status == 'in-progress' ? 'warning' :
-                                                    ($subtask->status == 'blocked' ? 'danger' : 'secondary'))
-                                                }}">
-                                                    {{ ucfirst($subtask->status) }}
-                                                </span>
-                                                <a href="{{ route('tasks.show', $subtask->id) }}" class="btn-secondary-modern text-xs">
-                                                    <i class="fas fa-eye mr-1"></i>
-                                                    Voir
-                                                </a>
+                                            <div>
+                                                <h4 class="font-medium text-gray-900">{{ $subtask->title }}</h4>
+                                                <p class="text-sm text-gray-500">{{ Str::limit($subtask->description, 60) ?: 'Aucune description' }}</p>
                                             </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="badge-{{ 
+                                                $subtask->status == 'done' ? 'success' :
+                                                ($subtask->status == 'in-progress' ? 'primary' :
+                                                ($subtask->status == 'blocked' ? 'danger' : 'secondary'))
+                                            }}">
+                                                {{ ucfirst($subtask->status) }}
+                                            </span>
+                                            <a href="{{ route('tasks.show', $subtask->id) }}" class="btn-secondary-modern text-sm">
+                                                <i class="fas fa-eye mr-1"></i>
+                                                Voir
+                                            </a>
                                         </div>
                                     </div>
                                 @endforeach
@@ -171,16 +164,17 @@
                 @if($task->comments && $task->comments->count() > 0)
                     <div class="modern-card">
                         <div class="modern-card-header">
-                            <h3 class="text-lg font-semibold text-gray-900">
-                                <i class="fas fa-comments text-primary-600 mr-2"></i>
-                                Commentaires ({{ $task->comments->count() }})
+                            <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                                <i class="fas fa-comments text-blue-600 mr-2"></i>
+                                Commentaires
+                                <span class="ml-2 badge-secondary">{{ $task->comments->count() }}</span>
                             </h3>
                         </div>
                         <div class="modern-card-body">
                             <div class="space-y-4">
                                 @foreach($task->comments as $comment)
                                     <div class="flex space-x-3">
-                                        <div class="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
                                             <span class="text-white font-medium text-sm">{{ substr($comment->user->name, 0, 1) }}</span>
                                         </div>
                                         <div class="flex-1">
@@ -217,8 +211,8 @@
                 <!-- Formulaire de commentaire -->
                 <div class="modern-card">
                     <div class="modern-card-header">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            <i class="fas fa-plus text-primary-600 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-plus text-blue-600 mr-2"></i>
                             Ajouter un Commentaire
                         </h3>
                     </div>
@@ -226,15 +220,17 @@
                         <form action="{{ route('comments.store', $task->id) }}" method="POST" class="space-y-4">
                             @csrf
                             <div>
+                                <label for="content" class="form-label-modern">Votre commentaire</label>
                                 <textarea name="content" 
+                                          id="content"
                                           class="input-modern" 
-                                          rows="3" 
-                                          placeholder="Ajoutez un commentaire..." 
+                                          rows="4" 
+                                          placeholder="Ajoutez un commentaire à cette tâche..." 
                                           required></textarea>
                             </div>
                             <button type="submit" class="btn-primary-modern">
                                 <i class="fas fa-paper-plane mr-2"></i>
-                                Publier
+                                Publier le Commentaire
                             </button>
                         </form>
                     </div>
@@ -243,67 +239,35 @@
 
             <!-- Sidebar -->
             <div class="space-y-6">
-                <!-- Actions rapides -->
-                <div class="modern-card">
-                    <div class="modern-card-header">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            <i class="fas fa-bolt text-primary-600 mr-2"></i>
-                            Actions Rapides
-                        </h3>
-                    </div>
-                    <div class="modern-card-body">
-                        <div class="space-y-3">
-                            <a href="{{ route('tasks.edit', $task->id) }}" class="btn-secondary-modern w-full">
-                                <i class="fas fa-edit mr-2"></i>
-                                Modifier la Tâche
-                            </a>
-                            
-                            <a href="{{ route('tasks.create', ['project' => $task->project->id, 'parent_id' => $task->id]) }}" 
-                               class="btn-accent-modern w-full">
-                                <i class="fas fa-plus mr-2"></i>
-                                Ajouter une Sous-tâche
-                            </a>
-                            
-                            <form action="{{ route('tasks.destroy', $task->id) }}" 
-                                  method="POST" 
-                                  class="inline w-full"
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-secondary-modern w-full text-red-600 hover:bg-red-50 hover:text-red-700">
-                                    <i class="fas fa-trash mr-2"></i>
-                                    Supprimer
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Changement de statut -->
                 <div class="modern-card">
                     <div class="modern-card-header">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            <i class="fas fa-exchange-alt text-primary-600 mr-2"></i>
-                            Changer le Statut
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-exchange-alt text-blue-600 mr-2"></i>
+                            Gestion du Statut
                         </h3>
+                        <p class="text-sm text-gray-600 mt-1">Modifiez le statut de cette tâche</p>
                     </div>
                     <div class="modern-card-body">
-                        <div class="space-y-3">
-                            <select id="status" class="input-modern" data-task-id="{{ $task->id }}" data-original-status="{{ $task->status }}">
-                                <option value="todo" @if($task->status == 'todo') selected @endif>📋 À faire</option>
-                                <option value="in-progress" @if($task->status == 'in-progress') selected @endif>🔄 En cours</option>
-                                <option value="done" @if($task->status == 'done') selected @endif>✅ Terminée</option>
-                                <option value="blocked" @if($task->status == 'blocked') selected @endif>🚫 Bloquée</option>
-                            </select>
-                            
-                            <div class="flex justify-end">
-                                <button id="updateStatusBtn" style="background-color: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" onmouseover="this.style.backgroundColor='#1d4ed8'" onmouseout="this.style.backgroundColor='#2563eb'">
-                                    <i class="fas fa-check"></i>
-                                    Valider
-                                </button>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="status" class="form-label-modern">Statut de la tâche</label>
+                                <select id="status" class="input-modern" data-task-id="{{ $task->id }}" data-original-status="{{ $task->status }}">
+                                    <option value="todo" @if($task->status == 'todo') selected @endif>📋 À faire</option>
+                                    <option value="in-progress" @if($task->status == 'in-progress') selected @endif>🔄 En cours</option>
+                                    <option value="done" @if($task->status == 'done') selected @endif>✅ Terminée</option>
+                                    <option value="blocked" @if($task->status == 'blocked') selected @endif>🚫 Bloquée</option>
+                                </select>
                             </div>
                             
-                            <p class="text-xs text-gray-500" id="statusHelp">Changez le statut ci-dessus pour voir les boutons de validation.</p>
+                            <button id="updateStatusBtn" class="btn-primary-modern w-full">
+                                <i class="fas fa-check mr-2"></i>
+                                Mettre à Jour le Statut
+                            </button>
+                            
+                            <p class="text-xs text-gray-500 text-center" id="statusHelp">
+                                Sélectionnez un nouveau statut et cliquez sur "Mettre à Jour"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -311,13 +275,13 @@
                 <!-- Informations du projet -->
                 <div class="modern-card">
                     <div class="modern-card-header">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            <i class="fas fa-folder text-primary-600 mr-2"></i>
-                            Projet
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-folder text-blue-600 mr-2"></i>
+                            Informations du Projet
                         </h3>
                     </div>
                     <div class="modern-card-body">
-                        <div class="space-y-2">
+                        <div class="space-y-3">
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-project-diagram text-gray-500"></i>
                                 <span class="text-sm font-medium text-gray-900">{{ $task->project->name }}</span>
@@ -326,10 +290,48 @@
                                 <i class="fas fa-user text-gray-500"></i>
                                 <span class="text-sm text-gray-600">Créé par {{ $task->project->author->name ?? 'N/A' }}</span>
                             </div>
+                            @if($task->project->status)
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-flag text-gray-500"></i>
+                                    <span class="text-sm text-gray-600">Statut :</span>
+                                    <span class="badge-{{ 
+                                        $task->project->status == 'completed' ? 'success' :
+                                        ($task->project->status == 'active' ? 'primary' :
+                                        ($task->project->status == 'on-hold' ? 'warning' :
+                                        ($task->project->status == 'cancelled' ? 'danger' : 'secondary')))
+                                    }}">
+                                        {{ ucfirst($task->project->status) }}
+                                    </span>
+                                </div>
+                            @endif
                             <a href="{{ route('projects.show', $task->project->id) }}" class="btn-secondary-modern w-full text-sm">
                                 <i class="fas fa-external-link-alt mr-2"></i>
-                                Voir le Projet
+                                Voir le Projet Complet
                             </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions avancées -->
+                <div class="modern-card">
+                    <div class="modern-card-header">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-cog text-blue-600 mr-2"></i>
+                            Actions Avancées
+                        </h3>
+                    </div>
+                    <div class="modern-card-body">
+                        <div class="space-y-3">
+                            <form action="{{ route('tasks.destroy', $task->id) }}" 
+                                  method="POST" 
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-secondary-modern w-full text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200">
+                                    <i class="fas fa-trash mr-2"></i>
+                                    Supprimer la Tâche
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -337,30 +339,43 @@
         </div>
     </div>
 
+    <style>
+        /* Styles spécifiques pour la page de détail de tâche */
+        .modern-card {
+            @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-1;
+        }
+        
+        .modern-card-header {
+            @apply px-6 py-4 border-b border-gray-200 bg-gray-50;
+        }
+        
+        .modern-card-body {
+            @apply px-6 py-4;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .modern-card-header {
+                @apply px-4 py-3;
+            }
+            
+            .modern-card-body {
+                @apply px-4 py-3;
+            }
+        }
+    </style>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
             let originalStatus = $('#status').data('original-status');
             
-            // Debug : vérifier si les éléments existent
-            console.log('Status select found:', $('#status').length);
-            console.log('Update button found:', $('#updateStatusBtn').length);
-            console.log('Original status:', originalStatus);
-            
-            // Texte d'aide simple
-            $('#statusHelp').text('Changez le statut et cliquez sur "Valider" pour confirmer.');
-            
-            // Gérer la validation
+            // Gérer la validation du statut
             $('#updateStatusBtn').click(function () {
-                console.log('Bouton Valider cliqué !');
                 let taskId = $('#status').data('task-id');
                 let newStatus = $('#status').val();
                 let selectElement = $('#status');
                 
-                console.log('Task ID:', taskId);
-                console.log('New Status:', newStatus);
-                console.log('Original Status:', originalStatus);
-
                 // Vérifier si le statut a vraiment changé
                 if (newStatus === originalStatus) {
                     showNotification('Aucun changement détecté. Le statut est déjà : ' + newStatus, 'info');
@@ -369,7 +384,7 @@
 
                 // Désactiver les contrôles pendant la requête
                 selectElement.prop('disabled', true);
-                $('#updateStatusBtn').prop('disabled', true);
+                $('#updateStatusBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Mise à jour...');
 
                 $.ajax({
                     url: `/tasks/${taskId}/update-status`,
@@ -379,31 +394,18 @@
                         status: newStatus
                     },
                     success: function (response) {
-                        // Afficher un message de succès
                         showNotification('Statut mis à jour avec succès !', 'success');
-                        
-                        // Mettre à jour le statut original
                         originalStatus = newStatus;
-                        
-                        // Remettre le texte d'aide
-                        $('#statusHelp').text('Changez le statut et cliquez sur "Valider" pour confirmer.');
-                        
-                        // Réactiver les contrôles
-                        selectElement.prop('disabled', false);
                         
                         // Recharger la page après un court délai
                         setTimeout(function() {
                             location.reload();
-                        }, 1000);
+                        }, 1500);
                     },
                     error: function (xhr, status, error) {
-                        console.log('Erreur AJAX:', xhr.responseText);
-                        console.log('Status:', status);
-                        console.log('Error:', error);
-                        
                         // Réactiver les contrôles
                         selectElement.prop('disabled', false);
-                        $('#updateStatusBtn').prop('disabled', false);
+                        $('#updateStatusBtn').prop('disabled', false).html('<i class="fas fa-check mr-2"></i>Mettre à Jour le Statut');
                         
                         let errorMessage = 'Erreur lors de la mise à jour du statut.';
                         if (xhr.responseJSON && xhr.responseJSON.error) {
@@ -415,7 +417,6 @@
             });
 
             function showNotification(message, type) {
-                // Créer une notification toast simple
                 let bgColor, textColor, icon;
                 
                 switch(type) {
@@ -463,26 +464,22 @@
         // Fonction de confirmation de suppression de commentaire
         function confirmDeleteComment(commentId) {
             if (confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.')) {
-                // Créer un formulaire de suppression
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = `/comments/${commentId}`;
                 
-                // Ajouter le token CSRF
                 const csrfToken = document.createElement('input');
                 csrfToken.type = 'hidden';
                 csrfToken.name = '_token';
                 csrfToken.value = '{{ csrf_token() }}';
                 form.appendChild(csrfToken);
                 
-                // Ajouter la méthode DELETE
                 const methodField = document.createElement('input');
                 methodField.type = 'hidden';
                 methodField.name = '_method';
                 methodField.value = 'DELETE';
                 form.appendChild(methodField);
                 
-                // Ajouter le formulaire au DOM et le soumettre
                 document.body.appendChild(form);
                 form.submit();
             }
