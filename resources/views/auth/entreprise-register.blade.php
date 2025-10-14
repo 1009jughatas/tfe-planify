@@ -238,7 +238,7 @@
         </p>
         <p class="text-sm text-gray-600">
             Déjà un compte ?
-            <a href="{{ route('login') }}" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+            <a href="{{ route('entreprise.login') }}" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
                 Se connecter
             </a>
         </p>

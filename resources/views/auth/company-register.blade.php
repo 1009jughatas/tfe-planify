@@ -10,7 +10,7 @@
                     <p class="text-sm text-gray-600 mt-1">Rejoignez Planify et gérez vos projets d'équipe</p>
                 </div>
             </div>
-            <a href="{{ route('login') }}" class="btn-secondary-modern">
+            <a href="{{ route('entreprise.login') }}" class="btn-secondary-modern">
                 <i class="fas fa-sign-in-alt mr-2"></i>
                 Se connecter
             </a>
