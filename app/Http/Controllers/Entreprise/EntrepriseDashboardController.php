@@ -19,10 +19,34 @@ class EntrepriseDashboardController extends Controller
             abort(403, 'Utilisateur non authentifié.');
         }
         
+        // Debug: Log des informations utilisateur
+        \Log::info('Dashboard Entreprise - User Info', [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'user_role' => $user->role,
+            'company_id' => $user->company_id
+        ]);
+        
         $company = $user->company;
         
+        // Debug: Log des informations company
+        if ($company) {
+            \Log::info('Dashboard Entreprise - Company Info', [
+                'company_id' => $company->id,
+                'company_name' => $company->name,
+                'company_plan' => $company->plan,
+                'user_limit' => $company->user_limit
+            ]);
+        } else {
+            \Log::error('Dashboard Entreprise - Company not found', [
+                'user_id' => $user->id,
+                'user_company_id' => $user->company_id
+            ]);
+        }
+        
         if (!$company) {
-            abort(403, 'Aucune entreprise associée à votre compte.');
+            abort(403, 'Aucune entreprise associée à votre compte. User ID: ' . $user->id . ', Company ID: ' . $user->company_id);
         }
 
         // Statistiques générales

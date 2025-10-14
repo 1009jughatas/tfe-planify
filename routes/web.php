@@ -100,6 +100,97 @@ Route::post('/invitations/{token}', [EmployeeInvitationController::class, 'accep
 Route::delete('/invitations/{token}/decline', [EmployeeInvitationController::class, 'declineInvitation'])->name('invitations.decline');
 
 // ========================================
+// ROUTE DE DEBUG TEMPORAIRE
+// ========================================
+Route::get('/debug-entreprise', function () {
+    $usersWithCompany = \App\Models\User::whereNotNull('company_id')->get();
+    $companies = \App\Models\Company::all();
+    $adminUsers = \App\Models\User::where('role', 'admin_entreprise')->get();
+    
+    $debugInfo = [
+        'users_with_company' => $usersWithCompany->map(function($user) {
+            $company = \App\Models\Company::find($user->company_id);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'company_id' => $user->company_id,
+                'company_exists' => $company ? true : false,
+                'company_name' => $company ? $company->name : null
+            ];
+        }),
+        'companies' => $companies->map(function($company) {
+            return [
+                'id' => $company->id,
+                'name' => $company->name,
+                'plan' => $company->plan,
+                'user_limit' => $company->user_limit,
+                'admin_id' => $company->admin_id
+            ];
+        }),
+        'admin_users' => $adminUsers->map(function($user) {
+            $company = $user->company;
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'company_id' => $user->company_id,
+                'company_relation_works' => $company ? true : false,
+                'company_name' => $company ? $company->name : null
+            ];
+        })
+    ];
+    
+    return response()->json($debugInfo, 200, [], JSON_PRETTY_PRINT);
+})->name('debug.entreprise');
+
+Route::get('/create-test-entreprise', function () {
+    // Créer un utilisateur admin entreprise de test
+    $user = \App\Models\User::firstOrCreate(
+        ['email' => 'admin@test-entreprise.com'],
+        [
+            'name' => 'Admin Test Entreprise',
+            'password' => bcrypt('password'),
+            'role' => 'admin_entreprise'
+        ]
+    );
+    
+    // Créer une company de test
+    $company = \App\Models\Company::firstOrCreate(
+        ['name' => 'Test Entreprise SARL'],
+        [
+            'email' => 'contact@test-entreprise.com',
+            'plan' => 'starter',
+            'user_limit' => 5,
+            'status' => 'active',
+            'admin_id' => $user->id
+        ]
+    );
+    
+    // Associer l'utilisateur à la company
+    $user->company_id = $company->id;
+    $user->save();
+    
+    return response()->json([
+        'message' => 'Test entreprise créée avec succès',
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'company_id' => $user->company_id
+        ],
+        'company' => [
+            'id' => $company->id,
+            'name' => $company->name,
+            'plan' => $company->plan,
+            'user_limit' => $company->user_limit
+        ]
+    ], 200, [], JSON_PRETTY_PRINT);
+})->name('create.test.entreprise');
+
+// ========================================
 // ROUTES INDÉPENDANTS (PROTÉGÉES)
 // ========================================
 Route::middleware(['auth', 'verified', IsIndependant::class])->group(function () {
