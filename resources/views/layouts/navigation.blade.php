@@ -3,29 +3,33 @@
      class="h-screen bg-white border-r border-gray-200 shadow-lg flex flex-col hidden lg:flex">
     
     <!-- Header with Logo -->
-    <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-accent-50">
-        <div class="flex items-center justify-between">
+    <div class="p-6 border-b border-gray-200/50 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-purple-200/20 rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-200/20 to-blue-200/20 rounded-full translate-y-12 -translate-x-12"></div>
+        
+        <div class="flex items-center justify-between relative z-10">
             <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="flex items-center space-x-3 group">
-                <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
-                    <span class="text-white font-bold text-xl">P</span>
+                <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200 overflow-hidden">
+                    <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
                 </div>
                 <div x-show="!collapsed" class="transition-all duration-200">
-                    <h1 class="text-xl font-bold text-gray-900">Planify</h1>
-                    <div class="flex items-center space-x-2">
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Planify</h1>
+                    <div class="flex items-center space-x-2 mt-1">
                         @if (Auth::user() && Auth::user()->isAdminEntreprise())
-                            <span class="text-xs font-medium text-purple-600 bg-purple-100 px-2 py-1 rounded-full">
+                            <span class="text-xs font-semibold text-purple-700 bg-gradient-to-r from-purple-100 to-purple-200 px-3 py-1 rounded-full border border-purple-200/50">
                                 <i class="fas fa-building mr-1"></i>Admin Entreprise
                             </span>
                         @elseif (Auth::user() && Auth::user()->isUserEntreprise())
-                            <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                            <span class="text-xs font-semibold text-blue-700 bg-gradient-to-r from-blue-100 to-blue-200 px-3 py-1 rounded-full border border-blue-200/50">
                                 <i class="fas fa-users mr-1"></i>Équipe
                             </span>
                         @elseif (Auth::user() && Auth::user()->isUserIndependant())
-                            <span class="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                            <span class="text-xs font-semibold text-green-700 bg-gradient-to-r from-green-100 to-green-200 px-3 py-1 rounded-full border border-green-200/50">
                                 <i class="fas fa-user mr-1"></i>Indépendant
                             </span>
                         @else
-                            <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                            <span class="text-xs font-semibold text-gray-700 bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1 rounded-full border border-gray-200/50">
                                 <i class="fas fa-user mr-1"></i>Utilisateur
                             </span>
                         @endif
@@ -168,71 +172,89 @@
     <style>
         /* Navigation Styles */
         .nav-section {
-            @apply mb-6;
+            @apply mb-8;
         }
         
         .nav-section-title {
-            @apply px-3 py-2 mb-2;
+            @apply px-4 py-3 mb-3;
         }
         
         .nav-item-modern {
-            @apply flex items-center px-3 py-3 text-gray-700 rounded-lg transition-all duration-200 group relative;
+            @apply flex items-center px-4 py-4 text-gray-700 rounded-2xl transition-all duration-300 group relative mx-2 hover:scale-105;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .nav-item-modern:hover {
-            @apply bg-gray-100 text-gray-900;
+            @apply bg-white/80 text-gray-900 shadow-lg;
+            transform: translateX(4px) scale(1.02);
         }
         
         .nav-item-active {
-            @apply bg-primary-50 text-primary-700 border-r-2 border-primary-500;
+            @apply bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-r-4 border-blue-500 shadow-lg;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            transform: translateX(4px);
         }
         
         .nav-item-premium {
-            @apply bg-gradient-to-r from-accent-50 to-accent-100 text-accent-700;
+            @apply bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border border-purple-200/50;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
         }
         
         .nav-item-premium:hover {
-            @apply bg-gradient-to-r from-accent-100 to-accent-200 text-accent-800;
+            @apply bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
         }
         
         .nav-item-admin {
-            @apply bg-red-50 text-red-700;
+            @apply bg-gradient-to-r from-red-50 to-pink-50 text-red-700 border border-red-200/50;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
         }
         
         .nav-item-admin:hover {
-            @apply bg-red-100 text-red-800;
+            @apply bg-gradient-to-r from-red-100 to-pink-100 text-red-800;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
         }
         
         .nav-item-user:hover {
-            @apply bg-blue-50 text-blue-700;
+            @apply bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
         }
         
         .nav-item-logout {
-            @apply text-red-600 hover:bg-red-50 hover:text-red-700;
+            @apply text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 hover:text-red-700;
         }
         
         .nav-icon {
-            @apply w-5 h-5 flex items-center justify-center flex-shrink-0;
+            @apply w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-lg transition-all duration-300;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-item-modern:hover .nav-icon {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
         }
         
         .nav-icon-premium {
-            @apply text-accent-600;
+            @apply text-purple-600;
+            background: rgba(147, 51, 234, 0.1);
         }
         
         .nav-icon-admin {
             @apply text-red-600;
+            background: rgba(239, 68, 68, 0.1);
         }
         
         .nav-text {
-            @apply ml-3 font-medium;
+            @apply ml-4 font-semibold text-sm;
         }
         
         .nav-indicator {
-            @apply absolute right-2 w-2 h-2 bg-primary-500 rounded-full;
+            @apply absolute right-3 w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-sm;
         }
         
         .nav-indicator-admin {
-            @apply bg-red-500;
+            @apply bg-gradient-to-r from-red-500 to-pink-500;
         }
         
         /* Collapsed state */
@@ -243,12 +265,32 @@
         /* Responsive adjustments */
         @media (max-width: 1024px) {
             .nav-item-modern {
-                @apply px-2 py-2;
+                @apply px-3 py-3 mx-1;
             }
             
             .nav-text {
-                @apply ml-2;
+                @apply ml-3;
             }
+        }
+        
+        /* Animation for section titles */
+        .nav-section-title span {
+            @apply relative;
+        }
+        
+        .nav-section-title span::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-section:hover .nav-section-title span::after {
+            width: 100%;
         }
     </style>
 </nav>

@@ -24,8 +24,10 @@ class DashboardController extends Controller
     /**
      * Dashboard pour les utilisateurs indépendants
      */
-    private function independantDashboard($user)
+    public function independantDashboard($user = null)
     {
+        $user = $user ?? auth()->user();
+        
         // Récupérer les projets de l'utilisateur indépendant
         $projects = $user->projects()->get();
         
@@ -48,10 +50,14 @@ class DashboardController extends Controller
 
         // Tâches urgentes (avec deadline proche)
         $urgentTasks = $tasks->where('deadline', '<=', now()->addDays(3))->where('status', '!=', 'completed')->take(5);
+        
+        // Variables supplémentaires pour le nouveau dashboard
+        $openTasksCount = $tasks->whereIn('status', ['todo', 'pending', 'in-progress'])->count();
 
-        return view('independant.dashboard', compact(
+        return view('dashboard', compact(
             'projects', 'activeProjectsCount', 'completedProjectsCount', 'totalProjectsCount',
-            'pendingTasks', 'completedTasks', 'progressPercentage', 'recentProjects', 'urgentTasks'
+            'pendingTasks', 'completedTasks', 'progressPercentage', 'recentProjects', 'urgentTasks',
+            'tasks', 'openTasksCount'
         ));
     }
 

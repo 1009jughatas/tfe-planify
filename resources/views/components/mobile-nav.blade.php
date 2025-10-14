@@ -37,8 +37,8 @@
         <div class="sticky top-0 bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6 border-b border-primary-700">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white font-bold text-xl">P</span>
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+                        <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
                     </div>
                     <div>
                         <h1 class="text-xl font-bold text-white">Planify</h1>

@@ -59,8 +59,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                            <span class="text-white font-bold text-sm">P</span>
+                        <div class="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center overflow-hidden">
+                            <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-5 h-5 object-contain filter brightness-0 invert">
                         </div>
                         <span class="text-xl font-bold text-gray-900">Planify</span>
                     </div>
