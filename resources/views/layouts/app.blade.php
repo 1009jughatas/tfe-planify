@@ -24,18 +24,13 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="h-full bg-gray-50 font-sans antialiased">
-    <div class="min-h-screen flex flex-col lg:flex-row">
-        <!-- Mobile Navigation -->
-        <x-mobile-nav />
-        
-        <!-- Desktop Navigation -->
-        <div class="hidden lg:block lg:w-64 lg:flex-shrink-0">
-            @include('layouts.navigation')
-        </div>
+<body class="h-full bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: false }">
+    <div class="min-h-screen flex">
+        <!-- Sidebar Navigation -->
+        @include('layouts.navigation')
 
         <!-- Page Content -->
-        <main class="flex-1 flex flex-col min-w-0">
+        <main class="flex-1 flex flex-col min-w-0 lg:ml-0">
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white border-b border-gray-200 shadow-sm">
@@ -59,7 +54,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center overflow-hidden">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center overflow-hidden">
                             <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-5 h-5 object-contain filter brightness-0 invert">
                         </div>
                         <span class="text-xl font-bold text-gray-900">Planify</span>
@@ -68,13 +63,13 @@
                         Siège social : Boulevard de l'Empereur 10, 1000 Bruxelles
                     </p>
                     <p class="text-sm text-gray-600">
-                        Contact : <a href="mailto:info@mcedia.com" class="text-primary-600 hover:text-primary-700 transition-colors">info@mcedia.com</a>
+                        Contact : <a href="mailto:info@mcedia.com" class="text-blue-600 hover:text-blue-700 transition-colors">info@mcedia.com</a>
                     </p>
                 </div>
                 <div>
                     <h6 class="text-sm font-semibold text-gray-900 mb-3">Informations</h6>
                     <p class="text-sm text-gray-600 mb-2">
-                        <a href="{{ route('mentions.legales') }}" class="text-primary-600 hover:text-primary-700 transition-colors">Mentions légales</a>
+                        <a href="{{ route('mentions.legales') }}" class="text-blue-600 hover:text-blue-700 transition-colors">Mentions légales</a>
                     </p>
                     <p class="text-sm text-gray-500">
                         Hébergeur : OVH – 2 rue Kellermann, 59100 Roubaix, France
@@ -84,7 +79,7 @@
             <div class="border-t border-gray-200 mt-8 pt-6">
                 <div class="text-center">
                     <p class="text-sm text-gray-500">
-                        &copy; 2024 Planify - Tous droits réservés.
+                        &copy; 2025 Planify - Tous droits réservés.
                     </p>
                 </div>
             </div>

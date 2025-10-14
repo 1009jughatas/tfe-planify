@@ -1,6 +1,35 @@
-<nav x-data="{ collapsed: JSON.parse(localStorage.getItem('collapsed')) ?? false }"
-     @click.away="localStorage.setItem('collapsed', JSON.stringify(collapsed))"
-     class="h-screen bg-white border-r border-gray-200 shadow-lg flex flex-col hidden lg:flex">
+<!-- Menu Hamburger Button -->
+<button @click="sidebarOpen = !sidebarOpen" 
+        class="fixed top-4 left-4 z-50 p-3 bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 group lg:hidden">
+    <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
+        <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-200 group-hover:bg-gray-800" 
+              :class="{ 'rotate-45 translate-y-1.5': sidebarOpen }"></span>
+        <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-200 group-hover:bg-gray-800"
+              :class="{ 'opacity-0': sidebarOpen }"></span>
+        <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-200 group-hover:bg-gray-800"
+              :class="{ '-rotate-45 -translate-y-1.5': sidebarOpen }"></span>
+    </div>
+</button>
+
+<!-- Overlay pour mobile -->
+<div x-show="sidebarOpen" 
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     @click="sidebarOpen = false"
+     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"></div>
+
+<!-- Sidebar Navigation -->
+<nav x-data="{ 
+        sidebarOpen: false, 
+        collapsed: JSON.parse(localStorage.getItem('collapsed')) ?? false 
+    }"
+     @click.away="if(window.innerWidth < 1024) { sidebarOpen = false } else { localStorage.setItem('collapsed', JSON.stringify(collapsed)) }"
+     :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full lg:translate-x-0': !sidebarOpen }"
+     class="fixed lg:relative top-0 left-0 w-80 lg:w-64 xl:w-72 h-full bg-white border-r border-gray-200 shadow-xl lg:shadow-lg flex flex-col z-50 transition-transform duration-300 ease-in-out">
     
     <!-- Header with Logo -->
     <div class="p-6 border-b border-gray-200 bg-white">
@@ -33,13 +62,33 @@
                 </div>
             </a>
             
-            <!-- Toggle Button -->
+            <!-- Toggle Button pour desktop -->
             <button @click="collapsed = !collapsed; localStorage.setItem('collapsed', JSON.stringify(collapsed));" 
-                    class="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group">
+                    class="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group hidden lg:block">
                 <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
+            
+            <!-- Close Button pour mobile -->
+            <button @click="sidebarOpen = false" class="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group lg:hidden">
+                <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- User Info Section -->
+    <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                <span class="text-white font-semibold text-sm">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
+            </div>
+            <div x-show="!collapsed" class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->name ?? 'Utilisateur' }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? 'email@example.com' }}</p>
+            </div>
         </div>
     </div>
 
@@ -52,7 +101,8 @@
             </div>
             <x-nav-link :href="Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard')" 
                         :active="request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard')" 
-                        class="nav-item-modern {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}">
+                        class="nav-item-modern {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'nav-item-active' : '' }}"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                 <div class="nav-icon">
                     <i class="fas fa-home"></i>
                 </div>
@@ -68,7 +118,8 @@
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Gestion</span>
             </div>
             <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')"
-                        class="nav-item-modern {{ request()->routeIs('projects.*') ? 'nav-item-active' : '' }}">
+                        class="nav-item-modern {{ request()->routeIs('projects.*') ? 'nav-item-active' : '' }}"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                 <div class="nav-icon">
                     <i class="fas fa-project-diagram"></i>
                 </div>
@@ -85,7 +136,8 @@
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Premium</span>
             </div>
             <x-nav-link :href="route('premium.show')" :active="request()->routeIs('premium.*')"
-                        class="nav-item-modern nav-item-premium {{ request()->routeIs('premium.*') ? 'nav-item-active' : '' }}">
+                        class="nav-item-modern nav-item-premium {{ request()->routeIs('premium.*') ? 'nav-item-active' : '' }}"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                 <div class="nav-icon nav-icon-premium">
                     <i class="fas fa-crown"></i>
                 </div>
@@ -102,7 +154,8 @@
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Paramètres</span>
             </div>
             <x-nav-link :href="route('preferences.edit')" :active="request()->routeIs('preferences.*')"
-                        class="nav-item-modern {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}">
+                        class="nav-item-modern {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                 <div class="nav-icon">
                     <i class="fas fa-cog"></i>
                 </div>
@@ -119,7 +172,8 @@
                 <span class="text-xs font-semibold text-red-500 uppercase tracking-wider">Administration</span>
             </div>
             <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')"
-                        class="nav-item-modern nav-item-admin {{ request()->routeIs('admin.*') ? 'nav-item-active' : '' }}">
+                        class="nav-item-modern nav-item-admin {{ request()->routeIs('admin.*') ? 'nav-item-active' : '' }}"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                 <div class="nav-icon nav-icon-admin">
                     <i class="fas fa-shield-alt"></i>
                 </div>
@@ -132,21 +186,11 @@
 
     <!-- User Section -->
     <div class="p-4 border-t border-gray-200 bg-gray-50">
-        <!-- User Info -->
-        <div x-show="!collapsed" class="flex items-center space-x-3 mb-4 p-3 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                <span class="text-white font-semibold text-sm">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">{{ Auth::user()->name ?? 'Utilisateur' }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email ?? 'email@example.com' }}</p>
-            </div>
-        </div>
-
         <!-- Profile & Logout -->
         <div class="space-y-1">
             <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')"
-                        class="nav-item-modern nav-item-user {{ request()->routeIs('profile.*') ? 'nav-item-active' : '' }}">
+                        class="nav-item-modern nav-item-user {{ request()->routeIs('profile.*') ? 'nav-item-active' : '' }}"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                 <div class="nav-icon">
                     <i class="fas fa-user"></i>
                 </div>
@@ -156,7 +200,8 @@
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full nav-item-modern nav-item-logout">
+                <button type="submit" class="w-full nav-item-modern nav-item-logout"
+                        @click="if(window.innerWidth < 1024) sidebarOpen = false">
                     <div class="nav-icon">
                         <i class="fas fa-sign-out-alt"></i>
                     </div>
@@ -177,7 +222,7 @@
         }
         
         .nav-item-modern {
-            @apply flex items-center px-3 py-3 text-gray-700 rounded-lg transition-all duration-200 group relative mx-1;
+            @apply flex items-center px-3 py-3 text-gray-700 rounded-lg transition-all duration-200 group relative mx-1 cursor-pointer;
         }
         
         .nav-item-modern:hover {
@@ -273,6 +318,13 @@
         /* Focus states for accessibility */
         .nav-item-modern:focus {
             @apply outline-none ring-2 ring-blue-500 ring-opacity-50;
+        }
+        
+        /* Mobile sidebar positioning */
+        @media (max-width: 1023px) {
+            nav {
+                transform: translateX(-100%);
+            }
         }
     </style>
 </nav>
