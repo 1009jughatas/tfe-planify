@@ -25,12 +25,12 @@
 </head>
 
 <body class="h-full bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: false }">
-    <div class="min-h-screen flex">
-        <!-- Sidebar Navigation -->
+    <div class="min-h-screen">
+        <!-- Navigation -->
         @include('layouts.navigation')
 
         <!-- Page Content -->
-        <main class="flex-1 flex flex-col min-w-0 lg:ml-0">
+        <main class="w-full">
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white border-b border-gray-200 shadow-sm">
@@ -41,7 +41,7 @@
             @endif
 
             <!-- Main Content -->
-            <div class="flex-1">
+            <div class="w-full">
                 {{ $slot ?? '' }}
                 @yield('content')
             </div>
