@@ -65,14 +65,14 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <a href="{{ route('export.projects') }}" class="btn-premium-export">
-                            <i class="fas fa-download mr-2"></i>
-                            Exporter Projets
-                        </a>
-                        <a href="{{ route('export.dashboard') }}" class="btn-premium-export">
-                            <i class="fas fa-chart-line mr-2"></i>
-                            Analyses Détaillées
-                        </a>
+                       <a href="{{ route('export.projects') }}" class="btn-premium-export">
+                           <i class="fas fa-file-pdf mr-2"></i>
+                           Export Projets PDF
+                       </a>
+                       <a href="{{ route('export.dashboard') }}" class="btn-premium-export">
+                           <i class="fas fa-file-pdf mr-2"></i>
+                           Export Dashboard PDF
+                       </a>
                     </div>
                 </div>
             </div>

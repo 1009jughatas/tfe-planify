@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
 use App\Models\Task;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExportController extends Controller
 {
     /**
-     * Export projects data to JSON
+     * Export projects data to PDF
      */
     public function exportProjects(Request $request)
     {
@@ -29,50 +30,22 @@ class ExportController extends Controller
             }])
             ->get();
 
-        $exportData = [
-            'export_date' => Carbon::now()->toISOString(),
-            'user' => [
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
-            'projects' => $projects->map(function($project) {
-                return [
-                    'id' => $project->id,
-                    'name' => $project->name,
-                    'description' => $project->description,
-                    'status' => $project->status,
-                    'priority' => $project->priority,
-                    'start_date' => $project->start_date,
-                    'end_date' => $project->end_date,
-                    'deadline' => $project->deadline,
-                    'created_at' => $project->created_at,
-                    'updated_at' => $project->updated_at,
-                    'tasks' => $project->tasks->map(function($task) {
-                        return [
-                            'id' => $task->id,
-                            'title' => $task->title,
-                            'description' => $task->description,
-                            'status' => $task->status,
-                            'priority' => $task->priority,
-                            'due_date' => $task->due_date,
-                            'created_at' => $task->created_at,
-                            'updated_at' => $task->updated_at,
-                            'comments_count' => $task->comments->count(),
-                        ];
-                    })
-                ];
-            })
+        $data = [
+            'user' => $user,
+            'projects' => $projects,
+            'export_date' => Carbon::now()->format('d/m/Y à H:i'),
         ];
 
-        $filename = 'projets_export_' . Carbon::now()->format('Y-m-d_H-i-s') . '.json';
+        $filename = 'projets_export_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
         
-        return response()->json($exportData)
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->header('Content-Type', 'application/json');
+        $pdf = Pdf::loadView('exports.projects', $data);
+        $pdf->setPaper('A4', 'portrait');
+        
+        return $pdf->download($filename);
     }
 
     /**
-     * Export tasks data to JSON
+     * Export tasks data to PDF
      */
     public function exportTasks(Request $request)
     {
@@ -90,43 +63,22 @@ class ExportController extends Controller
             ->with(['project', 'comments'])
             ->get();
 
-        $exportData = [
-            'export_date' => Carbon::now()->toISOString(),
-            'user' => [
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
-            'tasks' => $tasks->map(function($task) {
-                return [
-                    'id' => $task->id,
-                    'title' => $task->title,
-                    'description' => $task->description,
-                    'status' => $task->status,
-                    'priority' => $task->priority,
-                    'due_date' => $task->due_date,
-                    'project_name' => $task->project->name,
-                    'project_id' => $task->project->id,
-                    'created_at' => $task->created_at,
-                    'updated_at' => $task->updated_at,
-                    'comments' => $task->comments->map(function($comment) {
-                        return [
-                            'content' => $comment->content,
-                            'created_at' => $comment->created_at,
-                        ];
-                    })
-                ];
-            })
+        $data = [
+            'user' => $user,
+            'tasks' => $tasks,
+            'export_date' => Carbon::now()->format('d/m/Y à H:i'),
         ];
 
-        $filename = 'taches_export_' . Carbon::now()->format('Y-m-d_H-i-s') . '.json';
+        $filename = 'taches_export_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
         
-        return response()->json($exportData)
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->header('Content-Type', 'application/json');
+        $pdf = Pdf::loadView('exports.tasks', $data);
+        $pdf->setPaper('A4', 'portrait');
+        
+        return $pdf->download($filename);
     }
 
     /**
-     * Export complete dashboard data
+     * Export complete dashboard data to PDF
      */
     public function exportDashboard(Request $request)
     {
@@ -153,51 +105,26 @@ class ExportController extends Controller
             'completed_tasks' => $projects->sum(function($project) {
                 return $project->tasks->where('status', 'completed')->count();
             }),
+            'active_tasks' => $projects->sum(function($project) {
+                return $project->tasks->where('status', 'active')->count();
+            }),
+            'in_progress_tasks' => $projects->sum(function($project) {
+                return $project->tasks->where('status', 'in-progress')->count();
+            }),
         ];
 
-        $exportData = [
-            'export_date' => Carbon::now()->toISOString(),
-            'user' => [
-                'name' => $user->name,
-                'email' => $user->email,
-                'created_at' => $user->created_at,
-            ],
-            'statistics' => $stats,
-            'projects' => $projects->map(function($project) {
-                return [
-                    'id' => $project->id,
-                    'name' => $project->name,
-                    'description' => $project->description,
-                    'status' => $project->status,
-                    'priority' => $project->priority,
-                    'start_date' => $project->start_date,
-                    'end_date' => $project->end_date,
-                    'deadline' => $project->deadline,
-                    'created_at' => $project->created_at,
-                    'updated_at' => $project->updated_at,
-                    'tasks_count' => $project->tasks->count(),
-                    'completed_tasks_count' => $project->tasks->where('status', 'completed')->count(),
-                    'tasks' => $project->tasks->map(function($task) {
-                        return [
-                            'id' => $task->id,
-                            'title' => $task->title,
-                            'description' => $task->description,
-                            'status' => $task->status,
-                            'priority' => $task->priority,
-                            'due_date' => $task->due_date,
-                            'created_at' => $task->created_at,
-                            'updated_at' => $task->updated_at,
-                            'comments_count' => $task->comments->count(),
-                        ];
-                    })
-                ];
-            })
+        $data = [
+            'user' => $user,
+            'projects' => $projects,
+            'stats' => $stats,
+            'export_date' => Carbon::now()->format('d/m/Y à H:i'),
         ];
 
-        $filename = 'dashboard_export_' . Carbon::now()->format('Y-m-d_H-i-s') . '.json';
+        $filename = 'dashboard_export_' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf';
         
-        return response()->json($exportData)
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->header('Content-Type', 'application/json');
+        $pdf = Pdf::loadView('exports.dashboard', $data);
+        $pdf->setPaper('A4', 'portrait');
+        
+        return $pdf->download($filename);
     }
 }

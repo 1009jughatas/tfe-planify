@@ -19,10 +19,10 @@
             </div>
             <div class="flex items-center space-x-3">
                 @if (Auth::user() && Auth::user()->is_premium())
-                    <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
-                        <i class="fas fa-download mr-2"></i>
-                        Exporter Dashboard
-                    </a>
+                       <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
+                           <i class="fas fa-file-pdf mr-2"></i>
+                           Export Dashboard PDF
+                       </a>
                     <span class="badge-premium">
                         <i class="fas fa-crown mr-1"></i>Premium
                     </span>
@@ -74,10 +74,10 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
-                            <i class="fas fa-download mr-2"></i>
-                            Exporter Dashboard
-                        </a>
+                       <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
+                           <i class="fas fa-file-pdf mr-2"></i>
+                           Export Dashboard PDF
+                       </a>
                         <a href="{{ route('preferences.edit') }}" class="btn-premium-modern">
                             <i class="fas fa-palette mr-2"></i>
                             Thème Sombre

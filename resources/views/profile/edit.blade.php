@@ -42,10 +42,10 @@
                                 <i class="fas fa-palette mr-2"></i>
                                 Préférences
                             </a>
-                            <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
-                                <i class="fas fa-download mr-2"></i>
-                                Exporter Données
-                            </a>
+                               <a href="{{ route('export.dashboard') }}" class="btn-premium-modern">
+                                   <i class="fas fa-file-pdf mr-2"></i>
+                                   Export PDF
+                               </a>
                         </div>
                     </div>
                 </div>
