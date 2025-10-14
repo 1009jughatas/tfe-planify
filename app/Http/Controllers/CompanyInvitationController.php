@@ -21,12 +21,12 @@ class CompanyInvitationController extends Controller
             ->first();
 
         if (!$invitation) {
-            return redirect()->route('login')
+            return redirect()->route('entreprise.login')
                 ->with('error', 'Invitation invalide ou expirée.');
         }
 
         if ($invitation->isExpired()) {
-            return redirect()->route('login')
+            return redirect()->route('entreprise.login')
                 ->with('error', 'Cette invitation a expiré.');
         }
 
@@ -44,7 +44,7 @@ class CompanyInvitationController extends Controller
             ->first();
 
         if (!$invitation || $invitation->isExpired()) {
-            return redirect()->route('login')
+            return redirect()->route('entreprise.login')
                 ->with('error', 'Invitation invalide ou expirée.');
         }
 
@@ -98,7 +98,7 @@ class CompanyInvitationController extends Controller
             $invitation->delete();
         }
 
-        return redirect()->route('login')
+        return redirect()->route('entreprise.login')
             ->with('info', 'Invitation déclinée.');
     }
 

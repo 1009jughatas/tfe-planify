@@ -17,7 +17,7 @@ class EnsureUserIsIndependent
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            return redirect()->route('login.indep');
         }
 
         $user = auth()->user();

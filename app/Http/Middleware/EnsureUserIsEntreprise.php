@@ -17,7 +17,7 @@ class EnsureUserIsEntreprise
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            return redirect()->route('entreprise.login');
         }
 
         $user = auth()->user();
