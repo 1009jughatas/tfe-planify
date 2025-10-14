@@ -182,21 +182,6 @@
         </div>
         @endif
 
-        <!-- Paramètres -->
-        @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
-        <div class="nav-section">
-            <h3 class="nav-section-title">Paramètres</h3>
-            <a href="{{ route('preferences.edit') }}" 
-               class="nav-item {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
-               @click="sidebarOpen = false">
-                <div class="nav-icon">
-                    <i class="fas fa-cog"></i>
-                </div>
-                <span class="nav-text">Préférences</span>
-            </a>
-        </div>
-        @endif
-
         <!-- Administration -->
         @if (Auth::user() && Auth::user()->is_admin())
         <div class="nav-section">
@@ -212,10 +197,10 @@
         </div>
         @endif
 
-        <!-- Export (Premium) -->
+        <!-- Export -->
         @if (Auth::user() && Auth::user()->is_premium())
         <div class="nav-section">
-            <h3 class="nav-section-title">Export Premium</h3>
+            <h3 class="nav-section-title">Export</h3>
             <a href="{{ route('export.dashboard') }}" 
                class="nav-item nav-item-premium"
                @click="sidebarOpen = false">
@@ -267,6 +252,21 @@
                 </button>
             </form>
         </div>
+
+        <!-- Paramètres -->
+        @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
+        <div class="nav-section">
+            <h3 class="nav-section-title">Paramètres</h3>
+            <a href="{{ route('preferences.edit') }}" 
+               class="nav-item {{ request()->routeIs('preferences.*') ? 'nav-item-active' : '' }}"
+               @click="sidebarOpen = false">
+                <div class="nav-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <span class="nav-text">Préférences</span>
+            </a>
+        </div>
+        @endif
 
         <!-- Toggle Thème Premium -->
         <div class="px-6 py-4 border-t border-gray-200">
