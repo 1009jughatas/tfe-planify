@@ -58,14 +58,20 @@ class EntrepriseDashboardController extends Controller
             ->where('status', 'completed')
             ->count();
 
-        // Statistiques des tâches
-        $totalTasks = Task::where('company_id', $company->id)->count();
-        $openTasks = Task::where('company_id', $company->id)
-            ->whereIn('status', ['pending', 'in-progress'])
-            ->count();
-        $completedTasks = Task::where('company_id', $company->id)
-            ->where('status', 'completed')
-            ->count();
+        // Statistiques des tâches - filtrer selon les permissions
+        $tasksQuery = Task::where('company_id', $company->id);
+        
+        // Pour les employés, ne compter que leurs propres tâches
+        if ($user->isUserEntreprise()) {
+            $tasksQuery->where(function($query) use ($user) {
+                $query->where('author_id', $user->id)
+                      ->orWhere('assigned_to', $user->id);
+            });
+        }
+        
+        $totalTasks = $tasksQuery->count();
+        $openTasks = (clone $tasksQuery)->whereIn('status', ['pending', 'in-progress'])->count();
+        $completedTasks = (clone $tasksQuery)->where('status', 'completed')->count();
 
         // Utilisateurs de l'entreprise
         $totalUsers = User::where('company_id', $company->id)->count();
@@ -78,10 +84,19 @@ class EntrepriseDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Tâches récentes
-        $recentTasks = Task::where('company_id', $company->id)
-            ->with(['project', 'assignedUser'])
-            ->orderBy('created_at', 'desc')
+        // Tâches récentes - filtrer selon les permissions
+        $recentTasksQuery = Task::where('company_id', $company->id)
+            ->with(['project', 'assignedUser']);
+        
+        // Pour les employés, ne montrer que leurs propres tâches
+        if ($user->isUserEntreprise()) {
+            $recentTasksQuery->where(function($query) use ($user) {
+                $query->where('author_id', $user->id)
+                      ->orWhere('assigned_to', $user->id);
+            });
+        }
+        
+        $recentTasks = $recentTasksQuery->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
@@ -94,13 +109,22 @@ class EntrepriseDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Tâches en retard
-        $overdueTasks = Task::where('company_id', $company->id)
+        // Tâches en retard - filtrer selon les permissions
+        $overdueTasksQuery = Task::where('company_id', $company->id)
             ->whereNotNull('due_date')
             ->where('due_date', '<', now())
             ->where('status', '!=', 'completed')
-            ->with(['project'])
-            ->orderBy('due_date', 'asc')
+            ->with(['project']);
+        
+        // Pour les employés, ne montrer que leurs propres tâches
+        if ($user->isUserEntreprise()) {
+            $overdueTasksQuery->where(function($query) use ($user) {
+                $query->where('author_id', $user->id)
+                      ->orWhere('assigned_to', $user->id);
+            });
+        }
+        
+        $overdueTasks = $overdueTasksQuery->orderBy('due_date', 'asc')
             ->take(5)
             ->get();
 

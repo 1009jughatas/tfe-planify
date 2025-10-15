@@ -157,7 +157,13 @@
                                         <div class="flex items-center space-x-4 mt-1">
                                             <span class="text-sm text-gray-500">
                                                 <i class="fas fa-tasks mr-1"></i>
-                                                {{ $project->tasks->count() }} tâches
+                                                @php
+                                                    // Filtrer les tâches selon les permissions de l'utilisateur
+                                                    $visibleProjectTasks = $project->tasks->filter(function($task) {
+                                                        return auth()->user()->can('view', $task);
+                                                    });
+                                                @endphp
+                                                {{ $visibleProjectTasks->count() }} tâches
                                             </span>
                                             <span class="text-sm text-gray-500">
                                                 <i class="fas fa-user mr-1"></i>

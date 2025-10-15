@@ -68,9 +68,15 @@
                     </div>
                 </div>
                 <div class="modern-card-body">
-                    @if($projet->tasks->count() > 0)
+                    @php
+                        // Filtrer les tâches selon les permissions de l'utilisateur
+                        $visibleTasks = $projet->tasks->filter(function($task) {
+                            return auth()->user()->can('view', $task);
+                        });
+                    @endphp
+                    @if($visibleTasks->count() > 0)
                         <div class="space-y-4">
-                            @foreach($projet->tasks as $task)
+                            @foreach($visibleTasks as $task)
                                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                     <div class="flex-1">
                                         <h4 class="font-medium text-gray-900">{{ $task->title }}</h4>
@@ -220,29 +226,29 @@
                 <div class="modern-card-body space-y-4">
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">Total des tâches</span>
-                        <span class="font-semibold text-gray-900">{{ $projet->tasks->count() }}</span>
+                        <span class="font-semibold text-gray-900">{{ $visibleTasks->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">Tâches terminées</span>
-                        <span class="font-semibold text-green-600">{{ $projet->tasks->where('status', 'completed')->count() }}</span>
+                        <span class="font-semibold text-green-600">{{ $visibleTasks->where('status', 'completed')->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">En cours</span>
-                        <span class="font-semibold text-blue-600">{{ $projet->tasks->where('status', 'in-progress')->count() }}</span>
+                        <span class="font-semibold text-blue-600">{{ $visibleTasks->where('status', 'in-progress')->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">En attente</span>
-                        <span class="font-semibold text-gray-600">{{ $projet->tasks->where('status', 'pending')->count() }}</span>
+                        <span class="font-semibold text-gray-600">{{ $visibleTasks->where('status', 'pending')->count() }}</span>
                     </div>
                     
-                    @if($projet->tasks->count() > 0)
+                    @if($visibleTasks->count() > 0)
                         <div class="pt-4 border-t border-gray-200">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm text-gray-600">Progression</span>
-                                <span class="text-sm font-medium text-gray-900">{{ round(($projet->tasks->where('status', 'completed')->count() / $projet->tasks->count()) * 100) }}%</span>
+                                <span class="text-sm font-medium text-gray-900">{{ round(($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100) }}%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: {{ ($projet->tasks->where('status', 'completed')->count() / $projet->tasks->count()) * 100 }}%"></div>
+                                <div class="bg-green-500 h-2 rounded-full" style="width: {{ ($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100 }}%"></div>
                             </div>
                         </div>
                     @endif

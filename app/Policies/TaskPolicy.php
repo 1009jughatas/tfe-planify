@@ -60,6 +60,7 @@ class TaskPolicy
             return true;
         }
 
+        // Pour les employés d'entreprise : ils ne peuvent voir que leurs propres tâches
         // L'auteur peut voir ses tâches
         if ($task->author_id === $user->id) {
             return true;
@@ -70,8 +71,8 @@ class TaskPolicy
             return true;
         }
 
-        // Les participants au projet peuvent voir les tâches du projet
-        return $task->project->participants->contains($user->id);
+        // Les employés d'entreprise ne peuvent pas voir les tâches des autres employés
+        return false;
     }
 
     /**
