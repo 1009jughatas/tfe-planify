@@ -181,7 +181,7 @@
                                         @if($user->company)
                                             <span class="flex items-center">
                                                 <i class="fas fa-building mr-1"></i>
-                                                {{ $user->company->name }}
+                                                {{ $user->company ? $user->company->name : 'Entreprise non disponible' }}
                                             </span>
                                         @endif
                                         @if($user->is_premium)

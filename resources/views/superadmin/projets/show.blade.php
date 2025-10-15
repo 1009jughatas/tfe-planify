@@ -137,12 +137,12 @@
                                                 <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                                                     <span class="flex items-center">
                                                         <i class="fas fa-user mr-1"></i>
-                                                        {{ $task->user->name }}
+                                                        {{ $task->user ? $task->user->name : 'Utilisateur supprimé' }}
                                                     </span>
                                                     @if($task->assignedUser)
                                                         <span class="flex items-center">
                                                             <i class="fas fa-user-check mr-1"></i>
-                                                            Assigné à {{ $task->assignedUser->name }}
+                                                            Assigné à {{ $task->assignedUser ? $task->assignedUser->name : 'Utilisateur supprimé' }}
                                                         </span>
                                                     @endif
                                                     <span class="px-2 py-1 text-xs font-medium rounded-full

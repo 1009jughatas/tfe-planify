@@ -140,7 +140,7 @@
                                     <div class="flex items-center space-x-6 text-sm text-gray-500">
                                         <span class="flex items-center">
                                             <i class="fas fa-user mr-1"></i>
-                                            {{ $ticket->user->name }} ({{ $ticket->user->email }})
+                                            {{ $ticket->user ? $ticket->user->name : 'Utilisateur supprimé' }} ({{ $ticket->user ? $ticket->user->email : 'Email non disponible' }})
                                         </span>
                                         <span class="flex items-center">
                                             <i class="fas fa-calendar mr-1"></i>

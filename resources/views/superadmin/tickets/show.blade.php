@@ -118,8 +118,8 @@
                                 <i class="fas fa-user text-gray-600"></i>
                             </div>
                             <div>
-                                <h3 class="text-sm font-semibold text-gray-900">{{ $ticket->user->name }}</h3>
-                                <p class="text-sm text-gray-500">{{ $ticket->user->email }}</p>
+                                <h3 class="text-sm font-semibold text-gray-900">{{ $ticket->user ? $ticket->user->name : 'Utilisateur supprimé' }}</h3>
+                                <p class="text-sm text-gray-500">{{ $ticket->user ? $ticket->user->email : 'Email non disponible' }}</p>
                             </div>
                         </div>
                         <div class="space-y-2 text-sm text-gray-600">
@@ -134,7 +134,7 @@
                             @if($ticket->user->company)
                                 <div class="flex justify-between">
                                     <span>Entreprise:</span>
-                                    <span class="font-medium">{{ $ticket->user->company->name }}</span>
+                                    <span class="font-medium">{{ $ticket->user && $ticket->user->company ? $ticket->user->company->name : 'Entreprise non disponible' }}</span>
                                 </div>
                             @endif
                             @if($ticket->user->is_premium)
@@ -160,7 +160,7 @@
                             Voir le profil utilisateur
                         </a>
                         @if($ticket->user->company)
-                            <a href="{{ route('superadmin.abonnements.index') }}?search={{ $ticket->user->company->name }}" class="w-full btn-secondary-modern">
+                            <a href="{{ route('superadmin.abonnements.index') }}?search={{ $ticket->user && $ticket->user->company ? $ticket->user->company->name : '' }}" class="w-full btn-secondary-modern">
                                 <i class="fas fa-building mr-2"></i>
                                 Voir l'abonnement entreprise
                             </a>

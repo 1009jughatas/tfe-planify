@@ -91,25 +91,29 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Nom de l'entreprise</label>
-                                    <p class="text-gray-900">{{ $user->company->name }}</p>
+                                    <p class="text-gray-900">{{ $user->company ? $user->company->name : 'Entreprise non disponible' }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Email entreprise</label>
-                                    <p class="text-gray-900">{{ $user->company->email }}</p>
+                                    <p class="text-gray-900">{{ $user->company ? $user->company->email : 'Email non disponible' }}</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Plan d'abonnement</label>
                                     <span class="px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
-                                        {{ ucfirst($user->company->plan ?? 'starter') }}
+                                        {{ $user->company ? ucfirst($user->company->plan ?? 'starter') : 'Non défini' }}
                                     </span>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Limite d'utilisateurs</label>
                                     <p class="text-gray-900">
-                                        @if($user->company->max_users === -1)
-                                            Illimité
+                                        @if($user->company)
+                                            @if($user->company->max_users === -1)
+                                                Illimité
+                                            @else
+                                                {{ $user->company->max_users ?? 'Non défini' }}
+                                            @endif
                                         @else
-                                            {{ $user->company->max_users ?? 'Non défini' }}
+                                            Non défini
                                         @endif
                                     </p>
                                 </div>
