@@ -281,39 +281,6 @@
                                 </div>
                             @endif
                             
-                            <!-- Sous-tâches orphelines (sans tâche parent) -->
-                            @php
-                                $orphanSubtasks = $subtasks->filter(function($subtask) use ($mainTasks) {
-                                    return !$mainTasks->contains('id', $subtask->parent_id);
-                                });
-                            @endphp
-                            @if($orphanSubtasks->count() > 0)
-                                <div>
-                                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                                        <i class="fas fa-exclamation-triangle text-orange-500 mr-2"></i>
-                                        Sous-tâches Orphelines ({{ $orphanSubtasks->count() }})
-                                    </h4>
-                                    <div class="space-y-2">
-                                        @foreach($orphanSubtasks as $subtask)
-                                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center space-x-2">
-                                                        <i class="fas fa-exclamation-triangle text-orange-500"></i>
-                                                        <span class="text-sm text-gray-700">{{ $subtask->title }}</span>
-                                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
-                                                            Orpheline
-                                                        </span>
-                                                    </div>
-                                                    <a href="{{ route('entreprise.tasks.show', $subtask->id) }}" 
-                                                       class="text-orange-500 hover:text-orange-700 text-xs">
-                                                        <i class="fas fa-external-link-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                     @else
                         <div class="text-center py-8 text-gray-500">
