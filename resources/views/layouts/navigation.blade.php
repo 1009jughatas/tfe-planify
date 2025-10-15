@@ -3,7 +3,6 @@
     isDarkMode: false,
     
     init() {
-        console.log('Alpine.js initialisé pour le menu hamburger');
         this.isDarkMode = localStorage.getItem('darkMode') === 'true';
         this.applyDarkMode();
     },
@@ -23,10 +22,9 @@
     }
 }" x-init="init()">
 
-<!-- Menu Hamburger Button - TEST SANS ALPINE.JS -->
-<button onclick="console.log('Bouton cliqué - TEST SIMPLE'); alert('Bouton cliqué !');" 
-        class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200"
-        style="border: 5px solid blue !important; background: orange !important; z-index: 10000 !important; position: fixed !important; top: 16px !important; left: 16px !important;">
+<!-- Menu Hamburger Button -->
+<button @click="sidebarOpen = !sidebarOpen" 
+        class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200">
     <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
         <span class="block w-5 h-0.5 bg-gray-600" 
               :class="sidebarOpen ? 'rotate-45 translate-y-1.5' : 'rotate-0 translate-y-0'"></span>
@@ -42,18 +40,10 @@
      @click="sidebarOpen = false"
      class="fixed inset-0 bg-black/50 z-40"></div>
 
-<!-- Sidebar - TEST SANS ALPINE.JS -->
-<div class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto"
-     style="border: 10px solid red !important; background: yellow !important; display: block !important; visibility: visible !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 288px !important; height: 100vh !important; z-index: 9999 !important;">
-    
-    <!-- DEBUG AUTH -->
-    <div style="background: red !important; color: white !important; padding: 10px !important; border: 3px solid black !important;">
-        <h3 style="color: white !important; font-size: 16px !important;">DEBUG AUTH</h3>
-        <p style="color: white !important;">Auth::check(): {{ Auth::check() ? 'TRUE' : 'FALSE' }}</p>
-        <p style="color: white !important;">Auth::user(): {{ Auth::user() ? Auth::user()->name : 'NULL' }}</p>
-        <p style="color: white !important;">User role: {{ Auth::user() ? Auth::user()->role : 'NULL' }}</p>
-        <p style="color: white !important;">Is part of company: {{ Auth::user() ? (Auth::user()->isPartOfCompany() ? 'TRUE' : 'FALSE') : 'NULL' }}</p>
-    </div>
+<!-- Sidebar -->
+<div x-show="sidebarOpen"
+     @click.away="sidebarOpen = false"
+     class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto">
 
     <!-- Header -->
     <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
@@ -63,53 +53,46 @@
                     <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-6 h-6 object-contain filter brightness-0 invert">
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold text-white">Planify</h1>
+                    <h2 class="text-lg font-semibold">Planify</h2>
+                    <p class="text-sm text-blue-100">{{ Auth::user()->name ?? 'Utilisateur' }}</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <!-- Toggle Mode Sombre -->
-                <button @click="toggleDarkMode()" 
-                        class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
-                        title="Basculer le mode sombre">
-                    <i class="fas text-white text-lg transition-transform duration-300" 
-                       :class="isDarkMode ? 'fa-sun' : 'fa-moon'"></i>
-                </button>
-                <button @click="sidebarOpen = false" class="p-2 hover:bg-white/10 rounded-lg transition-all duration-200">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            <button @click="sidebarOpen = false" class="text-white/80 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
     </div>
 
-    <!-- User Info -->
-    <div class="p-4 bg-gray-50 border-b border-gray-200">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold">{{ Auth::user() ? substr(Auth::user()->name, 0, 1) : 'U' }}</span>
-            </div>
-            <div class="flex-1 min-w-0">
-                <h3 class="text-sm font-semibold text-gray-900 truncate">{{ Auth::user()->name ?? 'Utilisateur' }}</h3>
-                <p class="text-xs text-gray-600 truncate">{{ Auth::user()->email ?? 'email@example.com' }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation Menu -->
-    <nav class="p-4 space-y-4">
+    <!-- Navigation -->
+    <nav class="p-6 space-y-6">
         <!-- 🏠 ACCUEIL -->
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
-            <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" 
-               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-               @click="sidebarOpen = false">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('dashboard') || request()->routeIs('entreprise.dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                    <i class="fas fa-home text-sm"></i>
-                </div>
-                <span class="text-sm font-medium">Tableau de bord</span>
-            </a>
-        </div>
+        @if(Auth::user() && Auth::user()->isPartOfCompany())
+            <!-- Routes entreprise -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
+                <a href="{{ route('entreprise.dashboard') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-home text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+            </div>
+        @else
+            <!-- Routes indépendant -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
+                <a href="{{ route('dashboard') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-home text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+            </div>
+        @endif
 
         <!-- 📋 PROJETS -->
         @auth
@@ -139,107 +122,29 @@
         </div>
         @endauth
 
-        <!-- 👤 MON COMPTE -->
-        <div style="background: orange !important; color: black !important; padding: 10px !important; border: 3px solid black !important;">
-            <h3 style="color: black !important; font-size: 18px !important;">AVANT @auth - TOUJOURS VISIBLE</h3>
-            <p style="color: black !important;">Auth::check(): {{ Auth::check() ? 'TRUE' : 'FALSE' }}</p>
-        </div>
-        
-        @auth
-        <div style="border: 5px solid green !important; background: lime !important; padding: 10px !important;">
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2" style="color: black !important; font-size: 16px !important;">Mon Compte - DEBUG VISIBLE</h3>
-            <p style="color: black !important; font-size: 14px !important; background: white !important; padding: 5px !important; border: 2px solid black !important;">Section Mon Compte chargée - Utilisateur: {{ Auth::user()->name }}</p>
-            <div class="space-y-1">
-                <a href="{{ route('profile.edit') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                   @click="sidebarOpen = false">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                        <i class="fas fa-user text-sm"></i>
-                    </div>
-                    <span class="text-sm font-medium">Mon Profil</span>
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}" style="border: 3px solid purple !important; background: pink !important; padding: 5px !important;">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false" style="border: 3px solid black !important; background: cyan !important; color: black !important; font-size: 16px !important; font-weight: bold !important;">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600" style="background: yellow !important; border: 2px solid red !important;">
-                            <i class="fas fa-sign-out-alt text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium" style="color: black !important; font-size: 16px !important; font-weight: bold !important;">Se déconnecter</span>
-                    </button>
-                </form>
-            </div>
-        </div>
-        @endauth
-
-        <!-- 👑 PREMIUM (Indépendants uniquement) -->
-        @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin() && !Auth::user()->isPartOfCompany())
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Premium</h3>
-            <a href="{{ route('premium.show') }}" 
-               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('premium.*') ? 'bg-purple-50 text-purple-700 border border-purple-200' : 'bg-white text-purple-700 border border-purple-200 hover:bg-purple-50' }}"
-               @click="sidebarOpen = false">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('premium.*') ? 'bg-purple-200 text-purple-700' : 'bg-purple-100 text-purple-600' }}">
-                    <i class="fas fa-crown text-sm"></i>
-                </div>
-                <span class="text-sm font-medium">Passer Premium</span>
-            </a>
-        </div>
-        @endif
-
-        <!-- 🛡️ ADMINISTRATION -->
-        @if (Auth::user() && Auth::user()->is_admin())
+        <!-- 🛡️ ADMINISTRATION (Admin entreprise uniquement) -->
+        @if (Auth::user() && Auth::user()->isAdminEntreprise())
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Administration</h3>
-            <a href="{{ route('admin.dashboard') }}" 
-               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.*') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-white text-red-700 border border-red-200 hover:bg-red-50' }}"
-               @click="sidebarOpen = false">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('admin.*') ? 'bg-red-200 text-red-700' : 'bg-red-100 text-red-600' }}">
-                    <i class="fas fa-shield-alt text-sm"></i>
-                </div>
-                <span class="text-sm font-medium">Panneau Admin</span>
-            </a>
-        </div>
-        @endif
-
-        <!-- 👥 GESTION UTILISATEURS (Admin Entreprise) -->
-        @if (Auth::user() && Auth::user()->isAdminEntreprise())
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Gestion Utilisateurs</h3>
             <div class="space-y-1">
                 <a href="{{ route('entreprise.utilisateurs.index') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.utilisateurs.*') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-white text-green-700 border border-green-200 hover:bg-green-50' }}"
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.utilisateurs.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
                    @click="sidebarOpen = false">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.utilisateurs.*') ? 'bg-green-200 text-green-700' : 'bg-green-100 text-green-600' }}">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.utilisateurs.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
                         <i class="fas fa-users text-sm"></i>
                     </div>
-                    <span class="text-sm font-medium">Liste des Employés</span>
+                    <span class="text-sm font-medium">Utilisateurs</span>
                 </a>
                 
-                <a href="{{ route('entreprise.utilisateurs.inviter') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-green-700 border border-green-200 hover:bg-green-50"
+                <a href="{{ route('entreprise.abonnement.index') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.abonnement.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
                    @click="sidebarOpen = false">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-green-100 text-green-600">
-                        <i class="fas fa-user-plus text-sm"></i>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.abonnement.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-credit-card text-sm"></i>
                     </div>
-                    <span class="text-sm font-medium">Inviter un Employé</span>
+                    <span class="text-sm font-medium">Abonnement</span>
                 </a>
             </div>
-        </div>
-        @endif
-
-        <!-- 💳 GESTION ABONNEMENTS (Admin Entreprise) -->
-        @if (Auth::user() && Auth::user()->isAdminEntreprise())
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Abonnements</h3>
-            <a href="{{ route('entreprise.abonnement.index') }}" 
-               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.abonnement.*') ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-white text-yellow-700 border border-yellow-200 hover:bg-yellow-50' }}"
-               @click="sidebarOpen = false">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.abonnement.*') ? 'bg-yellow-200 text-yellow-700' : 'bg-yellow-100 text-yellow-600' }}">
-                    <i class="fas fa-credit-card text-sm"></i>
-                </div>
-                <span class="text-sm font-medium">Gestion Abonnement</span>
-            </a>
         </div>
         @endif
 
@@ -278,6 +183,30 @@
         </div>
         @endif
 
+        <!-- 👤 MON COMPTE -->
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
+            <div class="space-y-1">
+                <a href="{{ route('profile.edit') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-user text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Mon Profil</span>
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600">
+                            <i class="fas fa-sign-out-alt text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Se déconnecter</span>
+                    </button>
+                </form>
+            </div>
+        </div>
 
         <!-- ⚙️ PARAMÈTRES -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin() || Auth::user()->isPartOfCompany()))
