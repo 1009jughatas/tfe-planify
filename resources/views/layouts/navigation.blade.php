@@ -163,6 +163,22 @@
                 </a>
             </div>
         </div>
+        @elseif (Auth::user() && !Auth::user()->isPartOfCompany() && !Auth::user()->is_premium)
+        <!-- Message pour les utilisateurs indépendants non-Premium -->
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Export</h3>
+            <div class="p-3 rounded-lg bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-crown text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-medium text-yellow-800">Export PDF Premium</span>
+                        <p class="text-xs text-yellow-600">Fonctionnalité réservée aux utilisateurs Premium</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         @endif
 
         <!-- 👤 MON COMPTE -->

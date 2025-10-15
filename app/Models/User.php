@@ -166,7 +166,13 @@ class User extends Authenticatable
      */
     public function canExportPdf()
     {
-        return $this->hasPermission('export_pdf');
+        // Pour les utilisateurs d'entreprise, utiliser le système de permissions
+        if ($this->isPartOfCompany()) {
+            return $this->hasPermission('export_pdf');
+        }
+        
+        // Pour les utilisateurs indépendants, vérifier le statut Premium
+        return $this->is_premium;
     }
 
     public function isPartOfCompany()
