@@ -456,29 +456,29 @@
                 <div class="modern-card-body space-y-4">
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">Total des tâches</span>
-                        <span class="font-semibold text-gray-900">{{ $visibleTasks->count() }}</span>
+                        <span class="font-semibold text-gray-900" id="total-tasks-count">{{ $visibleTasks->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">Tâches terminées</span>
-                        <span class="font-semibold text-green-600">{{ $visibleTasks->where('status', 'completed')->count() }}</span>
+                        <span class="font-semibold text-green-600" id="completed-tasks-count">{{ $visibleTasks->where('status', 'completed')->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">En cours</span>
-                        <span class="font-semibold text-blue-600">{{ $visibleTasks->where('status', 'in-progress')->count() }}</span>
+                        <span class="font-semibold text-blue-600" id="in-progress-tasks-count">{{ $visibleTasks->where('status', 'in-progress')->count() }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">En attente</span>
-                        <span class="font-semibold text-gray-600">{{ $visibleTasks->where('status', 'pending')->count() }}</span>
+                        <span class="font-semibold text-gray-600" id="pending-tasks-count">{{ $visibleTasks->where('status', 'pending')->count() }}</span>
                     </div>
                     
                     @if($visibleTasks->count() > 0)
                         <div class="pt-4 border-t border-gray-200">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm text-gray-600">Progression</span>
-                                <span class="text-sm font-medium text-gray-900">{{ round(($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100) }}%</span>
+                                <span class="text-sm font-medium text-gray-900" id="progress-percentage">{{ round(($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100) }}%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: {{ ($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100 }}%"></div>
+                                <div class="bg-green-500 h-2 rounded-full" id="progress-bar" style="width: {{ ($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100 }}%"></div>
                             </div>
                         </div>
                     @endif
@@ -712,12 +712,52 @@ $(document).ready(function () {
     
     // Vérifier les mises à jour de tâches au chargement de la page
     checkForTaskUpdates();
+    
+    // Écouter les changements de statut des tâches
+    $(document).on('taskStatusUpdated', function(event, data) {
+        console.log('📊 Mise à jour des statistiques détectée:', data);
+        updateProjectStatistics();
+    });
 });
 
 // Fonction pour réinitialiser le formulaire de statut
 function resetStatusForm() {
     const currentStatus = '{{ $projet->status }}';
     document.getElementById('status').value = currentStatus;
+}
+
+// Fonction pour mettre à jour les statistiques du projet
+function updateProjectStatistics() {
+    console.log('🔄 Mise à jour des statistiques du projet...');
+    
+    // Faire une requête AJAX pour récupérer les nouvelles statistiques
+    $.ajax({
+        url: '{{ route("entreprise.projets.show", $projet->id) }}',
+        method: 'GET',
+        data: {
+            refresh_stats: true
+        },
+        success: function(data) {
+            // Mettre à jour l'affichage avec les données JSON
+            $('#total-tasks-count').text(data.total_tasks);
+            $('#completed-tasks-count').text(data.completed_tasks);
+            $('#in-progress-tasks-count').text(data.in_progress_tasks);
+            $('#pending-tasks-count').text(data.pending_tasks);
+            $('#progress-percentage').text(data.progress_percentage + '%');
+            $('#progress-bar').css('width', data.progress_percentage + '%');
+            
+            console.log('✅ Statistiques mises à jour:', {
+                total: data.total_tasks,
+                completed: data.completed_tasks,
+                inProgress: data.in_progress_tasks,
+                pending: data.pending_tasks,
+                progress: data.progress_percentage + '%'
+            });
+        },
+        error: function(xhr, status, error) {
+            console.log('❌ Erreur lors de la mise à jour des statistiques:', error);
+        }
+    });
 }
 </script>
 @endsection

@@ -436,6 +436,13 @@
                         // Mettre à jour le statut en temps réel sans recharger la page
                         updateTaskStatusDisplay(newStatus);
                         
+                        // Déclencher la mise à jour des statistiques du projet
+                        $(document).trigger('taskStatusUpdated', {
+                            taskId: taskId,
+                            newStatus: newStatus,
+                            projectId: {{ $task->project->id }}
+                        });
+                        
                         // Marquer qu'on vient d'une page de tâche
                         sessionStorage.setItem('fromTaskPage', 'true');
                         sessionStorage.setItem('lastTaskUpdate', Date.now());

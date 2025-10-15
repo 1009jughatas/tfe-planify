@@ -123,6 +123,17 @@ class EntrepriseProjetController extends Controller
 
         $projet->load(['tasks.assignedUser', 'participants', 'author']);
 
+        // Si c'est une requête AJAX pour rafraîchir les statistiques
+        if (request()->has('refresh_stats')) {
+            return response()->json([
+                'total_tasks' => $projet->tasks->count(),
+                'completed_tasks' => $projet->tasks->where('status', 'completed')->count(),
+                'in_progress_tasks' => $projet->tasks->where('status', 'in-progress')->count(),
+                'pending_tasks' => $projet->tasks->where('status', 'pending')->count(),
+                'progress_percentage' => $projet->tasks->count() > 0 ? round(($projet->tasks->where('status', 'completed')->count() / $projet->tasks->count()) * 100) : 0
+            ]);
+        }
+
         return view('entreprise.projets.show', compact('projet', 'company'));
     }
 
