@@ -215,6 +215,14 @@ class User extends Authenticatable
         return $this->hasOne(UserPreference::class);
     }
 
+    /**
+     * Relation avec les tickets de support
+     */
+    public function ticketSupports()
+    {
+        return $this->hasMany(TicketSupport::class);
+    }
+
     public function attachments()
     {
         return $this->hasMany(Attachment::class);

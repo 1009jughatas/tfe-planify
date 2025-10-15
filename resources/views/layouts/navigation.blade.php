@@ -116,6 +116,21 @@
         </div>
         @endif
 
+        <!-- 🆘 SUPPORT -->
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Support</h3>
+            <div class="space-y-1">
+                <a href="{{ route('support.index') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('support.*') ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   onclick="closeMenu()">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('support.*') ? 'bg-orange-200 text-orange-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-headset text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Tickets Support</span>
+                </a>
+            </div>
+        </div>
+
         <!-- 📄 EXPORT -->
         @if (Auth::user() && Auth::user()->canExportPdf())
         <div>

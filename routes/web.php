@@ -68,6 +68,40 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
 });
 
 // ========================================
+// ROUTES SUPPORT (ACCESSIBLE À TOUS)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/support', [App\Http\Controllers\SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/create', [App\Http\Controllers\SupportController::class, 'create'])->name('support.create');
+    Route::post('/support', [App\Http\Controllers\SupportController::class, 'store'])->name('support.store');
+    Route::get('/support/{ticket}', [App\Http\Controllers\SupportController::class, 'show'])->name('support.show');
+});
+
+// ========================================
+// ROUTES SUPER ADMIN
+Route::middleware(['auth', 'isSuperAdmin'])->prefix('superadmin')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\SuperAdminController::class, 'index'])->name('superadmin.dashboard');
+    
+    // Gestion des tickets
+    Route::get('/tickets', [App\Http\Controllers\SuperAdminTicketController::class, 'index'])->name('superadmin.tickets.index');
+    Route::get('/tickets/{ticket}', [App\Http\Controllers\SuperAdminTicketController::class, 'show'])->name('superadmin.tickets.show');
+    Route::post('/tickets/{id}/repondre', [App\Http\Controllers\SuperAdminTicketController::class, 'repondre'])->name('superadmin.tickets.repondre');
+    
+    // Gestion des utilisateurs
+    Route::get('/users', [App\Http\Controllers\SuperAdminUserController::class, 'index'])->name('superadmin.users.index');
+    Route::get('/users/{user}', [App\Http\Controllers\SuperAdminUserController::class, 'show'])->name('superadmin.users.show');
+    Route::patch('/users/{user}/toggle-status', [App\Http\Controllers\SuperAdminUserController::class, 'toggleStatus'])->name('superadmin.users.toggle-status');
+    
+    // Gestion des projets
+    Route::get('/projets', [App\Http\Controllers\SuperAdminProjetController::class, 'index'])->name('superadmin.projets.index');
+    Route::get('/projets/{project}', [App\Http\Controllers\SuperAdminProjetController::class, 'show'])->name('superadmin.projets.show');
+    
+    // Gestion des abonnements
+    Route::get('/abonnements', [App\Http\Controllers\SuperAdminAbonnementController::class, 'index'])->name('superadmin.abonnements.index');
+    Route::patch('/abonnements/{company}', [App\Http\Controllers\SuperAdminAbonnementController::class, 'update'])->name('superadmin.abonnements.update');
+    Route::delete('/abonnements/{company}/cancel', [App\Http\Controllers\SuperAdminAbonnementController::class, 'cancel'])->name('superadmin.abonnements.cancel');
+});
+
+// ========================================
 // ROUTES ENTREPRISE (PROTÉGÉES)
 // ========================================
 Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntrepriseAccess'])->group(function () {
