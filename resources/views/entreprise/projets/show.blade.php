@@ -98,11 +98,12 @@
                                                                 <i class="fas fa-tasks text-white text-sm"></i>
                                                             </div>
                                                             <h5 class="font-semibold text-gray-900">{{ $task->title }}</h5>
-                                                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                                            <span class="px-2 py-1 text-xs font-medium rounded-full task-status-badge
                                                                 @if($task->status === 'completed') bg-green-100 text-green-800
                                                                 @elseif($task->status === 'in-progress') bg-blue-100 text-blue-800
                                                                 @elseif($task->status === 'blocked') bg-red-100 text-red-800
-                                                                @else bg-gray-100 text-gray-800 @endif">
+                                                                @else bg-gray-100 text-gray-800 @endif" 
+                                                                data-task-id="{{ $task->id }}" id="task-status-{{ $task->id }}">
                                                                 @switch($task->status)
                                                                     @case('completed') ✅ Terminé @break
                                                                     @case('in-progress') 🚀 En cours @break
@@ -161,10 +162,11 @@
                                                                                 <div class="flex items-center space-x-2">
                                                                                     <i class="fas fa-arrow-right text-blue-400 text-xs"></i>
                                                                                     <span class="text-sm text-gray-700 font-medium">{{ $subtask->title }}</span>
-                                                                                    <span class="px-1.5 py-0.5 text-xs font-medium rounded-full
+                                                                                    <span class="px-1.5 py-0.5 text-xs font-medium rounded-full task-status-badge
                                                                                         @if($subtask->status === 'completed') bg-green-100 text-green-700
                                                                                         @elseif($subtask->status === 'in-progress') bg-blue-100 text-blue-700
-                                                                                        @else bg-gray-100 text-gray-700 @endif">
+                                                                                        @else bg-gray-100 text-gray-700 @endif" 
+                                                                                        data-task-id="{{ $subtask->id }}" id="task-status-{{ $subtask->id }}">
                                                                                         @switch($subtask->status)
                                                                                             @case('completed') ✅ @break
                                                                                             @case('in-progress') 🚀 @break

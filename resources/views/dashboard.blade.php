@@ -369,10 +369,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center space-x-2">
-                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                                        @if($task->status === 'completed') bg-green-100 text-green-800
-                                                        @elseif($task->status === 'in-progress') bg-orange-100 text-orange-800
-                                                        @else bg-gray-100 text-gray-800 @endif">
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full task-status-badge
+                                            @if($task->status === 'completed') bg-green-100 text-green-800
+                                            @elseif($task->status === 'in-progress') bg-orange-100 text-orange-800
+                                            @else bg-gray-100 text-gray-800 @endif" 
+                                            data-task-id="{{ $task->id }}" id="task-status-{{ $task->id }}">
                                                         @switch($task->status)
                                                             @case('completed') ✅ Terminé @break
                                                             @case('in-progress') 🚀 En cours @break

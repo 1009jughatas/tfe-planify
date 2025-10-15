@@ -42,7 +42,7 @@
                                         $task->status == 'done' ? 'success' :
                                         ($task->status == 'in-progress' ? 'primary' :
                                         ($task->status == 'blocked' ? 'danger' : 'secondary'))
-                                    }} task-status-badge" data-task-id="{{ $task->id }}">
+                                    }} task-status-badge" data-task-id="{{ $task->id }}" id="task-status-{{ $task->id }}">
                                         @switch($task->status)
                                             @case('todo') 📋 À faire @break
                                             @case('in-progress') 🔄 En cours @break
@@ -436,7 +436,7 @@
                         // Mettre à jour le statut en temps réel sans recharger la page
                         updateTaskStatusDisplay(newStatus);
                         
-                        // Déclencher la mise à jour des statistiques du projet
+                        // Déclencher la mise à jour globale des statuts
                         $(document).trigger('taskStatusUpdated', {
                             taskId: taskId,
                             newStatus: newStatus,

@@ -23,6 +23,9 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
+    <!-- Task Status Updater -->
+    <script src="{{ asset('js/task-status-updater.js') }}"></script>
+    
 </head>
 
 <body class="h-full bg-gray-50 font-sans antialiased">

@@ -13,7 +13,7 @@
                 ];
                 $config = $statusConfig[$task->status] ?? $statusConfig['todo'];
             @endphp
-            <span class="task-status {{ $config['class'] }}">
+            <span class="task-status {{ $config['class'] }}" data-task-id="{{ $task->id }}" id="task-status-{{ $task->id }}">
                 <i class="{{ $config['icon'] }} mr-1"></i>
                 {{ $config['text'] }}
             </span>
