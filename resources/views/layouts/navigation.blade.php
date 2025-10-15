@@ -48,6 +48,15 @@
      class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto"
      style="border: 3px solid red; background: yellow !important;">
     
+    <!-- DEBUG AUTH -->
+    <div style="background: red !important; color: white !important; padding: 10px !important; border: 3px solid black !important;">
+        <h3 style="color: white !important; font-size: 16px !important;">DEBUG AUTH</h3>
+        <p style="color: white !important;">Auth::check(): {{ Auth::check() ? 'TRUE' : 'FALSE' }}</p>
+        <p style="color: white !important;">Auth::user(): {{ Auth::user() ? Auth::user()->name : 'NULL' }}</p>
+        <p style="color: white !important;">User role: {{ Auth::user() ? Auth::user()->role : 'NULL' }}</p>
+        <p style="color: white !important;">Is part of company: {{ Auth::user() ? (Auth::user()->isPartOfCompany() ? 'TRUE' : 'FALSE') : 'NULL' }}</p>
+    </div>
+
     <!-- Header -->
     <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
         <div class="flex items-center justify-between">
@@ -133,6 +142,11 @@
         @endauth
 
         <!-- 👤 MON COMPTE -->
+        <div style="background: orange !important; color: black !important; padding: 10px !important; border: 3px solid black !important;">
+            <h3 style="color: black !important; font-size: 18px !important;">AVANT @auth - TOUJOURS VISIBLE</h3>
+            <p style="color: black !important;">Auth::check(): {{ Auth::check() ? 'TRUE' : 'FALSE' }}</p>
+        </div>
+        
         @auth
         <div style="border: 5px solid green !important; background: lime !important; padding: 10px !important;">
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2" style="color: black !important; font-size: 16px !important;">Mon Compte - DEBUG VISIBLE</h3>
