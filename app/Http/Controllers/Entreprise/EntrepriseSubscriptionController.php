@@ -277,11 +277,23 @@ class EntrepriseSubscriptionController extends Controller
                         $maxUsers = 999999; // Valeur très élevée pour représenter l'illimité
                     }
                     
+                    // Récupérer les informations du plan depuis les métadonnées
+                    $planName = strtolower($session->metadata->plan);
+                    $plans = [
+                        'starter' => ['price' => 399, 'max_users' => 10],
+                        'growth' => ['price' => 599, 'max_users' => 20],
+                        'enterprise' => ['price' => 999, 'max_users' => -1]
+                    ];
+                    
+                    $planData = $plans[$planName] ?? $plans['starter'];
+                    
                     $company->update([
-                        'plan' => strtolower($session->metadata->plan),
+                        'plan' => $planName,
                         'max_users' => $maxUsers,
+                        'monthly_price' => $planData['price'],
                         'stripe_subscription_id' => $session->subscription,
-                        'stripe_customer_id' => $session->customer
+                        'stripe_customer_id' => $session->customer,
+                        'status' => 'active'
                     ]);
 
                     return redirect()->route('entreprise.abonnement.index')
@@ -354,7 +366,7 @@ class EntrepriseSubscriptionController extends Controller
     {
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
-        $endpointSecret = config('stripe.webhook_secret');
+        $endpointSecret = env('STRIPE_WEBHOOK_SECRET');
         
         try {
             $event = \Stripe\Webhook::constructEvent(
@@ -402,14 +414,28 @@ class EntrepriseSubscriptionController extends Controller
                 // Mettre à jour le plan selon les métadonnées Stripe
                 $metadata = $subscription->metadata ?? [];
                 if (isset($metadata['plan'])) {
+                    $planName = $metadata['plan'];
+                    $maxUsers = $metadata['max_users'] ?? 10;
+                    
+                    // Récupérer le prix du plan
+                    $plans = [
+                        'starter' => ['price' => 399],
+                        'growth' => ['price' => 599],
+                        'enterprise' => ['price' => 999]
+                    ];
+                    
+                    $planData = $plans[$planName] ?? $plans['starter'];
+                    
                     $company->update([
-                        'plan' => $metadata['plan'],
-                        'max_users' => $metadata['max_users'] ?? 10
+                        'plan' => $planName,
+                        'max_users' => $maxUsers,
+                        'monthly_price' => $planData['price']
                     ]);
                     
                     \Log::info('Abonnement mis à jour', [
                         'company_id' => $company->id,
-                        'new_plan' => $metadata['plan']
+                        'new_plan' => $planName,
+                        'new_price' => $planData['price']
                     ]);
                 }
             }
