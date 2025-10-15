@@ -81,9 +81,26 @@ class EntrepriseSubscriptionController extends Controller
             ]
         ];
 
-        // Plan actuel
+        // Plan actuel - utiliser les vraies données de l'abonnement
         $currentPlan = $company->plan ?? 'starter';
-        $currentPlanData = $plans[$currentPlan] ?? $plans['starter'];
+        
+        // Mapper les anciens plans vers les nouveaux
+        $planMapping = [
+            'professional' => 'growth',
+            'starter' => 'starter',
+            'enterprise' => 'enterprise'
+        ];
+        
+        $mappedPlan = $planMapping[$currentPlan] ?? $currentPlan;
+        $currentPlanData = $plans[$mappedPlan] ?? $plans['starter'];
+        
+        // Utiliser les vraies données de l'abonnement si disponibles
+        if ($company->monthly_price) {
+            $currentPlanData['price'] = $company->monthly_price;
+        }
+        if ($company->max_users) {
+            $currentPlanData['max_users'] = $company->max_users;
+        }
 
         // Vérifier si un changement de plan est nécessaire
         $needsUpgrade = $currentUsers >= $maxUsers;

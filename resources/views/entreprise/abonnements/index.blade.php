@@ -32,9 +32,15 @@
                         <i class="fas fa-crown text-white text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900">{{ ucfirst($currentPlan) }}</h3>
+                        <h3 class="text-xl font-bold text-gray-900">{{ $currentPlanData['name'] }}</h3>
                         <p class="text-gray-600">{{ $currentPlanData['price'] }}€/mois</p>
-                        <p class="text-sm text-gray-500">Jusqu'à {{ $currentPlanData['max_users'] }} utilisateurs</p>
+                        <p class="text-sm text-gray-500">
+                            @if($currentPlanData['max_users'] === -1)
+                                Utilisateurs illimités
+                            @else
+                                Jusqu'à {{ $currentPlanData['max_users'] }} utilisateurs
+                            @endif
+                        </p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -45,6 +51,55 @@
                     @else
                         <div class="text-sm text-red-600">Limite atteinte</div>
                     @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fonctionnalités du plan actuel -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Fonctionnalités de votre plan</h2>
+            <p class="text-sm text-gray-600">Voici ce qui est inclus dans votre abonnement {{ $currentPlanData['name'] }}</p>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach($currentPlanData['features'] as $feature)
+                    <div class="flex items-center space-x-3">
+                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-green-600 text-sm"></i>
+                        </div>
+                        <span class="text-sm text-gray-700">{{ $feature }}</span>
+                    </div>
+                @endforeach
+            </div>
+            
+            <!-- Informations détaillées de l'abonnement -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h5 class="text-sm font-semibold text-gray-700 mb-3">Détails de votre abonnement :</h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                    <div>
+                        <p><strong>Plan:</strong> {{ $currentPlanData['name'] }}</p>
+                        <p><strong>Prix:</strong> {{ $currentPlanData['price'] }}€/mois</p>
+                        <p><strong>Utilisateurs:</strong> 
+                            @if($currentPlanData['max_users'] === -1)
+                                Illimités
+                            @else
+                                Jusqu'à {{ $currentPlanData['max_users'] }} utilisateurs
+                            @endif
+                        </p>
+                    </div>
+                    <div>
+                        @if($company->created_at)
+                            <p><strong>Date d'inscription:</strong> {{ $company->created_at->format('d/m/Y') }}</p>
+                        @endif
+                        @if($company->stripe_subscription_id)
+                            <p><strong>Statut:</strong> <span class="text-green-600">Actif</span></p>
+                            <p><strong>Prochaine facturation:</strong> {{ now()->addMonth()->format('d/m/Y') }}</p>
+                        @else
+                            <p><strong>Statut:</strong> <span class="text-orange-600">Plan gratuit</span></p>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -241,8 +296,15 @@
                         Informations de facturation
                     </h3>
                     <div class="space-y-2 text-sm text-gray-600">
-                        <p><strong>Plan:</strong> {{ ucfirst($currentPlan) }}</p>
+                        <p><strong>Plan:</strong> {{ ucfirst($currentPlanData['name']) }}</p>
                         <p><strong>Prix:</strong> {{ $currentPlanData['price'] }}€/mois</p>
+                        <p><strong>Utilisateurs:</strong> 
+                            @if($currentPlanData['max_users'] === -1)
+                                Illimités
+                            @else
+                                Jusqu'à {{ $currentPlanData['max_users'] }} utilisateurs
+                            @endif
+                        </p>
                         @if($company->stripe_subscription_id)
                             <p><strong>Statut:</strong> <span class="text-green-600">Actif</span></p>
                             <p><strong>Prochaine facturation:</strong> {{ now()->addMonth()->format('d/m/Y') }}</p>
