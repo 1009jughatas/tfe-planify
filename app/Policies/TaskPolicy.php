@@ -55,6 +55,11 @@ class TaskPolicy
             return false;
         }
 
+        // L'admin de l'entreprise peut voir toutes les tâches de son entreprise
+        if ($user->isAdminEntreprise()) {
+            return true;
+        }
+
         // L'auteur peut voir ses tâches
         if ($task->author_id === $user->id) {
             return true;

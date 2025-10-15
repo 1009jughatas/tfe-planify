@@ -124,6 +124,11 @@ class ProjectController extends Controller
             abort(403, 'Accès non autorisé à ce projet.');
         }
 
+        // Charger les tâches avec leurs relations pour les projets d'entreprise
+        if ($project->company_id) {
+            $project->load(['tasks.assignedUser', 'tasks.author']);
+        }
+
         return view('projects.show', compact('project'));
     }
 
