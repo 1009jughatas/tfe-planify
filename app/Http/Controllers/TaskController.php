@@ -46,11 +46,24 @@ class TaskController extends Controller
     public function store(Request $request, Project $project)
     {
         $user = auth()->user();
+        
+        \Log::info('TaskController::store - Début de création de tâche', [
+            'user_id' => $user->id,
+            'user_role' => $user->role,
+            'project_id' => $project->id,
+            'project_company_id' => $project->company_id,
+            'user_company_id' => $user->company_id,
+            'request_data' => $request->all()
+        ]);
 
         // Vérifier l'autorisation selon le type d'utilisateur
         if ($user->isPartOfCompany()) {
             // Pour les utilisateurs d'entreprise, vérifier qu'ils appartiennent à la même entreprise
             if ($project->company_id !== $user->company_id) {
+                \Log::error('TaskController::store - Accès refusé', [
+                    'project_company_id' => $project->company_id,
+                    'user_company_id' => $user->company_id
+                ]);
                 abort(403, 'Accès non autorisé à ce projet d\'entreprise.');
             }
         } else {
@@ -108,8 +121,36 @@ class TaskController extends Controller
             $taskData['assigned_to'] = $user->id;
         }
 
-        Task::create($taskData);
-        return redirect()->route('projects.tasks', $project->id)->with('success', 'Tâche créée avec succès.');
+        try {
+            $task = Task::create($taskData);
+            \Log::info('TaskController::store - Tâche créée avec succès', [
+                'task_id' => $task->id,
+                'task_title' => $task->title,
+                'project_id' => $project->id,
+                'project_company_id' => $project->company_id
+            ]);
+            
+            // Rediriger vers la bonne route selon le type de projet
+            if ($project->company_id) {
+                // Projet d'entreprise - rediriger vers la vue du projet entreprise
+                \Log::info('TaskController::store - Redirection vers entreprise.projets.show', [
+                    'project_id' => $project->id
+                ]);
+                return redirect()->route('entreprise.projets.show', $project->id)->with('success', 'Tâche créée avec succès.');
+            } else {
+                // Projet indépendant - rediriger vers la liste des tâches
+                \Log::info('TaskController::store - Redirection vers projects.tasks', [
+                    'project_id' => $project->id
+                ]);
+                return redirect()->route('projects.tasks', $project->id)->with('success', 'Tâche créée avec succès.');
+            }
+        } catch (\Exception $e) {
+            \Log::error('TaskController::store - Erreur lors de la création de la tâche', [
+                'error' => $e->getMessage(),
+                'taskData' => $taskData
+            ]);
+            return back()->withErrors(['error' => 'Une erreur est survenue lors de la création de la tâche.']);
+        }
     }
 
     public function show(Task $task)
