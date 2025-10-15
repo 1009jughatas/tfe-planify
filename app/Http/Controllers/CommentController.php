@@ -20,7 +20,12 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect()->route('tasks.show', $task->id)->with('success', 'Comment added successfully.');
+        // Rediriger vers la bonne route selon le type de projet
+        if ($task->project->company_id) {
+            return redirect()->route('entreprise.tasks.show', $task->id)->with('success', 'Comment added successfully.');
+        } else {
+            return redirect()->route('tasks.show', $task->id)->with('success', 'Comment added successfully.');
+        }
     }
 
     public function destroy(Comment $comment)
@@ -35,6 +40,11 @@ class CommentController extends Controller
         $taskId = $comment->task_id;
         $comment->delete();
 
-        return redirect()->route('tasks.show', $taskId)->with('success', 'Commentaire supprimé avec succès.');
+        // Rediriger vers la bonne route selon le type de projet
+        if ($comment->task->project->company_id) {
+            return redirect()->route('entreprise.tasks.show', $taskId)->with('success', 'Commentaire supprimé avec succès.');
+        } else {
+            return redirect()->route('tasks.show', $taskId)->with('success', 'Commentaire supprimé avec succès.');
+        }
     }
 }

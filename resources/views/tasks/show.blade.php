@@ -97,15 +97,15 @@
 
                     <!-- Actions rapides -->
                     <div class="space-y-3">
-                        <a href="{{ route('tasks.edit', $task->id) }}" class="btn-primary-modern w-full">
+                        <a href="{{ $task->project->company_id ? route('entreprise.tasks.edit', $task->id) : route('tasks.edit', $task->id) }}" class="btn-primary-modern w-full">
                             <i class="fas fa-edit mr-2"></i>
                             Modifier la Tâche
                         </a>
-                        <a href="{{ route('tasks.create', ['project' => $task->project->id, 'parent_id' => $task->id]) }}" class="btn-secondary-modern w-full">
+                        <a href="{{ $task->project->company_id ? route('entreprise.tasks.create', ['project' => $task->project->id, 'parent_id' => $task->id]) : route('tasks.create', ['project' => $task->project->id, 'parent_id' => $task->id]) }}" class="btn-secondary-modern w-full">
                             <i class="fas fa-plus mr-2"></i>
                             Ajouter une Sous-tâche
                         </a>
-                        <a href="{{ route('projects.show', $task->project->id) }}" class="btn-secondary-modern w-full">
+                        <a href="{{ $task->project->company_id ? route('entreprise.projets.show', $task->project->id) : route('projects.show', $task->project->id) }}" class="btn-secondary-modern w-full">
                             <i class="fas fa-folder-open mr-2"></i>
                             Voir le Projet
                         </a>
@@ -217,7 +217,7 @@
                         </h3>
                     </div>
                     <div class="modern-card-body">
-                        <form action="{{ route('comments.store', $task->id) }}" method="POST" class="space-y-4">
+                        <form action="{{ $task->project->company_id ? route('entreprise.comments.store', $task->id) : route('comments.store', $task->id) }}" method="POST" class="space-y-4">
                             @csrf
                             <div>
                                 <label for="content" class="form-label-modern">Votre commentaire</label>
