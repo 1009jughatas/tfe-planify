@@ -24,7 +24,7 @@
 }" x-init="init()">
 
 <!-- Menu Hamburger Button -->
-<button @click="console.log('Bouton hamburger cliqué, sidebarOpen:', sidebarOpen); sidebarOpen = !sidebarOpen" 
+<button @click="console.log('Bouton hamburger cliqué, sidebarOpen:', sidebarOpen); sidebarOpen = !sidebarOpen; console.log('sidebarOpen après clic:', sidebarOpen);" 
         class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200"
         style="border: 3px solid blue !important; background: orange !important;">
     <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
@@ -46,7 +46,9 @@
 <div x-show="sidebarOpen"
      @click.away="sidebarOpen = false"
      class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto"
-     style="border: 3px solid red; background: yellow !important;">
+     style="border: 10px solid red !important; background: yellow !important; display: block !important; visibility: visible !important;"
+     x-data="{ forceShow: true }"
+     x-init="console.log('Sidebar initialisé'); console.log('sidebarOpen:', sidebarOpen);">
     
     <!-- DEBUG AUTH -->
     <div style="background: red !important; color: white !important; padding: 10px !important; border: 3px solid black !important;">
