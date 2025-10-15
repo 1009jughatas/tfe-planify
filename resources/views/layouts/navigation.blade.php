@@ -184,6 +184,63 @@
             </div>
         </div>
 
+        <!-- 👑 SUPER ADMIN -->
+        @if (Auth::user() && Auth::user()->is_super_admin())
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Super Admin</h3>
+            
+            <!-- Dashboard Super Admin -->
+            <a href="{{ route('superadmin.dashboard') }}" 
+               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('superadmin.dashboard') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+               onclick="closeMenu()">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('superadmin.dashboard') ? 'bg-red-200 text-red-700' : 'bg-gray-100 text-gray-600' }}">
+                    <i class="fas fa-crown text-sm"></i>
+                </div>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+
+            <!-- Gestion des Tickets -->
+            <a href="{{ route('superadmin.tickets.index') }}" 
+               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('superadmin.tickets.*') ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+               onclick="closeMenu()">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('superadmin.tickets.*') ? 'bg-orange-200 text-orange-700' : 'bg-gray-100 text-gray-600' }}">
+                    <i class="fas fa-ticket-alt text-sm"></i>
+                </div>
+                <span class="text-sm font-medium">Tickets Support</span>
+            </a>
+
+            <!-- Gestion des Utilisateurs -->
+            <a href="{{ route('superadmin.users.index') }}" 
+               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('superadmin.users.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+               onclick="closeMenu()">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('superadmin.users.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                    <i class="fas fa-users text-sm"></i>
+                </div>
+                <span class="text-sm font-medium">Utilisateurs</span>
+            </a>
+
+            <!-- Gestion des Projets -->
+            <a href="{{ route('superadmin.projets.index') }}" 
+               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('superadmin.projets.*') ? 'bg-purple-50 text-purple-700 border border-purple-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+               onclick="closeMenu()">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('superadmin.projets.*') ? 'bg-purple-200 text-purple-700' : 'bg-gray-100 text-gray-600' }}">
+                    <i class="fas fa-project-diagram text-sm"></i>
+                </div>
+                <span class="text-sm font-medium">Projets</span>
+            </a>
+
+            <!-- Gestion des Abonnements -->
+            <a href="{{ route('superadmin.abonnements.index') }}" 
+               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('superadmin.abonnements.*') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+               onclick="closeMenu()">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('superadmin.abonnements.*') ? 'bg-green-200 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                    <i class="fas fa-credit-card text-sm"></i>
+                </div>
+                <span class="text-sm font-medium">Abonnements</span>
+            </a>
+        </div>
+        @endif
+
         <!-- ⚙️ PARAMÈTRES -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin() || Auth::user()->isPartOfCompany()))
         <div>
