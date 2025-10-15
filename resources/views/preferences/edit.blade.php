@@ -6,10 +6,16 @@
                 <p class="text-sm text-gray-600 mt-1">Personnalisez votre expérience Planify</p>
             </div>
             <div class="flex items-center space-x-3">
-                @if(Auth::user() && Auth::user()->is_premium())
-                    <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-medium rounded-full shadow-sm">
-                        <i class="fas fa-crown mr-1"></i>Premium
-                    </span>
+                @if(Auth::user() && (Auth::user()->is_premium() || Auth::user()->isPartOfCompany()))
+                    @if(Auth::user()->isPartOfCompany())
+                        <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xs font-medium rounded-full shadow-sm">
+                            <i class="fas fa-building mr-1"></i>Entreprise
+                        </span>
+                    @else
+                        <span class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-medium rounded-full shadow-sm">
+                            <i class="fas fa-crown mr-1"></i>Premium
+                        </span>
+                    @endif
                 @else
                     <a href="{{ route('premium.show') }}" class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs font-medium rounded-full shadow-sm hover:shadow-md transition-all duration-200">
                         <i class="fas fa-crown mr-1"></i>Passer Premium
@@ -81,7 +87,7 @@
 
             <!-- Boutons d'action -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
-                <a href="{{ route('dashboard') }}" class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 w-full sm:w-auto">
+                <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 w-full sm:w-auto">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Retour au Dashboard
                 </a>

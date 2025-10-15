@@ -14,8 +14,8 @@ class UserPreferenceController extends Controller
     {
         $user = auth()->user();
         
-        // Vérifier si l'utilisateur est premium
-        if (!$user->is_premium && !$user->is_admin()) {
+        // Vérifier si l'utilisateur est premium, admin ou utilisateur d'entreprise
+        if (!$user->is_premium && !$user->is_admin() && !$user->isPartOfCompany()) {
             return redirect()->route('premium.show')->with('info', 'La personnalisation de l\'interface est une fonctionnalité premium.');
         }
 
@@ -33,8 +33,8 @@ class UserPreferenceController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier si l'utilisateur est premium
-        if (!$user->is_premium && !$user->is_admin()) {
+        // Vérifier si l'utilisateur est premium, admin ou utilisateur d'entreprise
+        if (!$user->is_premium && !$user->is_admin() && !$user->isPartOfCompany()) {
             return redirect()->route('premium.show')->with('info', 'La personnalisation de l\'interface est une fonctionnalité premium.');
         }
 
