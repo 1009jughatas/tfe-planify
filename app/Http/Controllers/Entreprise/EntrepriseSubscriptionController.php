@@ -166,6 +166,11 @@ class EntrepriseSubscriptionController extends Controller
         try {
             \Stripe\Stripe::setApiKey(config('stripe.secret'));
 
+            // Si l'entreprise a déjà un abonnement Stripe, on utilise le portail client
+            if ($company->stripe_customer_id) {
+                return $this->redirectToCustomerPortal($company);
+            }
+
             $checkout_session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
@@ -197,6 +202,23 @@ class EntrepriseSubscriptionController extends Controller
         } catch (\Exception $e) {
             \Log::error('Stripe Checkout Error: ' . $e->getMessage());
             return back()->with('error', 'Erreur lors de la création de la session de paiement. Veuillez réessayer.');
+        }
+    }
+
+    private function redirectToCustomerPortal($company)
+    {
+        try {
+            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            
+            $session = \Stripe\BillingPortal\Session::create([
+                'customer' => $company->stripe_customer_id,
+                'return_url' => route('entreprise.abonnement.index'),
+            ]);
+
+            return redirect($session->url);
+        } catch (\Exception $e) {
+            \Log::error('Stripe Customer Portal Error: ' . $e->getMessage());
+            return back()->with('error', 'Erreur lors de l\'accès au portail client. Veuillez réessayer.');
         }
     }
 
@@ -284,6 +306,144 @@ class EntrepriseSubscriptionController extends Controller
 
             return redirect()->route('entreprise.abonnement.index')
                 ->with('success', 'Abonnement annulé avec succès. Vous êtes maintenant sur le plan gratuit.');
+        }
+    }
+
+    /**
+     * Webhook Stripe pour gérer les changements d'abonnement
+     */
+    public function webhook(Request $request)
+    {
+        $payload = $request->getContent();
+        $sigHeader = $request->header('Stripe-Signature');
+        $endpointSecret = config('stripe.webhook_secret');
+        
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sigHeader, $endpointSecret
+            );
+        } catch (\UnexpectedValueException $e) {
+            \Log::error('Invalid payload Stripe webhook', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Invalid payload'], 400);
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            \Log::error('Invalid signature Stripe webhook', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Invalid signature'], 400);
+        }
+        
+        // Gérer l'événement
+        switch ($event->type) {
+            case 'customer.subscription.updated':
+                $this->handleSubscriptionUpdated($event->data->object);
+                break;
+                
+            case 'customer.subscription.deleted':
+                $this->handleSubscriptionDeleted($event->data->object);
+                break;
+                
+            case 'invoice.payment_succeeded':
+                $this->handlePaymentSucceeded($event->data->object);
+                break;
+                
+            case 'invoice.payment_failed':
+                $this->handlePaymentFailed($event->data->object);
+                break;
+                
+            default:
+                \Log::info('Événement Stripe non géré', ['type' => $event->type]);
+        }
+        
+        return response()->json(['status' => 'success']);
+    }
+
+    private function handleSubscriptionUpdated($subscription)
+    {
+        try {
+            $company = \App\Models\Company::where('stripe_subscription_id', $subscription->id)->first();
+            
+            if ($company) {
+                // Mettre à jour le plan selon les métadonnées Stripe
+                $metadata = $subscription->metadata ?? [];
+                if (isset($metadata['plan'])) {
+                    $company->update([
+                        'plan' => $metadata['plan'],
+                        'max_users' => $metadata['max_users'] ?? 10
+                    ]);
+                    
+                    \Log::info('Abonnement mis à jour', [
+                        'company_id' => $company->id,
+                        'new_plan' => $metadata['plan']
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la mise à jour de l\'abonnement', [
+                'subscription_id' => $subscription->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function handleSubscriptionDeleted($subscription)
+    {
+        try {
+            $company = \App\Models\Company::where('stripe_subscription_id', $subscription->id)->first();
+            
+            if ($company) {
+                // Passer au plan gratuit
+                $company->update([
+                    'plan' => 'starter',
+                    'max_users' => 10,
+                    'stripe_subscription_id' => null
+                ]);
+                
+                \Log::info('Abonnement annulé', ['company_id' => $company->id]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de l\'annulation de l\'abonnement', [
+                'subscription_id' => $subscription->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function handlePaymentSucceeded($invoice)
+    {
+        \Log::info('Paiement réussi', ['invoice_id' => $invoice->id]);
+    }
+
+    private function handlePaymentFailed($invoice)
+    {
+        \Log::warning('Échec du paiement', ['invoice_id' => $invoice->id]);
+    }
+
+    /**
+     * Rediriger vers le portail client Stripe
+     */
+    public function portal()
+    {
+        $user = Auth::user();
+        $company = $user->company;
+        
+        if (!$company) {
+            abort(403, 'Aucune entreprise associée à votre compte.');
+        }
+
+        if (!$company->stripe_customer_id) {
+            return back()->with('error', 'Aucun abonnement actif trouvé.');
+        }
+
+        try {
+            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            
+            $session = \Stripe\BillingPortal\Session::create([
+                'customer' => $company->stripe_customer_id,
+                'return_url' => route('entreprise.abonnement.index'),
+            ]);
+
+            return redirect($session->url);
+        } catch (\Exception $e) {
+            \Log::error('Stripe Customer Portal Error: ' . $e->getMessage());
+            return back()->with('error', 'Erreur lors de l\'accès au portail client. Veuillez réessayer.');
         }
     }
 }

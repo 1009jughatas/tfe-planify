@@ -43,7 +43,7 @@ class AuthEntrepriseController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'plan' => 'required|in:starter,professional,enterprise',
+            'plan' => 'required|in:starter,growth,enterprise',
         ], [
             'company_name.required' => 'Le nom de l\'entreprise est obligatoire.',
             'company_email.required' => 'L\'email de l\'entreprise est obligatoire.',
@@ -58,10 +58,10 @@ class AuthEntrepriseController extends Controller
             'plan.in' => 'Le plan sélectionné n\'est pas valide.',
         ]);
 
-        // Définir les prix et limites selon le plan
+        // Définir les prix et limites selon le plan (synchronisés avec la page d'accueil)
         $planConfig = [
             'starter' => ['price' => 399, 'user_limit' => 10],
-            'professional' => ['price' => 599, 'user_limit' => 20],
+            'growth' => ['price' => 599, 'user_limit' => 20],
             'enterprise' => ['price' => 999, 'user_limit' => null],
         ];
 

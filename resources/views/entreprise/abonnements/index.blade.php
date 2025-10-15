@@ -114,8 +114,14 @@
                 <div class="flex items-start space-x-2">
                     <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
                     <div class="text-sm text-blue-700">
-                        <strong>💳 Paiement sécurisé :</strong> Vous serez redirigé vers Stripe pour effectuer le paiement de manière sécurisée. 
-                        Votre abonnement sera activé automatiquement après validation du paiement.
+                        <strong>💳 Paiement sécurisé :</strong> 
+                        @if($company->stripe_customer_id)
+                            Vous serez redirigé vers le portail client Stripe pour gérer votre abonnement. 
+                            Les changements prendront effet à la prochaine facturation.
+                        @else
+                            Vous serez redirigé vers Stripe pour effectuer le paiement de manière sécurisée. 
+                            Votre abonnement sera activé automatiquement après validation du paiement.
+                        @endif
                     </div>
                 </div>
             </div>
@@ -237,7 +243,13 @@
                     <div class="space-y-2 text-sm text-gray-600">
                         <p><strong>Plan:</strong> {{ ucfirst($currentPlan) }}</p>
                         <p><strong>Prix:</strong> {{ $currentPlanData['price'] }}€/mois</p>
-                        <p><strong>Prochaine facturation:</strong> {{ now()->addMonth()->format('d/m/Y') }}</p>
+                        @if($company->stripe_subscription_id)
+                            <p><strong>Statut:</strong> <span class="text-green-600">Actif</span></p>
+                            <p><strong>Prochaine facturation:</strong> {{ now()->addMonth()->format('d/m/Y') }}</p>
+                            <p><strong>ID Abonnement:</strong> <code class="text-xs bg-gray-100 px-1 rounded">{{ $company->stripe_subscription_id }}</code></p>
+                        @else
+                            <p><strong>Statut:</strong> <span class="text-orange-600">Plan gratuit</span></p>
+                        @endif
                     </div>
                 </div>
 
@@ -248,6 +260,13 @@
                         Actions
                     </h3>
                     <div class="space-y-3">
+                        @if($company->stripe_customer_id)
+                            <a href="{{ route('entreprise.abonnement.portal') }}" class="w-full btn-primary-modern">
+                                <i class="fas fa-credit-card mr-2"></i>
+                                Gérer mon abonnement
+                            </a>
+                        @endif
+                        
                         @if($currentPlan !== 'starter')
                             <form method="POST" action="{{ route('entreprise.abonnement.cancel') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler l\'abonnement ? Vous passerez au plan gratuit avec des limitations.')">
                                 @csrf
