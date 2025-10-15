@@ -23,25 +23,12 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- Test Alpine.js -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM chargé');
-            console.log('Alpine disponible:', typeof Alpine !== 'undefined');
-            if (typeof Alpine !== 'undefined') {
-                console.log('Version Alpine:', Alpine.version);
-            }
-        });
-    </script>
 </head>
 
 <body class="h-full bg-gray-50 font-sans antialiased">
     <div class="min-h-screen">
         <!-- Navigation -->
-        @include('layouts.simple-navigation')
+        @include('layouts.navigation')
 
         <!-- Page Content -->
         <main class="w-full">
