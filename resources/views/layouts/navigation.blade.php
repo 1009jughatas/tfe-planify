@@ -183,27 +183,24 @@
         </div>
         @endif
 
-        <!-- 👤 MON COMPTE -->
+        <!-- 👤 MON COMPTE - TEST VISIBLE -->
+        <div style="background: red !important; color: white !important; padding: 10px !important; border: 3px solid black !important;">
+            <h3 style="color: white !important; font-size: 16px !important;">TEST MON COMPTE - TOUJOURS VISIBLE</h3>
+            <p style="color: white !important;">Auth::check(): {{ Auth::check() ? 'TRUE' : 'FALSE' }}</p>
+            <p style="color: white !important;">User: {{ Auth::user() ? Auth::user()->name : 'NULL' }}</p>
+        </div>
+        
         @auth
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
-            <div class="space-y-1">
-                <a href="{{ route('profile.edit') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                   @click="sidebarOpen = false">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                        <i class="fas fa-user text-sm"></i>
-                    </div>
-                    <span class="text-sm font-medium">Mon Profil</span>
-                </a>
-
+        <div style="background: green !important; color: white !important; padding: 10px !important; border: 3px solid black !important;">
+            <h3 style="color: white !important; font-size: 16px !important;">DANS @auth - VISIBLE SI CONNECTÉ</h3>
+            <p style="color: white !important;">Utilisateur connecté: {{ Auth::user()->name }}</p>
+            
+            <div style="background: yellow !important; color: black !important; padding: 10px !important; border: 2px solid black !important; margin-top: 10px;">
+                <h4 style="color: black !important; font-size: 14px !important;">BOUTON DE DÉCONNEXION</h4>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600">
-                            <i class="fas fa-sign-out-alt text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium">Se déconnecter</span>
+                    <button type="submit" style="background: red !important; color: white !important; padding: 10px !important; border: 2px solid black !important; font-size: 16px !important; font-weight: bold !important;">
+                        🚪 SE DÉCONNECTER
                     </button>
                 </form>
             </div>
