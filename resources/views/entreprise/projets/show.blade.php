@@ -312,16 +312,18 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
                             @if($projet->status === 'completed') bg-green-100 text-green-800
-                            @elseif($projet->status === 'in-progress') bg-blue-100 text-blue-800
+                            @elseif($projet->status === 'active') bg-blue-100 text-blue-800
                             @elseif($projet->status === 'cancelled') bg-red-100 text-red-800
+                            @elseif($projet->status === 'on-hold') bg-yellow-100 text-yellow-800
                             @else bg-gray-100 text-gray-800 @endif">
                             @switch($projet->status)
+                                @case('pending') ⏳ En attente @break
                                 @case('planning') 📋 En planification @break
                                 @case('active') 🚀 Actif @break
                                 @case('on-hold') ⏸️ En pause @break
                                 @case('completed') ✅ Terminé @break
                                 @case('cancelled') ❌ Annulé @break
-                                @default 📋 En planification
+                                @default ⏳ En attente
                             @endswitch
                         </span>
                     </div>
@@ -389,6 +391,7 @@
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Nouveau statut</label>
                             <select name="status" id="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                <option value="pending" {{ $projet->status === 'pending' ? 'selected' : '' }}>⏳ En attente</option>
                                 <option value="planning" {{ $projet->status === 'planning' ? 'selected' : '' }}>📋 En planification</option>
                                 <option value="active" {{ $projet->status === 'active' ? 'selected' : '' }}>🚀 Actif</option>
                                 <option value="on-hold" {{ $projet->status === 'on-hold' ? 'selected' : '' }}>⏸️ En pause</option>

@@ -250,7 +250,7 @@ class EntrepriseProjetController extends Controller
 
         try {
             $request->validate([
-                'status' => 'required|in:planning,active,on-hold,completed,cancelled'
+                'status' => 'required|in:pending,planning,active,on-hold,completed,cancelled'
             ]);
 
             $projet->update([
