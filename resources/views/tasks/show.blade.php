@@ -379,8 +379,10 @@
             console.log('Élément #status trouvé:', $('#status').length > 0);
             console.log('Élément #updateStatusBtn trouvé:', $('#updateStatusBtn').length > 0);
             
+            // Déclarer originalStatus au niveau global du document ready
+            let originalStatus = null;
             if ($('#status').length > 0) {
-                let originalStatus = $('#status').data('original-status');
+                originalStatus = $('#status').data('original-status');
                 console.log('Statut original:', originalStatus);
             }
             
@@ -394,7 +396,6 @@
             $('#updateStatusBtn').click(function (e) {
                 e.preventDefault();
                 console.log('🎯 BOUTON CLIQUÉ !');
-                alert('Bouton cliqué ! JavaScript fonctionne.');
                 let taskId = $('#status').data('task-id');
                 let newStatus = $('#status').val();
                 let selectElement = $('#status');
