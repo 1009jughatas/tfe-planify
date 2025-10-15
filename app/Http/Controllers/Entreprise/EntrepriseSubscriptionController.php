@@ -125,10 +125,18 @@ class EntrepriseSubscriptionController extends Controller
 
     public function update(Request $request)
     {
+        \Log::info('EntrepriseSubscriptionController::update - Début', [
+            'user_id' => Auth::id(),
+            'request_data' => $request->all()
+        ]);
+        
         $user = Auth::user();
         $company = $user->company;
         
         if (!$company) {
+            \Log::error('EntrepriseSubscriptionController::update - Aucune entreprise associée', [
+                'user_id' => $user->id
+            ]);
             abort(403, 'Aucune entreprise associée à votre compte.');
         }
 
@@ -180,14 +188,22 @@ class EntrepriseSubscriptionController extends Controller
 
     private function createStripeCheckoutSession($company, $plan)
     {
+        \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Début', [
+            'company_id' => $company->id,
+            'plan' => $plan
+        ]);
+        
         try {
-            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+            \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Clé Stripe configurée');
 
             // Si l'entreprise a déjà un abonnement Stripe, on utilise le portail client
             if ($company->stripe_customer_id) {
                 return $this->redirectToCustomerPortal($company);
             }
 
+            \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Création de la session Stripe');
+            
             $checkout_session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
@@ -215,6 +231,11 @@ class EntrepriseSubscriptionController extends Controller
                 ]
             ]);
 
+            \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Session créée avec succès', [
+                'session_id' => $checkout_session->id,
+                'url' => $checkout_session->url
+            ]);
+
             return redirect($checkout_session->url);
         } catch (\Exception $e) {
             \Log::error('Stripe Checkout Error: ' . $e->getMessage());
@@ -225,7 +246,7 @@ class EntrepriseSubscriptionController extends Controller
     private function redirectToCustomerPortal($company)
     {
         try {
-            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
             
             $session = \Stripe\BillingPortal\Session::create([
                 'customer' => $company->stripe_customer_id,
@@ -242,7 +263,7 @@ class EntrepriseSubscriptionController extends Controller
     public function success(Request $request)
     {
         try {
-            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
             
             $session = \Stripe\Checkout\Session::retrieve($request->session_id);
             
@@ -296,7 +317,7 @@ class EntrepriseSubscriptionController extends Controller
         try {
             // Annuler l'abonnement Stripe si il existe
             if ($company->stripe_subscription_id) {
-                \Stripe\Stripe::setApiKey(config('stripe.secret'));
+                \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
                 $subscription = \Stripe\Subscription::retrieve($company->stripe_subscription_id);
                 $subscription->cancel();
             }
@@ -450,7 +471,7 @@ class EntrepriseSubscriptionController extends Controller
         }
 
         try {
-            \Stripe\Stripe::setApiKey(config('stripe.secret'));
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
             
             $session = \Stripe\BillingPortal\Session::create([
                 'customer' => $company->stripe_customer_id,
