@@ -42,7 +42,7 @@
                                         $task->status == 'done' ? 'success' :
                                         ($task->status == 'in-progress' ? 'primary' :
                                         ($task->status == 'blocked' ? 'danger' : 'secondary'))
-                                    }}">
+                                    }} task-status-badge" data-task-id="{{ $task->id }}">
                                         @switch($task->status)
                                             @case('todo') 📋 À faire @break
                                             @case('in-progress') 🔄 En cours @break
@@ -433,10 +433,12 @@
                         showNotification('Statut mis à jour avec succès !', 'success');
                         originalStatus = newStatus;
                         
-                        // Recharger la page après un court délai
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1500);
+                        // Mettre à jour le statut en temps réel sans recharger la page
+                        updateTaskStatusDisplay(newStatus);
+                        
+                        // Réactiver les contrôles
+                        selectElement.prop('disabled', false);
+                        $('#updateStatusBtn').prop('disabled', false).html('<i class="fas fa-check mr-2"></i>Mettre à Jour le Statut');
                     },
                     error: function (xhr, status, error) {
                         // Réactiver les contrôles
@@ -451,6 +453,82 @@
                     }
                 });
             });
+
+            function updateTaskStatusDisplay(newStatus) {
+                console.log('🔄 Mise à jour de l\'affichage du statut:', newStatus);
+                
+                // Fonction pour obtenir le texte et la classe du statut
+                function getStatusInfo(status) {
+                    switch(status) {
+                        case 'todo':
+                            return { text: '📋 À faire', class: 'secondary' };
+                        case 'in-progress':
+                            return { text: '🔄 En cours', class: 'primary' };
+                        case 'done':
+                        case 'completed':
+                            return { text: '✅ Terminée', class: 'success' };
+                        case 'blocked':
+                            return { text: '🚫 Bloquée', class: 'danger' };
+                        default:
+                            return { text: '📋 À faire', class: 'secondary' };
+                    }
+                }
+                
+                const statusInfo = getStatusInfo(newStatus);
+                
+                // 1. Mettre à jour le badge principal du statut
+                const mainStatusBadge = $('.task-status-badge');
+                if (mainStatusBadge.length > 0) {
+                    mainStatusBadge.removeClass('badge-success badge-primary badge-danger badge-secondary')
+                                .addClass('badge-' + statusInfo.class)
+                                .html(statusInfo.text);
+                    console.log('✅ Badge principal mis à jour');
+                }
+                
+                // 2. Mettre à jour le sélecteur de statut
+                $('#status').val(newStatus);
+                console.log('✅ Sélecteur mis à jour');
+                
+                // 3. Mettre à jour les sous-tâches si elles existent
+                $('.subtask-status').each(function() {
+                    const subtaskElement = $(this);
+                    const subtaskStatus = subtaskElement.data('status');
+                    
+                    // Si c'est la même tâche, mettre à jour
+                    if (subtaskStatus === originalStatus) {
+                        const subtaskStatusInfo = getStatusInfo(newStatus);
+                        subtaskElement.removeClass('badge-success badge-primary badge-danger badge-secondary')
+                                     .addClass('badge-' + subtaskStatusInfo.class)
+                                     .html(subtaskStatusInfo.text);
+                        console.log('✅ Sous-tâche mise à jour');
+                    }
+                });
+                
+                // 4. Mettre à jour les statistiques si elles existent
+                updateTaskStatistics(newStatus);
+                
+                console.log('🎉 Mise à jour du statut terminée');
+            }
+            
+            function updateTaskStatistics(newStatus) {
+                // Mettre à jour les compteurs de statistiques si ils existent
+                const statsElements = $('[data-status-count]');
+                statsElements.each(function() {
+                    const element = $(this);
+                    const statusType = element.data('status-count');
+                    const currentCount = parseInt(element.text()) || 0;
+                    
+                    // Logique pour mettre à jour les compteurs
+                    if (statusType === originalStatus) {
+                        // Décrémenter l'ancien statut
+                        element.text(Math.max(0, currentCount - 1));
+                    }
+                    if (statusType === newStatus) {
+                        // Incrémenter le nouveau statut
+                        element.text(currentCount + 1);
+                    }
+                });
+            }
 
             function showNotification(message, type) {
                 let bgColor, textColor, icon;
