@@ -240,7 +240,7 @@
                                             @else bg-gray-100 text-gray-800 @endif">
                                             {{ ucfirst($task->status) }}
                                         </span>
-                                        <a href="{{ route('tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
+                                        <a href="{{ route('entreprise.tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
                                             <i class="fas fa-arrow-right"></i>
                                         </a>
                                     </div>

@@ -76,6 +76,15 @@ Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntr
     // Gestion des projets
     Route::resource('projets', EntrepriseProjetController::class);
     
+    // Routes de tâches pour les projets d'entreprise
+    Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
+    Route::get('/projects/{project}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/projects/{project}/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::resource('tasks', TaskController::class)->except(['create', 'store']);
+    Route::post('/tasks/{task}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+    
     // Profile Routes - Entreprise
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

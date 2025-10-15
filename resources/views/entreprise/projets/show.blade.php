@@ -60,7 +60,7 @@
                             Tâches ({{ $projet->tasks->count() }})
                         </h3>
                         @if(auth()->user()->isAdminEntreprise())
-                            <a href="{{ route('tasks.create', ['project' => $projet->id]) }}" class="btn-primary-modern">
+                            <a href="{{ route('entreprise.tasks.create', ['project' => $projet->id]) }}" class="btn-primary-modern">
                                 <i class="fas fa-plus mr-2"></i>
                                 Nouvelle tâche
                             </a>
@@ -96,7 +96,7 @@
                                             @else bg-gray-100 text-gray-800 @endif">
                                             {{ ucfirst($task->status) }}
                                         </span>
-                                        <a href="{{ route('tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
+                                        <a href="{{ route('entreprise.tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
                                             <i class="fas fa-arrow-right"></i>
                                         </a>
                                     </div>
@@ -108,7 +108,7 @@
                             <i class="fas fa-tasks text-4xl mb-3"></i>
                             <p>Aucune tâche créée</p>
                             @if(auth()->user()->isAdminEntreprise())
-                                <a href="{{ route('tasks.create', ['project' => $projet->id]) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                <a href="{{ route('entreprise.tasks.create', ['project' => $projet->id]) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                     Créer la première tâche
                                 </a>
                             @endif
