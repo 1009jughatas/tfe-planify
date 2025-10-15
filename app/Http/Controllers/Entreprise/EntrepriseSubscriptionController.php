@@ -94,13 +94,9 @@ class EntrepriseSubscriptionController extends Controller
         $mappedPlan = $planMapping[$currentPlan] ?? $currentPlan;
         $currentPlanData = $plans[$mappedPlan] ?? $plans['starter'];
         
-        // Utiliser les vraies données de l'abonnement si disponibles
-        if ($company->monthly_price) {
-            $currentPlanData['price'] = $company->monthly_price;
-        }
-        if ($company->max_users) {
-            $currentPlanData['max_users'] = $company->max_users;
-        }
+        // TOUJOURS utiliser les vraies données de l'abonnement de la base de données
+        $currentPlanData['price'] = $company->monthly_price ?? $currentPlanData['price'];
+        $currentPlanData['max_users'] = $company->max_users ?? $currentPlanData['max_users'];
         
         // Debug: Log des données pour vérification
         \Log::info('Données d\'abonnement', [

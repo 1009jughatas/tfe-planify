@@ -34,6 +34,11 @@
                     <div>
                         <h3 class="text-xl font-bold text-gray-900">{{ $currentPlanData['name'] }}</h3>
                         <p class="text-gray-600">{{ $currentPlanData['price'] }}€/mois</p>
+                        <!-- Debug: Afficher les données pour vérification -->
+                        <div class="text-xs text-gray-400 mt-1">
+                            Debug: Plan={{ $company->plan }}, Prix={{ $company->monthly_price }}, MaxUsers={{ $company->max_users }}<br>
+                            CurrentPlanData: {{ json_encode($currentPlanData) }}
+                        </div>
                         <p class="text-sm text-gray-500">
                             @if($currentPlanData['max_users'] === -1)
                                 Utilisateurs illimités
