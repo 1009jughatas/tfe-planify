@@ -3,22 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class SuperAdminAbonnementController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'isSuperAdmin']);
-    }
-
-    /**
-     * Afficher tous les abonnements
-     */
     public function index(Request $request)
     {
-        $query = Company::with('admin');
+        $query = Company::with(['users']);
 
         // Filtres
         if ($request->filled('plan')) {
@@ -30,69 +21,47 @@ class SuperAdminAbonnementController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
         }
 
-        $companies = $query->orderBy('created_at', 'desc')->paginate(20);
+        $companies = $query->paginate(20);
 
         // Statistiques
         $stats = [
             'total_companies' => Company::count(),
-            'active_companies' => Company::where('status', 'active')->count(),
-            'starter_plan' => Company::where('plan', 'starter')->count(),
-            'growth_plan' => Company::where('plan', 'growth')->count(),
-            'enterprise_plan' => Company::where('plan', 'enterprise')->count(),
-            'with_stripe' => Company::whereNotNull('stripe_customer_id')->count(),
+            'active_subscriptions' => Company::where('status', 'active')->count(),
+            'premium_users' => \App\Models\User::where('is_premium', true)->count(),
+            'monthly_revenue' => Company::where('status', 'active')->sum('monthly_price') ?? 0,
         ];
 
-        // Utilisateurs indépendants premium
-        $premiumUsers = User::where('role', 'user_independant')
-            ->where('is_premium', true)
-            ->with('preferences')
-            ->get();
-
-        return view('superadmin.abonnements.index', compact('companies', 'stats', 'premiumUsers'));
+        return view('superadmin.abonnements.index', compact('companies', 'stats'));
     }
 
-    /**
-     * Modifier manuellement un abonnement
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Company $company)
     {
         $request->validate([
             'plan' => 'required|in:starter,growth,enterprise',
-            'status' => 'required|in:active,past_due,cancelled',
-            'max_users' => 'nullable|integer|min:1',
+            'monthly_price' => 'required|numeric|min:0',
+            'max_users' => 'required|integer|min:-1',
         ]);
-
-        $company = Company::findOrFail($id);
 
         $company->update([
             'plan' => $request->plan,
-            'status' => $request->status,
-            'max_users' => $request->max_users ?? $company->max_users,
+            'monthly_price' => $request->monthly_price,
+            'max_users' => $request->max_users,
+            'user_limit' => $request->max_users,
         ]);
 
-        return redirect()->back()
-            ->with('success', 'Abonnement modifié avec succès.');
+        return back()->with('success', 'Abonnement mis à jour avec succès.');
     }
 
-    /**
-     * Résilier un abonnement
-     */
-    public function cancel($id)
+    public function cancel(Company $company)
     {
-        $company = Company::findOrFail($id);
-
         $company->update([
-            'status' => 'cancelled',
-            'stripe_subscription_id' => null,
+            'status' => 'cancelled'
         ]);
 
-        return redirect()->back()
-            ->with('success', 'Abonnement résilié avec succès.');
+        return response()->json(['success' => true, 'message' => 'Abonnement annulé avec succès.']);
     }
 }

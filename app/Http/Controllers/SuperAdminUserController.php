@@ -5,20 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class SuperAdminUserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'isSuperAdmin']);
-    }
-
-    /**
-     * Afficher tous les utilisateurs
-     */
     public function index(Request $request)
     {
-        $query = User::with('company');
+        $query = User::with(['company', 'projects', 'tasks', 'ticketSupports']);
 
         // Filtres
         if ($request->filled('role')) {
@@ -30,13 +23,14 @@ class SuperAdminUserController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        $users = $query->orderBy('created_at', 'desc')->paginate(20);
+        $users = $query->paginate(20);
 
         // Statistiques
         $stats = [
@@ -47,44 +41,24 @@ class SuperAdminUserController extends Controller
             'super_admin' => User::where('role', 'super_admin')->count(),
         ];
 
-        // Liste des entreprises pour le filtre
-        $companies = Company::orderBy('name')->get();
+        $companies = Company::all();
 
         return view('superadmin.users.index', compact('users', 'stats', 'companies'));
     }
 
-    /**
-     * Afficher les détails d'un utilisateur
-     */
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::with(['company', 'projects', 'tasks'])->findOrFail($id);
+        $user->load(['company', 'projects', 'tasks', 'ticketSupports']);
         
-        // Statistiques de l'utilisateur
-        $userStats = [
-            'projects_count' => $user->projects()->count(),
-            'tasks_count' => $user->tasks()->count(),
-            'tickets_count' => $user->ticketSupports()->count(),
-            'last_login' => $user->last_login_at ?? 'Jamais',
-        ];
-
-        return view('superadmin.users.show', compact('user', 'userStats'));
+        return view('superadmin.users.show', compact('user'));
     }
 
-    /**
-     * Activer/Désactiver un utilisateur
-     */
-    public function toggleStatus($id)
+    public function toggleStatus(User $user)
     {
-        $user = User::findOrFail($id);
-        
         $user->update([
             'is_active' => !$user->is_active
         ]);
 
-        $status = $user->is_active ? 'activé' : 'désactivé';
-        
-        return redirect()->back()
-            ->with('success', "Utilisateur {$status} avec succès.");
+        return back()->with('success', 'Statut de l\'utilisateur mis à jour avec succès.');
     }
 }
