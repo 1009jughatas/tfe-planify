@@ -214,4 +214,31 @@ class EntrepriseProjetController extends Controller
         return redirect()->route('entreprise.projets.index')
             ->with('success', 'Projet supprimé avec succès.');
     }
+
+    public function updateStatus(Request $request, Project $projet)
+    {
+        $user = Auth::user();
+        
+        if (!$user->isAdminEntreprise()) {
+            abort(403, 'Seuls les administrateurs peuvent modifier le statut des projets.');
+        }
+
+        $company = $user->company;
+
+        // Vérifier que le projet appartient à l'entreprise
+        if ($projet->company_id !== $company->id) {
+            abort(403, 'Accès non autorisé à ce projet.');
+        }
+
+        $request->validate([
+            'status' => 'required|in:planning,active,on-hold,completed,cancelled'
+        ]);
+
+        $projet->update([
+            'status' => $request->status,
+        ]);
+
+        return redirect()->route('entreprise.projets.show', $projet->id)
+            ->with('success', 'Statut du projet mis à jour avec succès.');
+    }
 }

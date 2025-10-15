@@ -372,6 +372,45 @@
                 </div>
             </div>
 
+            <!-- Changer le statut du projet (Admin uniquement) -->
+            @if(auth()->user()->isAdminEntreprise())
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-edit text-blue-500 mr-2"></i>
+                        Changer le statut du projet
+                    </h3>
+                </div>
+                <div class="modern-card-body">
+                    <form method="POST" action="{{ route('entreprise.projets.updateStatus', $projet->id) }}" class="space-y-4">
+                        @csrf
+                        @method('PATCH')
+                        
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Nouveau statut</label>
+                            <select name="status" id="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                <option value="planning" {{ $projet->status === 'planning' ? 'selected' : '' }}>📋 En planification</option>
+                                <option value="active" {{ $projet->status === 'active' ? 'selected' : '' }}>🚀 Actif</option>
+                                <option value="on-hold" {{ $projet->status === 'on-hold' ? 'selected' : '' }}>⏸️ En pause</option>
+                                <option value="completed" {{ $projet->status === 'completed' ? 'selected' : '' }}>✅ Terminé</option>
+                                <option value="cancelled" {{ $projet->status === 'cancelled' ? 'selected' : '' }}>❌ Annulé</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center justify-end space-x-3">
+                            <button type="button" onclick="resetStatusForm()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors">
+                                Annuler
+                            </button>
+                            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                <i class="fas fa-save mr-2"></i>
+                                Mettre à jour le statut
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @endif
+
             <!-- Participants -->
             <div class="modern-card">
                 <div class="modern-card-header">
@@ -760,5 +799,11 @@ $(document).ready(function () {
     // Vérifier les mises à jour de tâches au chargement de la page
     checkForTaskUpdates();
 });
+
+// Fonction pour réinitialiser le formulaire de statut
+function resetStatusForm() {
+    const currentStatus = '{{ $projet->status }}';
+    document.getElementById('status').value = currentStatus;
+}
 </script>
 @endsection

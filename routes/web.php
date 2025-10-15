@@ -75,6 +75,7 @@ Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntr
     
     // Gestion des projets
     Route::resource('projets', EntrepriseProjetController::class);
+    Route::patch('/projets/{projet}/update-status', [EntrepriseProjetController::class, 'updateStatus'])->name('projets.updateStatus');
     
     // Routes de tâches pour les projets d'entreprise
     Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
