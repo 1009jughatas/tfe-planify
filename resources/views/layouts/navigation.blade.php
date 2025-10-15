@@ -141,8 +141,8 @@
         </div>
         @endauth
 
-        <!-- 👑 PREMIUM -->
-        @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
+        <!-- 👑 PREMIUM (Indépendants uniquement) -->
+        @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin() && !Auth::user()->isPartOfCompany())
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Premium</h3>
             <a href="{{ route('premium.show') }}" 
@@ -213,7 +213,7 @@
         @endif
 
         <!-- 📄 EXPORT -->
-        @if (Auth::user() && Auth::user()->is_premium())
+        @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->isPartOfCompany()))
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Export</h3>
             <div class="space-y-1">
@@ -286,10 +286,10 @@
         </div>
 
         <!-- ⚙️ PARAMÈTRES -->
-        @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin()))
+        @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin() || Auth::user()->isPartOfCompany()))
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Paramètres</h3>
-            <a href="{{ route('preferences.edit') }}" 
+            <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.preferences.edit') : route('preferences.edit') }}" 
                class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('preferences.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
                @click="sidebarOpen = false">
                 <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('preferences.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
