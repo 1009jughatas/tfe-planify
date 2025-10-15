@@ -23,10 +23,10 @@
     }
 }" x-init="init()">
 
-<!-- Menu Hamburger Button -->
-<button @click="console.log('Bouton hamburger cliqué, sidebarOpen:', sidebarOpen); sidebarOpen = !sidebarOpen; console.log('sidebarOpen après clic:', sidebarOpen);" 
+<!-- Menu Hamburger Button - TEST SANS ALPINE.JS -->
+<button onclick="console.log('Bouton cliqué - TEST SIMPLE'); alert('Bouton cliqué !');" 
         class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200"
-        style="border: 3px solid blue !important; background: orange !important;">
+        style="border: 5px solid blue !important; background: orange !important; z-index: 10000 !important; position: fixed !important; top: 16px !important; left: 16px !important;">
     <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
         <span class="block w-5 h-0.5 bg-gray-600" 
               :class="sidebarOpen ? 'rotate-45 translate-y-1.5' : 'rotate-0 translate-y-0'"></span>
@@ -42,13 +42,9 @@
      @click="sidebarOpen = false"
      class="fixed inset-0 bg-black/50 z-40"></div>
 
-<!-- Sidebar -->
-<div x-show="sidebarOpen"
-     @click.away="sidebarOpen = false"
-     class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto"
-     style="border: 10px solid red !important; background: yellow !important; display: block !important; visibility: visible !important;"
-     x-data="{ forceShow: true }"
-     x-init="console.log('Sidebar initialisé'); console.log('sidebarOpen:', sidebarOpen);">
+<!-- Sidebar - TEST SANS ALPINE.JS -->
+<div class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto"
+     style="border: 10px solid red !important; background: yellow !important; display: block !important; visibility: visible !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 288px !important; height: 100vh !important; z-index: 9999 !important;">
     
     <!-- DEBUG AUTH -->
     <div style="background: red !important; color: white !important; padding: 10px !important; border: 3px solid black !important;">
