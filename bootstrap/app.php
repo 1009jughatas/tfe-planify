@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         
+        // Remplacer le middleware d'authentification par défaut
+        $middleware->replace('auth', \App\Http\Middleware\Authenticate::class);
+        
         // Enregistrer les middlewares personnalisés
         $middleware->alias([
             'entreprise' => \App\Http\Middleware\IsUserEntreprise::class,
