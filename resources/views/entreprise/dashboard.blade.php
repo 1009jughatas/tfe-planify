@@ -287,21 +287,6 @@
                 </h3>
             </div>
             
-            <!-- Debug: Afficher les données -->
-            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
-                <h4 class="font-semibold text-yellow-800 mb-2">Debug - Données du calendrier :</h4>
-                <p class="text-sm text-yellow-700"><strong>Projets:</strong> {{ $recentProjects->count() }} projets récents</p>
-                <p class="text-sm text-yellow-700"><strong>Tâches calendrier:</strong> {{ $calendarTasks->count() }} tâches avec dates</p>
-                <p class="text-sm text-yellow-700"><strong>Tâches récentes:</strong> {{ $recentTasks->count() }} tâches récentes</p>
-                @if($calendarTasks->count() > 0)
-                    <div class="mt-2">
-                        <p class="text-sm text-yellow-700 font-semibold">Premières tâches :</p>
-                        @foreach($calendarTasks->take(3) as $task)
-                            <p class="text-xs text-yellow-600">- {{ $task->title }} ({{ $task->due_date }}) - {{ $task->status }}</p>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
             <div class="modern-card-body">
                 <div class="simple-calendar">
                     <div class="calendar-header">
@@ -795,8 +780,6 @@
         const month = currentDate.getMonth() + 1;
         const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         
-        console.log('Recherche d\'événements pour le jour:', dateStr);
-        
         const events = [];
         
         // Ajouter les projets
@@ -813,7 +796,6 @@
         calendarData.tasks.forEach(task => {
             // Extraire seulement la partie date (YYYY-MM-DD) de la date complète
             const taskDate = task.date.split(' ')[0]; // Prendre seulement la partie date
-            console.log('Comparaison tâche:', task.name, 'Date tâche:', taskDate, 'Date recherchée:', dateStr);
             
             if (taskDate === dateStr) {
                 events.push({
@@ -823,7 +805,6 @@
             }
         });
         
-        console.log('Événements trouvés pour', dateStr, ':', events);
         return events.slice(0, 3); // Limiter à 3 événements par jour
     }
     
@@ -839,20 +820,6 @@
     
     // Initialiser le calendrier au chargement de la page
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Données du calendrier:', calendarData);
-        console.log('Projets:', calendarData.projects);
-        console.log('Tâches:', calendarData.tasks);
-        console.log('Mois actuel:', currentDate.getMonth() + 1, 'Année:', currentDate.getFullYear());
-        
-        // Vérifier si les tâches sont dans le mois actuel
-        const currentMonth = currentDate.getMonth() + 1;
-        const currentYear = currentDate.getFullYear();
-        const tasksInCurrentMonth = calendarData.tasks.filter(task => {
-            const taskDate = new Date(task.date);
-            return taskDate.getMonth() + 1 === currentMonth && taskDate.getFullYear() === currentYear;
-        });
-        console.log('Tâches dans le mois actuel:', tasksInCurrentMonth);
-        
         generateCalendar();
     });
 </script>
