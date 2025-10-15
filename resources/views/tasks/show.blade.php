@@ -16,11 +16,11 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <a href="{{ route('tasks.edit', $task->id) }}" class="btn-secondary-modern">
+                <a href="{{ $task->project->company_id ? route('entreprise.tasks.edit', $task->id) : route('tasks.edit', $task->id) }}" class="btn-secondary-modern">
                     <i class="fas fa-edit mr-2"></i>
                     Modifier
                 </a>
-                <a href="{{ route('projects.tasks', $task->project->id) }}" class="btn-secondary-modern">
+                <a href="{{ $task->project->company_id ? route('entreprise.projets.show', $task->project->id) : route('projects.tasks', $task->project->id) }}" class="btn-secondary-modern">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Retour
                 </a>
@@ -153,7 +153,7 @@
                                                     @default 📋 En attente
                                                 @endswitch
                                             </span>
-                                            <a href="{{ route('tasks.show', $subtask->id) }}" class="btn-secondary-modern text-sm">
+                                            <a href="{{ $task->project->company_id ? route('entreprise.tasks.show', $subtask->id) : route('tasks.show', $subtask->id) }}" class="btn-secondary-modern text-sm">
                                                 <i class="fas fa-eye mr-1"></i>
                                                 Voir
                                             </a>
