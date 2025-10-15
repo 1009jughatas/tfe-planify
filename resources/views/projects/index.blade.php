@@ -1,19 +1,29 @@
-<x-app-layout>
-    <x-slot name="header">
+@extends('layouts.app')
+
+@section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
         <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Mes Projets</h1>
-                <p class="text-sm text-gray-600 mt-1">Gérez vos projets et tâches personnels</p>
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-project-diagram text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Mes Projets</h1>
+                    <p class="text-gray-600 mt-1 flex items-center">
+                        <i class="fas fa-user mr-2 text-blue-500"></i>
+                        Projets personnels
+                    </p>
+                </div>
             </div>
             @php
-                $canCreate = Auth::user() && (Auth::user()->isAdminEntreprise() || Auth::user()->isUserEntreprise() || 
-                             Auth::user()->is_premium() || 
-                             Auth::user()->projects()->count() < 3);
+                $canCreate = Auth::user() && (Auth::user()->is_premium() || Auth::user()->projects()->count() < 3);
             @endphp
             @if ($canCreate)
                 <a href="{{ route('projects.create') }}" class="btn-primary-modern">
                     <i class="fas fa-plus mr-2"></i>
-                    Nouveau projet
+                    Nouveau Projet
                 </a>
             @else
                 <button class="btn-secondary-modern" disabled title="Limite atteinte">
@@ -22,600 +32,179 @@
                 </button>
             @endif
         </div>
-    </x-slot>
-
-    <!-- Contenu principal -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <!-- Alertes de limitation -->
-        @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium())
-            @php
-                $projectCount = Auth::user() ? Auth::user()->projects()->count() : 0;
-                $projectLimit = 3;
-            @endphp
-            @if ($projectCount >= $projectLimit)
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
-                        <div>
-                            <h3 class="text-sm font-medium text-yellow-800">Limite de projets atteinte</h3>
-                            <p class="text-sm text-yellow-700 mt-1">
-                                Vous avez atteint la limite de {{ $projectLimit }} projets pour les utilisateurs gratuits.
-                                <a href="{{ route('premium.show') }}" class="font-medium underline hover:text-yellow-600">
-                                    Passez en premium
-                                </a>
-                                pour créer plus de projets.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endif
-
-        <!-- Section Premium -->
-        @if (Auth::user() && Auth::user()->is_premium())
-            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6 mb-8">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                            <i class="fas fa-crown text-white text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Fonctionnalités Premium</h3>
-                            <p class="text-sm text-gray-600">Exportez vos projets et analyses détaillées</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                       <a href="{{ route('export.projects') }}" class="btn-premium-export">
-                           <i class="fas fa-file-pdf mr-2"></i>
-                           Export Projets PDF
-                       </a>
-                       <a href="{{ route('export.dashboard') }}" class="btn-premium-export">
-                           <i class="fas fa-file-pdf mr-2"></i>
-                           Export Dashboard PDF
-                       </a>
-                    </div>
-                </div>
-            </div>
-        @else
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                            <i class="fas fa-crown text-white text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Débloquez Premium</h3>
-                            <p class="text-sm text-gray-600">Export de données, analyses détaillées, thème sombre et plus</p>
-                        </div>
-                    </div>
-                    <a href="{{ route('premium.show') }}" class="btn-primary-modern">
-                        <i class="fas fa-crown mr-2"></i>
-                        Passer Premium
-                    </a>
-                </div>
-            </div>
-        @endif
-
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- En Planification -->
-            <div class="stats-card hover-lift">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">En Planification</p>
-                        @php $planningProjects = $projects->where('status', 'planning') @endphp
-                        <p class="text-3xl font-bold text-gray-900">{{ $planningProjects->count() }}</p>
-                        <p class="text-xs text-gray-500 mt-1">À démarrer</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-gray-500 to-gray-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-clipboard-list text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actifs -->
-            <div class="stats-card hover-lift">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Projets actifs</p>
-                        @php $activeProjects = $projects->where('status', 'active') @endphp
-                        <p class="text-3xl font-bold text-gray-900">{{ $activeProjects->count() }}</p>
-                        <p class="text-xs text-gray-500 mt-1">En cours</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-                        <i class="fas fa-project-diagram text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- En Pause -->
-            <div class="stats-card hover-lift">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">En Pause</p>
-                        @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
-                        <p class="text-3xl font-bold text-gray-900">{{ $onHoldProjects->count() }}</p>
-                        <p class="text-xs text-gray-500 mt-1">Suspendus</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-pause-circle text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Terminés -->
-            <div class="stats-card hover-lift">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 mb-1">Projets terminés</p>
-                        @php $completedProjects = $projects->where('status', 'completed') @endphp
-                        <p class="text-3xl font-bold text-gray-900">{{ $completedProjects->count() }}</p>
-                        <p class="text-xs text-gray-500 mt-1">Finalisés</p>
-                    </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-check-circle text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kanban Board -->
-        @if ($projects->count() > 0)
-            <div class="modern-card">
-                <div class="modern-card-body">
-                    <!-- Kanban Board -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <!-- En Planification -->
-                                <div class="kanban-column">
-                                    <div class="kanban-header bg-gray-100">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <h4 class="font-semibold text-gray-700">
-                                                    <i class="fas fa-clipboard-list text-gray-500 mr-2"></i>
-                                                    En Planification
-                                                </h4>
-                                                <p class="text-xs text-gray-500 mt-1">Projets à démarrer</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-2xl font-bold text-gray-900">
-                                                    @php $planningProjects = $projects->where('status', 'planning') @endphp
-                                                    {{ $planningProjects->count() }}
-                                                </span>
-                                                <div class="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
-                                                    <i class="fas fa-clipboard-list text-white text-sm"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="kanban-content">
-                                        @if ($planningProjects->isEmpty())
-                                            <div class="empty-column">
-                                                <i class="fas fa-clipboard-list text-gray-300 text-2xl mb-2"></i>
-                                                <p class="text-sm text-gray-500">Aucun projet</p>
-                                            </div>
-                                        @else
-                                            @foreach ($planningProjects as $project)
-                                                <div class="project-block-card hover-lift group">
-                                                    <!-- Contenu du bloc -->
-                                                    <div class="project-block-content">
-                                                        <!-- Header avec titre -->
-                                                        <div class="project-block-header">
-                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
-                                                        </div>
-                                                        
-                                                        <!-- Progression -->
-                                                        <div class="project-progress-block">
-                                                            @php
-                                                                $totalTasks = $project->tasks->count();
-                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
-                                                            @endphp
-                                                            <div class="progress-block-bar">
-                                                                <div class="progress-block-fill planning" style="width: {{ $progress }}%"></div>
-                                                            </div>
-                                                            <span class="progress-block-text">{{ $progress }}%</span>
-                                                        </div>
-                                                        
-                                                        <!-- Actions -->
-                                                        <div class="project-block-actions">
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
-                                                                <i class="fas fa-tasks"></i>
-                                                            </button>
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- Actif -->
-                                <div class="kanban-column">
-                                    <div class="kanban-header bg-blue-100">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <h4 class="font-semibold text-blue-700">
-                                                    <i class="fas fa-play-circle text-blue-500 mr-2"></i>
-                                                    Actif
-                                                </h4>
-                                                <p class="text-xs text-blue-600 mt-1">Projets en cours</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-2xl font-bold text-blue-900">
-                                                    @php $activeProjects = $projects->where('status', 'active') @endphp
-                                                    {{ $activeProjects->count() }}
-                                                </span>
-                                                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                                    <i class="fas fa-play-circle text-white text-sm"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="kanban-content">
-                                        @if ($activeProjects->isEmpty())
-                                            <div class="empty-column">
-                                                <i class="fas fa-play-circle text-gray-300 text-2xl mb-2"></i>
-                                                <p class="text-sm text-gray-500">Aucun projet</p>
-                                            </div>
-                                        @else
-                                            @foreach ($activeProjects as $project)
-                                                <div class="project-block-card hover-lift group">
-                                                    <div class="project-block-content">
-                                                        <div class="project-block-header">
-                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
-                                                        </div>
-                                                        <div class="project-progress-block">
-                                                            @php
-                                                                $totalTasks = $project->tasks->count();
-                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
-                                                            @endphp
-                                                            <div class="progress-block-bar">
-                                                                <div class="progress-block-fill active" style="width: {{ $progress }}%"></div>
-                                                            </div>
-                                                            <span class="progress-block-text">{{ $progress }}%</span>
-                                                        </div>
-                                                        <div class="project-block-actions">
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
-                                                                <i class="fas fa-tasks"></i>
-                                                            </button>
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- En Pause -->
-                                <div class="kanban-column">
-                                    <div class="kanban-header bg-yellow-100">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <h4 class="font-semibold text-yellow-700">
-                                                    <i class="fas fa-pause-circle text-yellow-500 mr-2"></i>
-                                                    En Pause
-                                                </h4>
-                                                <p class="text-xs text-yellow-600 mt-1">Projets suspendus</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-2xl font-bold text-yellow-900">
-                                                    @php $onHoldProjects = $projects->where('status', 'on-hold') @endphp
-                                                    {{ $onHoldProjects->count() }}
-                                                </span>
-                                                <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
-                                                    <i class="fas fa-pause-circle text-white text-sm"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="kanban-content">
-                                        @if ($onHoldProjects->isEmpty())
-                                            <div class="empty-column">
-                                                <i class="fas fa-pause-circle text-gray-300 text-2xl mb-2"></i>
-                                                <p class="text-sm text-gray-500">Aucun projet</p>
-                                            </div>
-                                        @else
-                                            @foreach ($onHoldProjects as $project)
-                                                <div class="project-block-card hover-lift group">
-                                                    <div class="project-block-content">
-                                                        <div class="project-block-header">
-                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
-                                                        </div>
-                                                        <div class="project-progress-block">
-                                                            @php
-                                                                $totalTasks = $project->tasks->count();
-                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
-                                                            @endphp
-                                                            <div class="progress-block-bar">
-                                                                <div class="progress-block-fill on-hold" style="width: {{ $progress }}%"></div>
-                                                            </div>
-                                                            <span class="progress-block-text">{{ $progress }}%</span>
-                                                        </div>
-                                                        <div class="project-block-actions">
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
-                                                                <i class="fas fa-tasks"></i>
-                                                            </button>
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- Terminé -->
-                                <div class="kanban-column">
-                                    <div class="kanban-header bg-green-100">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <h4 class="font-semibold text-green-700">
-                                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                                    Terminé
-                                                </h4>
-                                                <p class="text-xs text-green-600 mt-1">Projets finalisés</p>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-2xl font-bold text-green-900">
-                                                    @php $completedProjects = $projects->where('status', 'completed') @endphp
-                                                    {{ $completedProjects->count() }}
-                                                </span>
-                                                <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                                                    <i class="fas fa-check-circle text-white text-sm"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="kanban-content">
-                                        @if ($completedProjects->isEmpty())
-                                            <div class="empty-column">
-                                                <i class="fas fa-check-circle text-gray-300 text-2xl mb-2"></i>
-                                                <p class="text-sm text-gray-500">Aucun projet</p>
-                                            </div>
-                                        @else
-                                            @foreach ($completedProjects as $project)
-                                                <div class="project-block-card hover-lift group">
-                                                    <div class="project-block-content">
-                                                        <div class="project-block-header">
-                                                            <h5 class="project-block-title">{{ $project->name }}</h5>
-                                                        </div>
-                                                        <div class="project-progress-block">
-                                                            @php
-                                                                $totalTasks = $project->tasks->count();
-                                                                $completedTasks = $project->tasks->where('status', 'done')->count();
-                                                                $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 100;
-                                                            @endphp
-                                                            <div class="progress-block-bar">
-                                                                <div class="progress-block-fill completed" style="width: {{ $progress }}%"></div>
-                                                            </div>
-                                                            <span class="progress-block-text">{{ $progress }}%</span>
-                                                        </div>
-                                                        <div class="project-block-actions">
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.tasks', $project->id) }}'" title="Voir les tâches">
-                                                                <i class="fas fa-tasks"></i>
-                                                            </button>
-                                                            <button class="action-btn-block" onclick="window.location.href='{{ route('projects.edit', $project->id) }}'" title="Modifier le projet">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="action-btn-block action-btn-delete" onclick="confirmDelete({{ $project->id }})" title="Supprimer le projet">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
 
-    <style>
-        
-        /* Colonnes Kanban */
-        .kanban-column {
-            @apply bg-white rounded-xl border border-gray-200 shadow-sm;
-        }
-        
-        .kanban-header {
-            @apply p-6 rounded-t-xl border-b border-gray-200 bg-gray-50;
-        }
-        
-        .kanban-content {
-            @apply p-4 space-y-4 min-h-96 bg-gray-50/30;
-        }
-        
-        .empty-column {
-            @apply flex flex-col items-center justify-center py-8 text-center;
-        }
-        
-        /* Blocs de projet avec actions */
-        .project-block-card {
-            @apply bg-white rounded-xl border border-gray-200 shadow-sm cursor-pointer transition-all duration-300;
-            position: relative;
-            overflow: hidden;
-            min-height: 140px;
-        }
-        
-        .project-block-card:hover {
-            @apply shadow-md border-primary-300 transform translate-y-1;
-        }
-        
-        .project-block-card::before {
-            content: '';
-            @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-accent-500;
-        }
-        
-        .project-block-content {
-            @apply p-5 h-full flex flex-col;
-        }
-        
-        .project-block-header {
-            @apply mb-4;
-        }
-        
-        .project-block-title {
-            @apply text-base font-bold text-gray-900 leading-tight;
-            margin: 0;
-            line-height: 1.3;
-        }
-        
-        .project-progress-block {
-            @apply flex items-center justify-between mb-4 flex-1;
-        }
-        
-        .progress-block-bar {
-            @apply flex-1 h-3 bg-gray-200 rounded-full overflow-hidden mr-3;
-        }
-        
-        .progress-block-fill {
-            @apply h-full rounded-full transition-all duration-500;
-        }
-        
-        .progress-block-fill.planning {
-            @apply bg-gradient-to-r from-gray-400 to-gray-500;
-        }
-        
-        .progress-block-fill.active {
-            @apply bg-gradient-to-r from-blue-400 to-blue-500;
-        }
-        
-        .progress-block-fill.on-hold {
-            @apply bg-gradient-to-r from-yellow-400 to-yellow-500;
-        }
-        
-        .progress-block-fill.completed {
-            @apply bg-gradient-to-r from-green-400 to-green-500;
-        }
-        
-        .progress-block-text {
-            @apply text-sm font-bold text-gray-800;
-        }
-        
-        /* Boutons d'actions */
-        .project-block-actions {
-            @apply flex items-center justify-center space-x-2;
-        }
-        
-        .action-btn-block {
-            @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110;
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border: 1px solid #e2e8f0;
-            color: #64748b;
-        }
-        
-        .action-btn-block:hover {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            border-color: #3b82f6;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .action-btn-delete:hover {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            border-color: #ef4444;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        }
-        
-        .action-btn-block i {
-            @apply text-sm;
-        }
-        
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .kanban-content {
-                @apply min-h-64;
-            }
-            
-            .project-block-card {
-                @apply transform-none hover:transform-none;
-                min-height: 120px;
-            }
-            
-            .project-block-content {
-                @apply p-3;
-            }
-            
-            .action-btn-block {
-                @apply w-8 h-8;
-            }
-        }
-        
-        /* Utilitaires */
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        /* Boutons Premium */
-        .btn-premium-export {
-            @apply inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200;
-        }
-    </style>
+    <!-- Alertes de limitation -->
+    @if (Auth::user() && Auth::user()->isUserIndependant() && !Auth::user()->is_premium())
+        @php
+            $projectCount = Auth::user() ? Auth::user()->projects()->count() : 0;
+            $projectLimit = 3;
+        @endphp
+        @if ($projectCount >= $projectLimit)
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
+                    <div>
+                        <h3 class="text-sm font-medium text-yellow-800">Limite de projets atteinte</h3>
+                        <p class="text-sm text-yellow-700 mt-1">
+                            Vous avez atteint la limite de {{ $projectLimit }} projets pour les utilisateurs gratuits.
+                            <a href="{{ route('premium.show') }}" class="font-medium underline hover:text-yellow-600">
+                                Passez en premium
+                            </a>
+                            pour créer plus de projets.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endif
 
-    <!-- Script pour la confirmation de suppression -->
-    <script>
-        function confirmDelete(projectId) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.')) {
-                // Créer un formulaire de suppression
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/projects/${projectId}`;
-                
-                // Ajouter le token CSRF
-                const csrfToken = document.createElement('input');
-                csrfToken.type = 'hidden';
-                csrfToken.name = '_token';
-                csrfToken.value = '{{ csrf_token() }}';
-                form.appendChild(csrfToken);
-                
-                // Ajouter la méthode DELETE
-                const methodField = document.createElement('input');
-                methodField.type = 'hidden';
-                methodField.name = '_method';
-                methodField.value = 'DELETE';
-                form.appendChild(methodField);
-                
-                // Soumettre le formulaire
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-    </script>
+    <!-- Filtres et recherche -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
+                <input type="text" placeholder="Nom du projet..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Tous les statuts</option>
+                    <option value="pending">En attente</option>
+                    <option value="in-progress">En cours</option>
+                    <option value="completed">Terminé</option>
+                    <option value="cancelled">Annulé</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Priorité</label>
+                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Toutes les priorités</option>
+                    <option value="low">Faible</option>
+                    <option value="medium">Moyenne</option>
+                    <option value="high">Haute</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button class="w-full btn-secondary-modern">
+                    <i class="fas fa-filter mr-2"></i>
+                    Filtrer
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <style>
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-    </style>
-</x-app-layout>
+    <!-- Liste des projets -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        @forelse($projects as $project)
+            <div class="modern-card hover-lift">
+                <div class="modern-card-body">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $project->name }}</h3>
+                            <p class="text-sm text-gray-600 line-clamp-2">{{ $project->description ?? 'Aucune description' }}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                @if($project->status === 'completed') bg-green-100 text-green-800
+                                @elseif($project->status === 'in-progress') bg-blue-100 text-blue-800
+                                @elseif($project->status === 'cancelled') bg-red-100 text-red-800
+                                @else bg-gray-100 text-gray-800 @endif">
+                                @switch($project->status)
+                                    @case('planning') 📋 En planification @break
+                                    @case('active') 🚀 Actif @break
+                                    @case('on-hold') ⏸️ En pause @break
+                                    @case('completed') ✅ Terminé @break
+                                    @case('cancelled') ❌ Annulé @break
+                                    @default 📋 En planification
+                                @endswitch
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Informations du projet -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-user w-4 h-4 mr-2 text-gray-400"></i>
+                            <span>Créé par {{ $project->author->name }}</span>
+                        </div>
+                        
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-tasks w-4 h-4 mr-2 text-gray-400"></i>
+                            <span>{{ $project->tasks->count() }} tâches</span>
+                        </div>
+
+                        @if($project->start_date)
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-calendar w-4 h-4 mr-2 text-gray-400"></i>
+                                <span>Début: {{ $project->start_date->format('d/m/Y') }}</span>
+                            </div>
+                        @endif
+
+                        @if($project->end_date)
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-flag-checkered w-4 h-4 mr-2 text-gray-400"></i>
+                                <span>Fin: {{ $project->end_date->format('d/m/Y') }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Barre de progression -->
+                    @if($project->tasks->count() > 0)
+                        @php
+                            $completedTasks = $project->tasks->where('status', 'completed')->count();
+                            $totalTasks = $project->tasks->count();
+                            $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
+                        @endphp
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Progression</span>
+                                <span>{{ round($progress) }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300" 
+                                     style="width: {{ $progress }}%"></div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Actions -->
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div class="flex items-center space-x-2">
+                            <a href="{{ route('projects.show', $project) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                <i class="fas fa-eye mr-1"></i>
+                                Voir
+                            </a>
+                            <a href="{{ route('projects.edit', $project) }}" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+                                <i class="fas fa-edit mr-1"></i>
+                                Modifier
+                            </a>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <span class="text-xs text-gray-500">
+                                {{ $project->created_at->format('d/m/Y') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-span-full">
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-project-diagram text-gray-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun projet trouvé</h3>
+                    <p class="text-gray-600 mb-6">Commencez par créer votre premier projet.</p>
+                    @if($canCreate)
+                        <a href="{{ route('projects.create') }}" class="btn-primary-modern">
+                            <i class="fas fa-plus mr-2"></i>
+                            Créer un projet
+                        </a>
+                    @endif
+                </div>
+            </div>
+        @endforelse
+    </div>
+</div>
+@endsection
