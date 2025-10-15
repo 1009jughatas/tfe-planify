@@ -288,9 +288,6 @@ Route::middleware(['auth', 'verified', IsAdminEntreprise::class])->prefix('entre
     
     // Gestion des tâches
     Route::get('/tasks', [CompanyAdminController::class, 'tasks'])->name('tasks');
-    Route::get('/projects/{project}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
-    Route::post('/projects/{project}/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::resource('tasks', TaskController::class)->except(['create', 'store']);
     
     // Abonnement
     Route::get('/subscription', [CompanyAdminController::class, 'subscription'])->name('subscription');

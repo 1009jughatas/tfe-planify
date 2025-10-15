@@ -18,12 +18,26 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$project->participants->contains($user->id) && $project->author_id !== $user->id) {
-            abort(403, 'Accès non autorisé à ce projet.');
+        // Vérifier l'autorisation selon le type d'utilisateur
+        if ($user->isPartOfCompany()) {
+            // Pour les utilisateurs d'entreprise, vérifier qu'ils appartiennent à la même entreprise
+            if ($project->company_id !== $user->company_id) {
+                abort(403, 'Accès non autorisé à ce projet d\'entreprise.');
+            }
+        } else {
+            // Pour les utilisateurs indépendants, vérifier l'ancienne logique
+            if (!$user->is_admin() && !$project->participants->contains($user->id) && $project->author_id !== $user->id) {
+                abort(403, 'Accès non autorisé à ce projet.');
+            }
         }
 
-        $participants = $project->participants;
+        // Pour les projets d'entreprise, récupérer tous les utilisateurs de l'entreprise
+        if ($project->company_id) {
+            $participants = \App\Models\User::where('company_id', $project->company_id)->get();
+        } else {
+            $participants = $project->participants;
+        }
+
         $parent_id = $request->get('parent_id');
 
         return view('tasks.create', compact('project', 'participants', 'parent_id'));
@@ -33,9 +47,17 @@ class TaskController extends Controller
     {
         $user = auth()->user();
 
-        // Vérifier l'autorisation
-        if (!$user->is_admin() && !$project->participants->contains($user->id) && $project->author_id !== $user->id) {
-            abort(403, 'Accès non autorisé à ce projet.');
+        // Vérifier l'autorisation selon le type d'utilisateur
+        if ($user->isPartOfCompany()) {
+            // Pour les utilisateurs d'entreprise, vérifier qu'ils appartiennent à la même entreprise
+            if ($project->company_id !== $user->company_id) {
+                abort(403, 'Accès non autorisé à ce projet d\'entreprise.');
+            }
+        } else {
+            // Pour les utilisateurs indépendants, vérifier l'ancienne logique
+            if (!$user->is_admin() && !$project->participants->contains($user->id) && $project->author_id !== $user->id) {
+                abort(403, 'Accès non autorisé à ce projet.');
+            }
         }
 
         $request->validate([
@@ -48,9 +70,20 @@ class TaskController extends Controller
             'status' => 'nullable|string|in:todo,in-progress,done,blocked',
         ]);
 
-        // Vérifier que l'utilisateur assigné fait partie du projet (seulement pour les utilisateurs d'entreprise)
-        if (!$user->isUserIndependant() && $request->assigned_to && !$project->participants->contains($request->assigned_to)) {
-            return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
+        // Vérifier que l'utilisateur assigné fait partie du projet
+        if ($request->assigned_to) {
+            if ($user->isPartOfCompany()) {
+                // Pour les projets d'entreprise, vérifier que l'utilisateur assigné appartient à la même entreprise
+                $assignedUser = \App\Models\User::find($request->assigned_to);
+                if (!$assignedUser || $assignedUser->company_id !== $user->company_id) {
+                    return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit appartenir à votre entreprise.']);
+                }
+            } else {
+                // Pour les projets indépendants, vérifier l'ancienne logique
+                if (!$project->participants->contains($request->assigned_to)) {
+                    return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
+                }
+            }
         }
 
         $taskData = [
