@@ -73,41 +73,158 @@
                         $visibleTasks = $projet->tasks->filter(function($task) {
                             return auth()->user()->can('view', $task);
                         });
+                        
+                        // Séparer les tâches principales des sous-tâches
+                        $mainTasks = $visibleTasks->whereNull('parent_id');
+                        $subtasks = $visibleTasks->whereNotNull('parent_id');
                     @endphp
+                    
                     @if($visibleTasks->count() > 0)
-                        <div class="space-y-4">
-                            @foreach($visibleTasks as $task)
-                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                    <div class="flex-1">
-                                        <h4 class="font-medium text-gray-900">{{ $task->title }}</h4>
-                                        <div class="flex items-center space-x-4 mt-1">
-                                            @if($task->assignedUser)
-                                                <span class="text-sm text-gray-500">
-                                                    <i class="fas fa-user mr-1"></i>
-                                                    {{ $task->assignedUser->name }}
-                                                </span>
-                                            @endif
-                                            @if($task->due_date)
-                                                <span class="text-sm text-gray-500">
-                                                    <i class="fas fa-clock mr-1"></i>
-                                                    {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full
-                                            @if($task->status === 'completed') bg-green-100 text-green-800
-                                            @elseif($task->status === 'in-progress') bg-blue-100 text-blue-800
-                                            @else bg-gray-100 text-gray-800 @endif">
-                                            {{ ucfirst($task->status) }}
-                                        </span>
-                                        <a href="{{ route('entreprise.tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </a>
+                        <div class="space-y-6">
+                            <!-- Tâches principales -->
+                            @if($mainTasks->count() > 0)
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        <i class="fas fa-tasks text-blue-500 mr-2"></i>
+                                        Tâches Principales ({{ $mainTasks->count() }})
+                                    </h4>
+                                    <div class="space-y-3">
+                                        @foreach($mainTasks as $task)
+                                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 hover:shadow-md transition-all duration-200">
+                                                <div class="flex items-start justify-between">
+                                                    <div class="flex-1">
+                                                        <div class="flex items-center space-x-3 mb-2">
+                                                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                                                <i class="fas fa-tasks text-white text-sm"></i>
+                                                            </div>
+                                                            <h5 class="font-semibold text-gray-900">{{ $task->title }}</h5>
+                                                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                                                @if($task->status === 'completed') bg-green-100 text-green-800
+                                                                @elseif($task->status === 'in-progress') bg-blue-100 text-blue-800
+                                                                @elseif($task->status === 'blocked') bg-red-100 text-red-800
+                                                                @else bg-gray-100 text-gray-800 @endif">
+                                                                @switch($task->status)
+                                                                    @case('completed') ✅ Terminé @break
+                                                                    @case('in-progress') 🚀 En cours @break
+                                                                    @case('blocked') 🚫 Bloqué @break
+                                                                    @default 📋 En attente
+                                                                @endswitch
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        @if($task->description)
+                                                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ $task->description }}</p>
+                                                        @endif
+                                                        
+                                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                            @if($task->assignedUser)
+                                                                <span class="flex items-center">
+                                                                    <i class="fas fa-user mr-1"></i>
+                                                                    {{ $task->assignedUser->name }}
+                                                                </span>
+                                                            @endif
+                                                            @if($task->due_date)
+                                                                <span class="flex items-center">
+                                                                    <i class="fas fa-clock mr-1"></i>
+                                                                    {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}
+                                                                </span>
+                                                            @endif
+                                                            <span class="flex items-center">
+                                                                <i class="fas fa-calendar mr-1"></i>
+                                                                Créée {{ $task->created_at->format('d/m/Y') }}
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        <!-- Sous-tâches de cette tâche -->
+                                                        @php
+                                                            $taskSubtasks = $subtasks->where('parent_id', $task->id);
+                                                        @endphp
+                                                        @if($taskSubtasks->count() > 0)
+                                                            <div class="mt-3 pt-3 border-t border-blue-200">
+                                                                <div class="flex items-center justify-between mb-2">
+                                                                    <span class="text-sm font-medium text-gray-700">
+                                                                        <i class="fas fa-list-ul mr-1"></i>
+                                                                        Sous-tâches ({{ $taskSubtasks->count() }})
+                                                                    </span>
+                                                                    <span class="text-xs text-gray-500">
+                                                                        {{ $taskSubtasks->where('status', 'completed')->count() }}/{{ $taskSubtasks->count() }} terminées
+                                                                    </span>
+                                                                </div>
+                                                                <div class="space-y-2">
+                                                                    @foreach($taskSubtasks as $subtask)
+                                                                        <div class="flex items-center justify-between bg-white/60 rounded-lg p-2 border border-blue-100">
+                                                                            <div class="flex items-center space-x-2">
+                                                                                <i class="fas fa-arrow-right text-blue-400 text-xs"></i>
+                                                                                <span class="text-sm text-gray-700">{{ $subtask->title }}</span>
+                                                                                <span class="px-1.5 py-0.5 text-xs font-medium rounded-full
+                                                                                    @if($subtask->status === 'completed') bg-green-100 text-green-700
+                                                                                    @elseif($subtask->status === 'in-progress') bg-blue-100 text-blue-700
+                                                                                    @else bg-gray-100 text-gray-700 @endif">
+                                                                                    @switch($subtask->status)
+                                                                                        @case('completed') ✅ @break
+                                                                                        @case('in-progress') 🚀 @break
+                                                                                        @default 📋
+                                                                                    @endswitch
+                                                                                </span>
+                                                                            </div>
+                                                                            <a href="{{ route('entreprise.tasks.show', $subtask->id) }}" 
+                                                                               class="text-blue-500 hover:text-blue-700 text-xs">
+                                                                                <i class="fas fa-external-link-alt"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center space-x-2 ml-4">
+                                                        <a href="{{ route('entreprise.tasks.show', $task->id) }}" 
+                                                           class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                                            <i class="fas fa-eye mr-1"></i>
+                                                            Voir
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            @endforeach
+                            @endif
+                            
+                            <!-- Sous-tâches orphelines (sans tâche parent) -->
+                            @php
+                                $orphanSubtasks = $subtasks->filter(function($subtask) use ($mainTasks) {
+                                    return !$mainTasks->contains('id', $subtask->parent_id);
+                                });
+                            @endphp
+                            @if($orphanSubtasks->count() > 0)
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-orange-500 mr-2"></i>
+                                        Sous-tâches Orphelines ({{ $orphanSubtasks->count() }})
+                                    </h4>
+                                    <div class="space-y-2">
+                                        @foreach($orphanSubtasks as $subtask)
+                                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center space-x-2">
+                                                        <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                                        <span class="text-sm text-gray-700">{{ $subtask->title }}</span>
+                                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
+                                                            Orpheline
+                                                        </span>
+                                                    </div>
+                                                    <a href="{{ route('entreprise.tasks.show', $subtask->id) }}" 
+                                                       class="text-orange-500 hover:text-orange-700 text-xs">
+                                                        <i class="fas fa-external-link-alt"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     @else
                         <div class="text-center py-8 text-gray-500">
