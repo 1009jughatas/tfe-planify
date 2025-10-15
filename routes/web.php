@@ -63,6 +63,7 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
     // Paiement Stripe
     Route::get('/payment/success', [AuthEntrepriseController::class, 'paymentSuccess'])->name('payment.success');
     Route::get('/payment/failed', [AuthEntrepriseController::class, 'paymentFailed'])->name('payment.failed');
+    Route::post('/webhook/stripe', [AuthEntrepriseController::class, 'stripeWebhook'])->name('webhook.stripe');
     Route::post('/stripe/webhook', [AuthEntrepriseController::class, 'stripeWebhook'])->name('stripe.webhook');
 });
 

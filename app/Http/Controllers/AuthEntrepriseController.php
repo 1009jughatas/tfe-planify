@@ -204,7 +204,23 @@ class AuthEntrepriseController extends Controller
         try {
             DB::beginTransaction();
 
-            // Créer l'entreprise sans admin_id (nullable maintenant)
+            // Récupérer les informations de la session Stripe
+            $stripeService = new StripeService();
+            $sessionId = request()->get('session_id');
+            
+            if ($sessionId) {
+                $session = $stripeService->retrieveSession($sessionId);
+                $subscription = \Stripe\Subscription::retrieve($session->subscription);
+                $customer = \Stripe\Customer::retrieve($session->customer);
+                
+                \Log::info('Informations Stripe récupérées', [
+                    'session_id' => $sessionId,
+                    'subscription_id' => $subscription->id,
+                    'customer_id' => $customer->id
+                ]);
+            }
+
+            // Créer l'entreprise avec les informations Stripe
             $company = Company::create([
                 'name' => $registrationData['company_name'],
                 'email' => $registrationData['company_email'],
@@ -212,7 +228,11 @@ class AuthEntrepriseController extends Controller
                 'plan' => $registrationData['plan'],
                 'monthly_price' => $registrationData['price'],
                 'user_limit' => $registrationData['user_limit'],
+                'max_users' => $registrationData['user_limit'],
                 'status' => 'active',
+                'stripe_customer_id' => $sessionId ? $customer->id : null,
+                'stripe_subscription_id' => $sessionId ? $subscription->id : null,
+                'stripe_price_id' => $sessionId ? $subscription->items->data[0]->price->id : null,
                 'admin_id' => null, // Sera mis à jour après création de l'admin
             ]);
 
@@ -317,7 +337,7 @@ class AuthEntrepriseController extends Controller
     }
 
     /**
-     * Webhook Stripe
+     * Webhook Stripe pour gérer les paiements récurrents
      */
     public function stripeWebhook(Request $request)
     {
@@ -340,18 +360,23 @@ class AuthEntrepriseController extends Controller
         // Gérer l'événement
         switch ($event->type) {
             case 'checkout.session.completed':
-                $session = $event->data->object;
-                \Log::info('Session de paiement complétée', ['session_id' => $session->id]);
+                $this->handleCheckoutSessionCompleted($event->data->object);
                 break;
                 
             case 'invoice.payment_succeeded':
-                $invoice = $event->data->object;
-                \Log::info('Paiement de facture réussi', ['invoice_id' => $invoice->id]);
+                $this->handleInvoicePaymentSucceeded($event->data->object);
                 break;
                 
             case 'invoice.payment_failed':
-                $invoice = $event->data->object;
-                \Log::warning('Échec du paiement de facture', ['invoice_id' => $invoice->id]);
+                $this->handleInvoicePaymentFailed($event->data->object);
+                break;
+                
+            case 'customer.subscription.updated':
+                $this->handleSubscriptionUpdated($event->data->object);
+                break;
+                
+            case 'customer.subscription.deleted':
+                $this->handleSubscriptionDeleted($event->data->object);
                 break;
                 
             default:
@@ -359,5 +384,90 @@ class AuthEntrepriseController extends Controller
         }
         
         return response()->json(['status' => 'success']);
+    }
+
+    private function handleCheckoutSessionCompleted($session)
+    {
+        \Log::info('Session de paiement complétée', ['session_id' => $session->id]);
+        
+        // Mettre à jour l'entreprise avec les informations Stripe
+        if ($session->subscription) {
+            $subscription = \Stripe\Subscription::retrieve($session->subscription);
+            $company = Company::where('stripe_customer_id', $session->customer)->first();
+            
+            if ($company) {
+                $company->update([
+                    'stripe_subscription_id' => $subscription->id,
+                    'stripe_price_id' => $subscription->items->data[0]->price->id,
+                    'status' => 'active'
+                ]);
+                
+                \Log::info('Entreprise mise à jour avec l\'abonnement Stripe', [
+                    'company_id' => $company->id,
+                    'subscription_id' => $subscription->id
+                ]);
+            }
+        }
+    }
+
+    private function handleInvoicePaymentSucceeded($invoice)
+    {
+        \Log::info('Paiement de facture réussi', [
+            'invoice_id' => $invoice->id,
+            'customer_id' => $invoice->customer,
+            'amount' => $invoice->amount_paid
+        ]);
+        
+        // Mettre à jour le statut de l'entreprise
+        $company = Company::where('stripe_customer_id', $invoice->customer)->first();
+        if ($company) {
+            $company->update(['status' => 'active']);
+            \Log::info('Statut de l\'entreprise mis à jour après paiement réussi', [
+                'company_id' => $company->id
+            ]);
+        }
+    }
+
+    private function handleInvoicePaymentFailed($invoice)
+    {
+        \Log::warning('Échec du paiement de facture', [
+            'invoice_id' => $invoice->id,
+            'customer_id' => $invoice->customer
+        ]);
+        
+        // Mettre à jour le statut de l'entreprise
+        $company = Company::where('stripe_customer_id', $invoice->customer)->first();
+        if ($company) {
+            $company->update(['status' => 'past_due']);
+            \Log::warning('Statut de l\'entreprise mis à jour après échec de paiement', [
+                'company_id' => $company->id
+            ]);
+        }
+    }
+
+    private function handleSubscriptionUpdated($subscription)
+    {
+        \Log::info('Abonnement mis à jour', [
+            'subscription_id' => $subscription->id,
+            'status' => $subscription->status
+        ]);
+        
+        $company = Company::where('stripe_subscription_id', $subscription->id)->first();
+        if ($company) {
+            $company->update(['status' => $subscription->status]);
+        }
+    }
+
+    private function handleSubscriptionDeleted($subscription)
+    {
+        \Log::info('Abonnement supprimé', ['subscription_id' => $subscription->id]);
+        
+        $company = Company::where('stripe_subscription_id', $subscription->id)->first();
+        if ($company) {
+            $company->update([
+                'status' => 'cancelled',
+                'stripe_subscription_id' => null
+            ]);
+        }
     }
 }

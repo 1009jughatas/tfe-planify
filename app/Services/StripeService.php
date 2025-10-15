@@ -15,37 +15,53 @@ class StripeService
     }
 
     /**
-     * Créer une session de checkout Stripe
+     * Créer une session de checkout Stripe pour un abonnement récurrent
      */
     public function createCheckoutSession(array $data)
     {
         try {
+            // Créer d'abord un client Stripe
+            $customer = $this->createCustomer([
+                'email' => $data['company_email'],
+                'name' => $data['company_name'],
+                'company_name' => $data['company_name'],
+            ]);
+
+            // Créer un produit et un prix récurrent
+            $product = \Stripe\Product::create([
+                'name' => "Abonnement Planify - {$data['plan_name']}",
+                'description' => "Plan {$data['plan_name']} pour {$data['company_name']}",
+                'metadata' => [
+                    'company_name' => $data['company_name'],
+                    'plan' => $data['plan'],
+                ],
+            ]);
+
+            $price = \Stripe\Price::create([
+                'product' => $product->id,
+                'unit_amount' => $data['amount'] * 100, // Stripe utilise les centimes
+                'currency' => 'eur',
+                'recurring' => [
+                    'interval' => 'month',
+                ],
+                'metadata' => [
+                    'plan' => $data['plan'],
+                    'max_users' => $data['user_limit'] ?? 10,
+                ],
+            ]);
+
             $session = Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [
                     [
-                        'price_data' => [
-                            'currency' => 'eur',
-                            'product_data' => [
-                                'name' => "Abonnement Planify - {$data['plan_name']}",
-                                'description' => "Plan {$data['plan_name']} pour {$data['company_name']}",
-                                'metadata' => [
-                                    'company_name' => $data['company_name'],
-                                    'plan' => $data['plan'],
-                                ],
-                            ],
-                            'unit_amount' => $data['amount'] * 100, // Stripe utilise les centimes
-                            'recurring' => [
-                                'interval' => 'month',
-                            ],
-                        ],
+                        'price' => $price->id,
                         'quantity' => 1,
                     ],
                 ],
                 'mode' => 'subscription',
                 'success_url' => route('entreprise.payment.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('entreprise.payment.failed'),
-                'customer_email' => $data['company_email'],
+                'customer' => $customer->id,
                 'metadata' => [
                     'company_name' => $data['company_name'],
                     'admin_name' => $data['admin_name'],
@@ -57,9 +73,21 @@ class StripeService
                 'tax_id_collection' => [
                     'enabled' => true,
                 ],
+                'subscription_data' => [
+                    'metadata' => [
+                        'company_name' => $data['company_name'],
+                        'plan' => $data['plan'],
+                        'max_users' => $data['user_limit'] ?? 10,
+                    ],
+                ],
             ]);
 
-            Log::info('Session Stripe créée', ['session_id' => $session->id]);
+            Log::info('Session Stripe créée', [
+                'session_id' => $session->id,
+                'customer_id' => $customer->id,
+                'price_id' => $price->id
+            ]);
+            
             return $session;
 
         } catch (ApiErrorException $e) {
