@@ -677,19 +677,55 @@ $(document).ready(function () {
         }, 3000);
     }
     
-    // Écouter les changements de statut des tâches via localStorage ou events
-    function listenForTaskStatusUpdates() {
-        // Écouter les changements dans localStorage (si une tâche est mise à jour depuis une autre page)
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'taskStatusUpdated') {
-                const data = JSON.parse(e.newValue);
-                updateSubtaskCounters(data.taskId, data.newStatus);
-            }
-        });
+    // Vérifier si la page a été rechargée après une modification de tâche
+    function checkForTaskUpdates() {
+        // Vérifier si on vient d'une page de tâche (via sessionStorage)
+        const fromTaskPage = sessionStorage.getItem('fromTaskPage');
+        const lastTaskUpdate = sessionStorage.getItem('lastTaskUpdate');
         
-        // Écouter les événements personnalisés
-        window.addEventListener('taskStatusUpdated', function(e) {
-            updateSubtaskCounters(e.detail.taskId, e.detail.newStatus);
+        if (fromTaskPage === 'true' && lastTaskUpdate) {
+            console.log('🔄 Détection de retour depuis une page de tâche');
+            
+            // Rafraîchir les compteurs via AJAX
+            refreshTaskCounters();
+            
+            // Nettoyer le sessionStorage
+            sessionStorage.removeItem('fromTaskPage');
+            sessionStorage.removeItem('lastTaskUpdate');
+        }
+    }
+    
+    function refreshTaskCounters() {
+        console.log('🔄 Rafraîchissement des compteurs de tâches');
+        
+        // Faire une requête AJAX pour récupérer les compteurs mis à jour
+        $.ajax({
+            url: '{{ route("entreprise.projets.show", $projet->id) }}',
+            method: 'GET',
+            data: {
+                refresh_counters: true
+            },
+            success: function(response) {
+                // Extraire les nouveaux compteurs de la réponse
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(response, 'text/html');
+                const newCounters = $(doc).find('.subtask-counter');
+                
+                // Mettre à jour chaque compteur
+                $('.subtask-counter').each(function(index) {
+                    const currentCounter = $(this);
+                    const newCounter = $(newCounters[index]);
+                    
+                    if (newCounter.length > 0) {
+                        currentCounter.text(newCounter.text());
+                        currentCounter.data('completed', newCounter.data('completed'));
+                        console.log('✅ Compteur mis à jour:', newCounter.text());
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log('Erreur lors du rafraîchissement des compteurs:', error);
+            }
         });
     }
     
@@ -721,8 +757,8 @@ $(document).ready(function () {
         });
     }
     
-    // Initialiser l'écoute des changements
-    listenForTaskStatusUpdates();
+    // Vérifier les mises à jour de tâches au chargement de la page
+    checkForTaskUpdates();
 });
 </script>
 @endsection
