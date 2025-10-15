@@ -159,8 +159,8 @@ class TaskController extends Controller
             return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
         }
 
-        // Vérifier la permission d'assigner (uniquement premium) - seulement pour les utilisateurs d'entreprise
-        if (!$user->isUserIndependant() && $request->has('assigned_to') && $request->assigned_to != $task->assigned_to) {
+        // Vérifier la permission d'assigner (uniquement premium) - seulement pour les utilisateurs indépendants
+        if ($user->isUserIndependant() && $request->has('assigned_to') && $request->assigned_to != $task->assigned_to) {
             if (!$user->can('assign', $task)) {
                 return back()->with('warning', 'La fonctionnalité d\'assignation de tâches est réservée aux utilisateurs premium.');
             }

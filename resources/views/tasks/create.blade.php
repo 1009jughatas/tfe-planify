@@ -118,7 +118,7 @@
                             <label for="assigned_to" class="form-label-modern">
                                 <i class="fas fa-user text-gray-500 mr-1"></i>
                                 Assigner à
-                                @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+                                @if (Auth::user()->isUserIndependant() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
                                     <span class="badge-warning ml-2">
                                         <i class="fas fa-crown mr-1"></i>Premium
                                     </span>
@@ -127,7 +127,7 @@
                             <select name="assigned_to" 
                                     id="assigned_to" 
                                     class="input-modern @error('assigned_to') border-red-300 focus:ring-red-500 @enderror"
-                                    @if (!Auth::user()->is_premium() && !Auth::user()->is_admin()) disabled @endif>
+                                    @if (Auth::user()->isUserIndependant() && !Auth::user()->is_premium() && !Auth::user()->is_admin()) disabled @endif>
                                 <option value="">-- Non assignée --</option>
                                 @foreach($participants as $user)
                                     <option value="{{ $user->id }}" {{ old('assigned_to') == $user->id ? 'selected' : '' }}>
