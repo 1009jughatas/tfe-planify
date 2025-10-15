@@ -231,9 +231,11 @@ Route::middleware(['auth', 'verified', IsIndependant::class])->group(function ()
     Route::post('/theme/set', [ThemeController::class, 'set'])->name('theme.set');
     
     // Export routes (Premium only)
-    Route::get('/export/projects', [ExportController::class, 'exportProjects'])->name('export.projects');
-    Route::get('/export/tasks', [ExportController::class, 'exportTasks'])->name('export.tasks');
-    Route::get('/export/dashboard', [ExportController::class, 'exportDashboard'])->name('export.dashboard');
+    Route::middleware('auth')->group(function () {
+        Route::get('/export/projects', [ExportController::class, 'exportProjects'])->name('export.projects');
+        Route::get('/export/tasks', [ExportController::class, 'exportTasks'])->name('export.tasks');
+        Route::get('/export/dashboard', [ExportController::class, 'exportDashboard'])->name('export.dashboard');
+    });
 
     // Project Routes - Indépendants uniquement
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
