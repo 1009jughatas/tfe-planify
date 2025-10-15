@@ -41,7 +41,7 @@
 <body class="h-full bg-gray-50 font-sans antialiased">
     <div class="min-h-screen">
         <!-- Navigation -->
-        @include('layouts.navigation')
+        @include('layouts.simple-navigation')
 
         <!-- Page Content -->
         <main class="w-full">

@@ -27,34 +27,22 @@
 <button @click="console.log('Bouton hamburger cliqué, sidebarOpen:', sidebarOpen); sidebarOpen = !sidebarOpen" 
         class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200">
     <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
-        <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-300 ease-in-out" 
+        <span class="block w-5 h-0.5 bg-gray-600" 
               :class="sidebarOpen ? 'rotate-45 translate-y-1.5' : 'rotate-0 translate-y-0'"></span>
-        <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-300 ease-in-out"
+        <span class="block w-5 h-0.5 bg-gray-600"
               :class="sidebarOpen ? 'opacity-0' : 'opacity-100'"></span>
-        <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-300 ease-in-out"
+        <span class="block w-5 h-0.5 bg-gray-600"
               :class="sidebarOpen ? '-rotate-45 -translate-y-1.5' : 'rotate-0 translate-y-0'"></span>
     </div>
 </button>
 
 <!-- Overlay -->
 <div x-show="sidebarOpen" 
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0"
      @click="sidebarOpen = false"
-     class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
+     class="fixed inset-0 bg-black/50 z-40"></div>
 
 <!-- Sidebar -->
 <div x-show="sidebarOpen"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="-translate-x-full"
-     x-transition:enter-end="translate-x-0"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="translate-x-0"
-     x-transition:leave-end="-translate-x-full"
      @click.away="sidebarOpen = false"
      class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto">
     
