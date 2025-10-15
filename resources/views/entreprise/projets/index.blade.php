@@ -77,7 +77,14 @@
                                 @elseif($project->status === 'in-progress') bg-blue-100 text-blue-800
                                 @elseif($project->status === 'cancelled') bg-red-100 text-red-800
                                 @else bg-gray-100 text-gray-800 @endif">
-                                {{ ucfirst($project->status) }}
+                                @switch($project->status)
+                                    @case('planning') 📋 En planification @break
+                                    @case('active') 🚀 Actif @break
+                                    @case('on-hold') ⏸️ En pause @break
+                                    @case('completed') ✅ Terminé @break
+                                    @case('cancelled') ❌ Annulé @break
+                                    @default 📋 En planification
+                                @endswitch
                             </span>
                         </div>
                     </div>

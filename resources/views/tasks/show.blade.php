@@ -146,7 +146,12 @@
                                                 ($subtask->status == 'in-progress' ? 'primary' :
                                                 ($subtask->status == 'blocked' ? 'danger' : 'secondary'))
                                             }}">
-                                                {{ ucfirst($subtask->status) }}
+                                                @switch($subtask->status)
+                                                    @case('completed') ✅ Terminé @break
+                                                    @case('in-progress') 🚀 En cours @break
+                                                    @case('blocked') 🚫 Bloqué @break
+                                                    @default 📋 En attente
+                                                @endswitch
                                             </span>
                                             <a href="{{ route('tasks.show', $subtask->id) }}" class="btn-secondary-modern text-sm">
                                                 <i class="fas fa-eye mr-1"></i>
@@ -300,7 +305,14 @@
                                         ($task->project->status == 'on-hold' ? 'warning' :
                                         ($task->project->status == 'cancelled' ? 'danger' : 'secondary')))
                                     }}">
-                                        {{ ucfirst($task->project->status) }}
+                                        @switch($task->project->status)
+                                            @case('planning') 📋 En planification @break
+                                            @case('active') 🚀 Actif @break
+                                            @case('on-hold') ⏸️ En pause @break
+                                            @case('completed') ✅ Terminé @break
+                                            @case('cancelled') ❌ Annulé @break
+                                            @default 📋 En planification
+                                        @endswitch
                                     </span>
                                 </div>
                             @endif

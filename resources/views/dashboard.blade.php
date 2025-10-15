@@ -307,7 +307,14 @@
                                                         @if($project->status === 'completed') bg-green-100 text-green-800
                                                         @elseif($project->status === 'in-progress') bg-blue-100 text-blue-800
                                                         @else bg-gray-100 text-gray-800 @endif">
-                                                        {{ ucfirst($project->status) }}
+                                                        @switch($project->status)
+                                                            @case('planning') 📋 En planification @break
+                                                            @case('active') 🚀 Actif @break
+                                                            @case('on-hold') ⏸️ En pause @break
+                                                            @case('completed') ✅ Terminé @break
+                                                            @case('cancelled') ❌ Annulé @break
+                                                            @default 📋 En planification
+                                                        @endswitch
                                                     </span>
                                                     <a href="{{ route('projects.show', $project->id) }}" class="text-blue-600 hover:text-blue-800">
                                                         <i class="fas fa-arrow-right"></i>
@@ -366,7 +373,12 @@
                                                         @if($task->status === 'completed') bg-green-100 text-green-800
                                                         @elseif($task->status === 'in-progress') bg-orange-100 text-orange-800
                                                         @else bg-gray-100 text-gray-800 @endif">
-                                                        {{ ucfirst($task->status) }}
+                                                        @switch($task->status)
+                                                            @case('completed') ✅ Terminé @break
+                                                            @case('in-progress') 🚀 En cours @break
+                                                            @case('blocked') 🚫 Bloqué @break
+                                                            @default 📋 En attente
+                                                        @endswitch
                                                     </span>
                                                     <a href="{{ route('tasks.show', $task->id) }}" class="text-blue-600 hover:text-blue-800">
                                                         <i class="fas fa-arrow-right"></i>
