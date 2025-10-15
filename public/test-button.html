@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bouton Nouvelle Tâche</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn-primary-modern {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .btn-primary-modern:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .test-url {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test du Bouton "Nouvelle Tâche"</h1>
+        
+        <div class="info-box">
+            <strong>Instructions :</strong><br>
+            1. Connectez-vous d'abord à votre compte entreprise<br>
+            2. Cliquez sur les boutons ci-dessous pour tester<br>
+            3. Vérifiez si vous êtes redirigé vers la bonne page
+        </div>
+
+        <h2>🔗 URLs de Test :</h2>
+        
+        <div class="test-url">
+            <strong>URL Entreprise (Nouvelle) :</strong><br>
+            http://localhost:8000/entreprise/projects/2/tasks/create
+        </div>
+        
+        <div class="test-url">
+            <strong>URL Indépendant (Ancienne) :</strong><br>
+            http://localhost:8000/projects/2/tasks/create
+        </div>
+
+        <h2>🎯 Boutons de Test :</h2>
+        
+        <p><strong>Bouton "Nouvelle Tâche" (Entreprise) :</strong></p>
+        <a href="http://localhost:8000/entreprise/projects/2/tasks/create" class="btn-primary-modern">
+            <i class="fas fa-plus" style="margin-right: 8px;"></i>
+            Nouvelle tâche (Entreprise)
+        </a>
+        
+        <p><strong>Bouton "Nouvelle Tâche" (Indépendant - pour comparaison) :</strong></p>
+        <a href="http://localhost:8000/projects/2/tasks/create" class="btn-primary-modern">
+            <i class="fas fa-plus" style="margin-right: 8px;"></i>
+            Nouvelle tâche (Indépendant)
+        </a>
+
+        <h2>📋 Informations de Connexion :</h2>
+        <div class="info-box">
+            <strong>Compte Entreprise :</strong><br>
+            Email: admin@test.com<br>
+            Mot de passe: password<br><br>
+            <strong>URL de connexion :</strong><br>
+            <a href="http://localhost:8000/entreprise/login">http://localhost:8000/entreprise/login</a>
+        </div>
+
+        <h2>🔍 Diagnostic :</h2>
+        <div class="info-box">
+            <strong>Si vous êtes redirigé vers le dashboard :</strong><br>
+            - Videz le cache de votre navigateur (Ctrl+F5 ou Cmd+Shift+R)<br>
+            - Essayez en navigation privée<br>
+            - Vérifiez que vous êtes bien connecté en tant qu'admin entreprise
+        </div>
+    </div>
+
+    <script>
+        // Log des clics pour debug
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                console.log('Clic sur:', this.href);
+                
+                // Vérifier si l'URL contient "entreprise"
+                if (this.href.includes('/entreprise/')) {
+                    console.log('✅ URL entreprise détectée');
+                } else {
+                    console.log('❌ URL indépendant détectée');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
