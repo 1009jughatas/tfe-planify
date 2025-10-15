@@ -453,37 +453,77 @@
             <!-- Statistiques -->
             <div class="modern-card">
                 <div class="modern-card-header">
-                    <h3 class="text-lg font-semibold text-gray-900">Statistiques</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-chart-bar text-green-500 mr-2"></i>
+                        Statistiques
+                    </h3>
                 </div>
-                <div class="modern-card-body space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Total des tâches</span>
-                        <span class="font-semibold text-gray-900" id="total-tasks-count">{{ $visibleTasks->count() }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">Tâches terminées</span>
-                        <span class="font-semibold text-green-600" id="completed-tasks-count">{{ $visibleTasks->where('status', 'completed')->count() }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">En cours</span>
-                        <span class="font-semibold text-blue-600" id="in-progress-tasks-count">{{ $visibleTasks->where('status', 'in-progress')->count() }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-600">En attente</span>
-                        <span class="font-semibold text-gray-600" id="pending-tasks-count">{{ $visibleTasks->where('status', 'pending')->count() }}</span>
-                    </div>
+                <div class="modern-card-body">
+                    @php
+                        $totalTasks = $visibleTasks->count();
+                        $completedTasks = $visibleTasks->where('status', 'completed')->count();
+                        $inProgressTasks = $visibleTasks->where('status', 'in-progress')->count();
+                        $pendingTasks = $visibleTasks->where('status', 'pending')->count();
+                        $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+                    @endphp
                     
-                    @if($visibleTasks->count() > 0)
-                        <div class="pt-4 border-t border-gray-200">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm text-gray-600">Progression</span>
-                                <span class="text-sm font-medium text-gray-900" id="progress-percentage">{{ round(($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100) }}%</span>
+                    <div class="space-y-4">
+                        <!-- Barre de progression -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-chart-line text-white text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900">Progression</h4>
+                                        <p class="text-sm text-gray-600">Avancement du projet</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-gray-900" id="progress-percentage">{{ $progress }}%</div>
+                                    <div class="text-sm text-gray-500">Complété</div>
+                                </div>
                             </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" id="progress-bar" style="width: {{ ($visibleTasks->where('status', 'completed')->count() / $visibleTasks->count()) * 100 }}%"></div>
+                            
+                            <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-300" 
+                                     id="progress-bar" 
+                                     style="width: {{ $progress }}%"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-gray-900" id="total-tasks-count">{{ $totalTasks }}</div>
+                                    <div class="text-sm text-gray-600">Total</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-green-600" id="completed-tasks-count">{{ $completedTasks }}</div>
+                                    <div class="text-sm text-gray-600">Finalisées</div>
+                                </div>
                             </div>
                         </div>
-                    @endif
+                        
+                        <!-- Statistiques détaillées -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Tâches ouvertes</span>
+                                <span class="font-semibold text-orange-600" id="pending-tasks-count">{{ $pendingTasks }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">En cours</span>
+                                <span class="font-semibold text-blue-600" id="in-progress-tasks-count">{{ $inProgressTasks }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Actives</span>
+                                <span class="font-semibold text-blue-600">{{ $inProgressTasks }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Terminées</span>
+                                <span class="font-semibold text-green-600" id="completed-tasks-count">{{ $completedTasks }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
