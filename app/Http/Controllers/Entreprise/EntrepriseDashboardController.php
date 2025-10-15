@@ -114,6 +114,24 @@ class EntrepriseDashboardController extends Controller
         }
         
         $calendarTasks = $calendarTasksQuery->orderBy('due_date', 'asc')->get();
+        
+        // Debug: Log des tâches du calendrier
+        \Log::info('Dashboard Entreprise - Calendar Tasks', [
+            'user_id' => $user->id,
+            'user_role' => $user->role,
+            'company_id' => $company->id,
+            'calendar_tasks_count' => $calendarTasks->count(),
+            'calendar_tasks' => $calendarTasks->map(function($task) {
+                return [
+                    'id' => $task->id,
+                    'title' => $task->title,
+                    'due_date' => $task->due_date,
+                    'status' => $task->status,
+                    'author_id' => $task->author_id,
+                    'assigned_to' => $task->assigned_to
+                ];
+            })->toArray()
+        ]);
 
         // Projets avec échéances proches
         $upcomingDeadlines = Project::where('company_id', $company->id)

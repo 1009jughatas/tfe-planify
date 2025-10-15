@@ -286,6 +286,22 @@
                     Calendrier
                 </h3>
             </div>
+            
+            <!-- Debug: Afficher les données -->
+            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
+                <h4 class="font-semibold text-yellow-800 mb-2">Debug - Données du calendrier :</h4>
+                <p class="text-sm text-yellow-700"><strong>Projets:</strong> {{ $recentProjects->count() }} projets récents</p>
+                <p class="text-sm text-yellow-700"><strong>Tâches calendrier:</strong> {{ $calendarTasks->count() }} tâches avec dates</p>
+                <p class="text-sm text-yellow-700"><strong>Tâches récentes:</strong> {{ $recentTasks->count() }} tâches récentes</p>
+                @if($calendarTasks->count() > 0)
+                    <div class="mt-2">
+                        <p class="text-sm text-yellow-700 font-semibold">Premières tâches :</p>
+                        @foreach($calendarTasks->take(3) as $task)
+                            <p class="text-xs text-yellow-600">- {{ $task->title }} ({{ $task->due_date }}) - {{ $task->status }}</p>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
             <div class="modern-card-body">
                 <div class="simple-calendar">
                     <div class="calendar-header">
