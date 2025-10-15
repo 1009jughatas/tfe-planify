@@ -27,7 +27,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="h-full bg-gray-50 font-sans antialiased" x-data="{ sidebarOpen: false }">
+<body class="h-full bg-gray-50 font-sans antialiased">
     <div class="min-h-screen">
         <!-- Navigation -->
         @include('layouts.navigation')
