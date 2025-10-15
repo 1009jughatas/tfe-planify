@@ -130,6 +130,46 @@
         </div>
         @endauth
 
+        <!-- 👤 MON COMPTE -->
+        @auth
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
+            <div class="space-y-1">
+                @if(Auth::user() && Auth::user()->isPartOfCompany())
+                    <!-- Routes entreprise -->
+                    <a href="{{ route('entreprise.profile.edit') }}" 
+                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                       @click="sidebarOpen = false">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Mon Profil</span>
+                    </a>
+                @else
+                    <!-- Routes indépendant -->
+                    <a href="{{ route('profile.edit') }}" 
+                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                       @click="sidebarOpen = false">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Mon Profil</span>
+                    </a>
+                @endif
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600">
+                            <i class="fas fa-sign-out-alt text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Se déconnecter</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endauth
+
         <!-- 👑 PREMIUM (Indépendants uniquement) -->
         @if (Auth::user() && !Auth::user()->is_premium() && !Auth::user()->is_admin() && !Auth::user()->isPartOfCompany())
         <div>
@@ -236,43 +276,6 @@
         </div>
         @endif
 
-        <!-- 👤 MON COMPTE -->
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
-            <div class="space-y-1">
-                @if(Auth::user() && Auth::user()->isPartOfCompany())
-                    <!-- Routes entreprise -->
-                    <a href="{{ route('entreprise.profile.edit') }}" 
-                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                       @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                            <i class="fas fa-user text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium">Mon Profil</span>
-                    </a>
-                @else
-                    <!-- Routes indépendant -->
-                    <a href="{{ route('profile.edit') }}" 
-                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                       @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                            <i class="fas fa-user text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium">Mon Profil</span>
-                    </a>
-                @endif
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600">
-                            <i class="fas fa-sign-out-alt text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium">Se déconnecter</span>
-                    </button>
-                </form>
-            </div>
-        </div>
 
         <!-- ⚙️ PARAMÈTRES -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin() || Auth::user()->isPartOfCompany()))
