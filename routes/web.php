@@ -213,6 +213,15 @@ Route::get('/create-test-entreprise', function () {
 })->name('create.test.entreprise');
 
 // ========================================
+// ROUTES D'EXPORT (ACCESSIBLES À TOUS LES UTILISATEURS AUTHENTIFIÉS)
+// ========================================
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Export routes (Premium only)
+    Route::get('/export/projects', [ExportController::class, 'exportProjects'])->name('export.projects');
+    Route::get('/export/tasks', [ExportController::class, 'exportTasks'])->name('export.tasks');
+    Route::get('/export/dashboard', [ExportController::class, 'exportDashboard'])->name('export.dashboard');
+});
+
 // ROUTES INDÉPENDANTS (PROTÉGÉES)
 // ========================================
 Route::middleware(['auth', 'verified', IsIndependant::class])->group(function () {
@@ -230,12 +239,6 @@ Route::middleware(['auth', 'verified', IsIndependant::class])->group(function ()
     Route::get('/theme', [ThemeController::class, 'get'])->name('theme.get');
     Route::post('/theme/set', [ThemeController::class, 'set'])->name('theme.set');
     
-    // Export routes (Premium only)
-    Route::middleware('auth')->group(function () {
-        Route::get('/export/projects', [ExportController::class, 'exportProjects'])->name('export.projects');
-        Route::get('/export/tasks', [ExportController::class, 'exportTasks'])->name('export.tasks');
-        Route::get('/export/dashboard', [ExportController::class, 'exportDashboard'])->name('export.dashboard');
-    });
 
     // Project Routes - Indépendants uniquement
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
