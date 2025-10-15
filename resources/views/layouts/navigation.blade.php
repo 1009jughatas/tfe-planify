@@ -3,6 +3,7 @@
     isDarkMode: false,
     
     init() {
+        console.log('Alpine.js initialisé pour le menu hamburger');
         this.isDarkMode = localStorage.getItem('darkMode') === 'true';
         this.applyDarkMode();
     },
@@ -23,7 +24,7 @@
 }" x-init="init()">
 
 <!-- Menu Hamburger Button -->
-<button @click="sidebarOpen = !sidebarOpen" 
+<button @click="console.log('Bouton hamburger cliqué, sidebarOpen:', sidebarOpen); sidebarOpen = !sidebarOpen" 
         class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200">
     <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
         <span class="block w-5 h-0.5 bg-gray-600 transition-all duration-300 ease-in-out" 
