@@ -121,16 +121,6 @@
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Export</h3>
             <div class="space-y-1">
-                <a href="{{ route('export.dashboard') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-purple-700 border border-purple-200 hover:bg-purple-50"
-                   target="_blank"
-                   onclick="closeMenu()">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-purple-100 text-purple-600">
-                        <i class="fas fa-file-pdf text-sm"></i>
-                    </div>
-                    <span class="text-sm font-medium">Export Dashboard PDF</span>
-                </a>
-                
                 <a href="{{ route('export.projects') }}" 
                    class="flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-purple-700 border border-purple-200 hover:bg-purple-50"
                    target="_blank"
