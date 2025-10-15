@@ -25,7 +25,8 @@
 
 <!-- Menu Hamburger Button -->
 <button @click="console.log('Bouton hamburger cliqué, sidebarOpen:', sidebarOpen); sidebarOpen = !sidebarOpen" 
-        class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200">
+        class="fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200"
+        style="border: 3px solid blue !important; background: orange !important;">
     <div class="w-6 h-6 flex flex-col justify-center items-center space-y-1">
         <span class="block w-5 h-0.5 bg-gray-600" 
               :class="sidebarOpen ? 'rotate-45 translate-y-1.5' : 'rotate-0 translate-y-0'"></span>
@@ -44,7 +45,8 @@
 <!-- Sidebar -->
 <div x-show="sidebarOpen"
      @click.away="sidebarOpen = false"
-     class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto">
+     class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto"
+     style="border: 3px solid red; background: yellow !important;">
     
     <!-- Header -->
     <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
@@ -135,27 +137,14 @@
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
             <div class="space-y-1">
-                @if(Auth::user() && Auth::user()->isPartOfCompany())
-                    <!-- Routes entreprise -->
-                    <a href="{{ route('entreprise.profile.edit') }}" 
-                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                       @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                            <i class="fas fa-user text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium">Mon Profil</span>
-                    </a>
-                @else
-                    <!-- Routes indépendant -->
-                    <a href="{{ route('profile.edit') }}" 
-                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                       @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                            <i class="fas fa-user text-sm"></i>
-                        </div>
-                        <span class="text-sm font-medium">Mon Profil</span>
-                    </a>
-                @endif
+                <a href="{{ route('profile.edit') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-user text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Mon Profil</span>
+                </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
