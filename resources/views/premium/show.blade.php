@@ -73,16 +73,6 @@
                     </div>
                 </div>
 
-                <!-- Feature 2 -->
-                <div class="modern-card text-center group hover:shadow-xl transition-all duration-300">
-                    <div class="modern-card-body">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas fa-users text-white text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Collaboration Avancée</h3>
-                        <p class="text-gray-600">Invitez des membres d'équipe et collaborez en temps réel</p>
-                    </div>
-                </div>
 
                 <!-- Feature 3 -->
                 <div class="modern-card text-center group hover:shadow-xl transition-all duration-300">
@@ -159,10 +149,6 @@
                             <div class="flex items-center">
                                 <i class="fas fa-check-circle text-green-500 mr-3"></i>
                                 <span class="text-gray-700">Projets illimités</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                <span class="text-gray-700">Collaboration avancée</span>
                             </div>
                             <div class="flex items-center">
                                 <i class="fas fa-check-circle text-green-500 mr-3"></i>
