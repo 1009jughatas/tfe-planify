@@ -152,25 +152,114 @@
                                                                 </div>
                                                                 <div class="space-y-2">
                                                                     @foreach($taskSubtasks as $subtask)
-                                                                        <div class="flex items-center justify-between bg-white/60 rounded-lg p-2 border border-blue-100">
-                                                                            <div class="flex items-center space-x-2">
-                                                                                <i class="fas fa-arrow-right text-blue-400 text-xs"></i>
-                                                                                <span class="text-sm text-gray-700">{{ $subtask->title }}</span>
-                                                                                <span class="px-1.5 py-0.5 text-xs font-medium rounded-full
-                                                                                    @if($subtask->status === 'completed') bg-green-100 text-green-700
-                                                                                    @elseif($subtask->status === 'in-progress') bg-blue-100 text-blue-700
-                                                                                    @else bg-gray-100 text-gray-700 @endif">
-                                                                                    @switch($subtask->status)
-                                                                                        @case('completed') ✅ @break
-                                                                                        @case('in-progress') 🚀 @break
-                                                                                        @default 📋
-                                                                                    @endswitch
-                                                                                </span>
+                                                                        <div class="bg-white/60 rounded-lg border border-blue-100 overflow-hidden">
+                                                                            <!-- Sous-tâche principale -->
+                                                                            <div class="flex items-center justify-between p-2">
+                                                                                <div class="flex items-center space-x-2">
+                                                                                    <i class="fas fa-arrow-right text-blue-400 text-xs"></i>
+                                                                                    <span class="text-sm text-gray-700 font-medium">{{ $subtask->title }}</span>
+                                                                                    <span class="px-1.5 py-0.5 text-xs font-medium rounded-full
+                                                                                        @if($subtask->status === 'completed') bg-green-100 text-green-700
+                                                                                        @elseif($subtask->status === 'in-progress') bg-blue-100 text-blue-700
+                                                                                        @else bg-gray-100 text-gray-700 @endif">
+                                                                                        @switch($subtask->status)
+                                                                                            @case('completed') ✅ @break
+                                                                                            @case('in-progress') 🚀 @break
+                                                                                            @default 📋
+                                                                                        @endswitch
+                                                                                    </span>
+                                                                                </div>
+                                                                                <a href="{{ route('entreprise.tasks.show', $subtask->id) }}" 
+                                                                                   class="text-blue-500 hover:text-blue-700 text-xs">
+                                                                                    <i class="fas fa-external-link-alt"></i>
+                                                                                </a>
                                                                             </div>
-                                                                            <a href="{{ route('entreprise.tasks.show', $subtask->id) }}" 
-                                                                               class="text-blue-500 hover:text-blue-700 text-xs">
-                                                                                <i class="fas fa-external-link-alt"></i>
-                                                                            </a>
+                                                                            
+                                                                            <!-- Sous-tâches de cette sous-tâche (niveau 3) -->
+                                                                            @php
+                                                                                $subtaskChildren = $subtasks->where('parent_id', $subtask->id);
+                                                                            @endphp
+                                                                            @if($subtaskChildren->count() > 0)
+                                                                                <div class="bg-blue-50/50 border-t border-blue-100">
+                                                                                    <div class="px-3 py-2 border-b border-blue-100">
+                                                                                        <div class="flex items-center justify-between">
+                                                                                            <span class="text-xs font-medium text-blue-700">
+                                                                                                <i class="fas fa-sitemap mr-1"></i>
+                                                                                                Sous-sous-tâches ({{ $subtaskChildren->count() }})
+                                                                                            </span>
+                                                                                            <span class="text-xs text-blue-600">
+                                                                                                {{ $subtaskChildren->where('status', 'completed')->count() }}/{{ $subtaskChildren->count() }} terminées
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="p-2 space-y-1">
+                                                                                        @foreach($subtaskChildren as $childTask)
+                                                                                            <div class="flex items-center justify-between bg-white/80 rounded border border-blue-200 p-2">
+                                                                                                <div class="flex items-center space-x-2">
+                                                                                                    <i class="fas fa-arrow-turn-down-right text-blue-300 text-xs"></i>
+                                                                                                    <span class="text-xs text-gray-600">{{ $childTask->title }}</span>
+                                                                                                    <span class="px-1 py-0.5 text-xs font-medium rounded-full
+                                                                                                        @if($childTask->status === 'completed') bg-green-100 text-green-600
+                                                                                                        @elseif($childTask->status === 'in-progress') bg-blue-100 text-blue-600
+                                                                                                        @else bg-gray-100 text-gray-600 @endif">
+                                                                                                        @switch($childTask->status)
+                                                                                                            @case('completed') ✅ @break
+                                                                                                            @case('in-progress') 🚀 @break
+                                                                                                            @default 📋
+                                                                                                        @endswitch
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                                <a href="{{ route('entreprise.tasks.show', $childTask->id) }}" 
+                                                                                                   class="text-blue-400 hover:text-blue-600 text-xs">
+                                                                                                    <i class="fas fa-external-link-alt"></i>
+                                                                                                </a>
+                                                                                            </div>
+                                                                                            
+                                                                                            <!-- Sous-tâches de niveau 4 (si elles existent) -->
+                                                                                            @php
+                                                                                                $level4Tasks = $subtasks->where('parent_id', $childTask->id);
+                                                                                            @endphp
+                                                                                            @if($level4Tasks->count() > 0)
+                                                                                                <div class="ml-4 bg-blue-25/50 rounded border border-blue-200 p-2">
+                                                                                                    <div class="flex items-center justify-between mb-1">
+                                                                                                        <span class="text-xs font-medium text-blue-600">
+                                                                                                            <i class="fas fa-layer-group mr-1"></i>
+                                                                                                            Niveau 4 ({{ $level4Tasks->count() }})
+                                                                                                        </span>
+                                                                                                        <span class="text-xs text-blue-500">
+                                                                                                            {{ $level4Tasks->where('status', 'completed')->count() }}/{{ $level4Tasks->count() }} terminées
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                    <div class="space-y-1">
+                                                                                                        @foreach($level4Tasks as $level4Task)
+                                                                                                            <div class="flex items-center justify-between bg-white/90 rounded border border-blue-200 p-1.5">
+                                                                                                                <div class="flex items-center space-x-1">
+                                                                                                                    <i class="fas fa-arrow-turn-down-right text-blue-200 text-xs"></i>
+                                                                                                                    <span class="text-xs text-gray-500">{{ $level4Task->title }}</span>
+                                                                                                                    <span class="px-1 py-0.5 text-xs font-medium rounded-full
+                                                                                                                        @if($level4Task->status === 'completed') bg-green-100 text-green-500
+                                                                                                                        @elseif($level4Task->status === 'in-progress') bg-blue-100 text-blue-500
+                                                                                                                        @else bg-gray-100 text-gray-500 @endif">
+                                                                                                                        @switch($level4Task->status)
+                                                                                                                            @case('completed') ✅ @break
+                                                                                                                            @case('in-progress') 🚀 @break
+                                                                                                                            @default 📋
+                                                                                                                        @endswitch
+                                                                                                                    </span>
+                                                                                                                </div>
+                                                                                                                <a href="{{ route('entreprise.tasks.show', $level4Task->id) }}" 
+                                                                                                                   class="text-blue-300 hover:text-blue-500 text-xs">
+                                                                                                                    <i class="fas fa-external-link-alt"></i>
+                                                                                                                </a>
+                                                                                                            </div>
+                                                                                                        @endforeach
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    </div>
+                                                                                </div>
+                                                                            @endif
                                                                         </div>
                                                                     @endforeach
                                                                 </div>
