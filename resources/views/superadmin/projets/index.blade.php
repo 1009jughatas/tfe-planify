@@ -169,7 +169,7 @@
                                     <div class="flex items-center space-x-6 text-sm text-gray-500">
                                         <span class="flex items-center">
                                             <i class="fas fa-user mr-1"></i>
-                                            {{ $project->user->name }}
+                                            {{ $project->author->name }}
                                         </span>
                                         @if($project->company)
                                             <span class="flex items-center">

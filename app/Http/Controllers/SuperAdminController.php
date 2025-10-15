@@ -59,7 +59,7 @@ class SuperAdminController extends Controller
             ->get();
 
         // Projets récents
-        $recent_projects = Project::with(['user', 'company'])
+        $recent_projects = Project::with(['author', 'company'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

@@ -47,7 +47,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Créateur</label>
-                                <p class="text-gray-900">{{ $project->user->name }} ({{ $project->user->email }})</p>
+                                <p class="text-gray-900">{{ $project->author->name }} ({{ $project->author->email }})</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
@@ -207,20 +207,20 @@
                                 <i class="fas fa-user text-gray-600"></i>
                             </div>
                             <div>
-                                <h3 class="text-sm font-semibold text-gray-900">{{ $project->user->name }}</h3>
-                                <p class="text-sm text-gray-500">{{ $project->user->email }}</p>
+                                <h3 class="text-sm font-semibold text-gray-900">{{ $project->author->name }}</h3>
+                                <p class="text-sm text-gray-500">{{ $project->author->email }}</p>
                             </div>
                         </div>
                         <div class="space-y-2 text-sm text-gray-600">
                             <div class="flex justify-between">
                                 <span>Rôle:</span>
-                                <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $project->user->role)) }}</span>
+                                <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $project->author->role)) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span>Inscrit le:</span>
-                                <span class="font-medium">{{ $project->user->created_at->format('d/m/Y') }}</span>
+                                <span class="font-medium">{{ $project->author->created_at->format('d/m/Y') }}</span>
                             </div>
-                            @if($project->user->is_premium)
+                            @if($project->author->is_premium)
                                 <div class="flex justify-between">
                                     <span>Statut:</span>
                                     <span class="font-medium text-yellow-600">

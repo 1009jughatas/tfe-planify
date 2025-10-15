@@ -10,7 +10,7 @@ class SuperAdminProjetController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Project::with(['user', 'company', 'tasks']);
+        $query = Project::with(['author', 'company', 'tasks']);
 
         // Filtres
         if ($request->filled('type')) {
@@ -51,7 +51,7 @@ class SuperAdminProjetController extends Controller
 
     public function show(Project $project)
     {
-        $project->load(['user', 'company', 'tasks.assignedUser', 'tasks.author']);
+        $project->load(['author', 'company', 'tasks.assignedUser', 'tasks.author']);
         
         return view('superadmin.projets.show', compact('project'));
     }
