@@ -130,7 +130,7 @@
     @endif
 
     <!-- Contenu principal -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <!-- Projets Récents -->
         <div class="modern-card">
             <div class="modern-card-header">
@@ -273,6 +273,75 @@
                         <p>Aucune tâche récente</p>
                     </div>
                 @endif
+            </div>
+        </div>
+
+        <!-- Calendrier -->
+        <div class="modern-card">
+            <div class="modern-card-header">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
+                        <i class="fas fa-calendar-alt text-white"></i>
+                    </div>
+                    Calendrier
+                </h3>
+            </div>
+            <div class="modern-card-body">
+                <div class="simple-calendar">
+                    <div class="calendar-header">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-semibold text-gray-800" id="current-month">{{ date('F Y') }}</h4>
+                            <div class="flex space-x-2">
+                                <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-chevron-left text-gray-600"></i>
+                                </button>
+                                <button onclick="goToToday()" class="px-3 py-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-sm font-medium">
+                                    Aujourd'hui
+                                </button>
+                                <button onclick="changeMonth(1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-chevron-right text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Légende -->
+                        <div class="flex flex-wrap gap-4 mb-4 text-xs">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                                <span class="text-gray-600">Projets</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                                <span class="text-gray-600">Tâches terminées</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-orange-500 rounded mr-2"></div>
+                                <span class="text-gray-600">Tâches en cours</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                                <span class="text-gray-600">Tâches en retard</span>
+                            </div>
+                        </div>
+
+                        <!-- Grille du calendrier -->
+                        <div class="calendar-grid" id="calendar-grid">
+                            <!-- Les jours de la semaine -->
+                            <div class="calendar-weekdays">
+                                <div class="calendar-weekday">Lun</div>
+                                <div class="calendar-weekday">Mar</div>
+                                <div class="calendar-weekday">Mer</div>
+                                <div class="calendar-weekday">Jeu</div>
+                                <div class="calendar-weekday">Ven</div>
+                                <div class="calendar-weekday">Sam</div>
+                                <div class="calendar-weekday">Dim</div>
+                            </div>
+                            
+                            <!-- Les jours du mois seront générés par JavaScript -->
+                            <div class="calendar-days" id="calendar-days"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -460,5 +529,296 @@
     .badge-secondary {
         @apply inline-flex items-center px-3 py-1 bg-gray-500 text-white text-xs font-medium rounded-full shadow-sm;
     }
+
+    /* Styles du calendrier */
+    .simple-calendar {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .calendar-grid {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #f8fafc;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .calendar-weekday {
+        padding: 12px 8px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #6b7280;
+        border-right: 1px solid #e5e7eb;
+    }
+    
+    .calendar-weekday:last-child {
+        border-right: none;
+    }
+    
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+    
+    .calendar-day {
+        min-height: 60px;
+        padding: 6px;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative;
+        background: white;
+        transition: all 0.2s ease;
+    }
+    
+    .calendar-day:nth-child(7n) {
+        border-right: none;
+    }
+    
+    .calendar-day:hover {
+        background: #f8fafc;
+    }
+    
+    .calendar-day.other-month {
+        background: #f9fafb;
+        color: #9ca3af;
+    }
+    
+    .calendar-day.today {
+        background: #eff6ff;
+        border: 2px solid #3b82f6;
+    }
+    
+    .calendar-day-number {
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 4px;
+    }
+    
+    .calendar-events {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .calendar-event {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .calendar-event:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .calendar-event.project {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .calendar-event.task-completed {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .calendar-event.task-in-progress {
+        background: #fed7aa;
+        color: #9a3412;
+    }
+    
+    .calendar-event.task-overdue {
+        background: #fecaca;
+        color: #991b1b;
+    }
+    
+    .calendar-event.task-pending {
+        background: #f3f4f6;
+        color: #374151;
+    }
 </style>
+
+<script>
+    // Données du calendrier pour l'entreprise
+    const calendarData = {
+        projects: [
+            @foreach($recentProjects as $project)
+                @if($project->start_date)
+                    {
+                        id: {{ $project->id }},
+                        name: '{{ addslashes($project->name) }}',
+                        startDate: '{{ $project->start_date }}',
+                        endDate: '{{ $project->end_date ?? null }}',
+                        url: '{{ route('entreprise.projets.show', $project->id) }}',
+                        type: 'project'
+                    },
+                @endif
+            @endforeach
+        ],
+        tasks: [
+            @foreach($recentTasks as $task)
+                @if($task->deadline)
+                    {
+                        id: {{ $task->id }},
+                        name: '{{ addslashes($task->name) }}',
+                        date: '{{ $task->deadline }}',
+                        status: '{{ $task->status }}',
+                        url: '{{ route('entreprise.tasks.show', $task->id) }}',
+                        type: 'task'
+                    },
+                @endif
+            @endforeach
+        ]
+    };
+
+    // Variables globales pour le calendrier
+    let currentDate = new Date();
+    const monthNames = [
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+
+    // Générer le calendrier
+    function generateCalendar() {
+        const calendarDays = document.getElementById('calendar-days');
+        const currentMonthElement = document.getElementById('current-month');
+        
+        // Mettre à jour le titre du mois
+        currentMonthElement.textContent = monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear();
+        
+        // Calculer le premier jour du mois et le nombre de jours
+        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startingDayOfWeek = (firstDay.getDay() + 6) % 7; // Convertir dimanche=0 à lundi=0
+        
+        // Calculer le nombre de jours du mois précédent
+        const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 0);
+        const daysInPrevMonth = prevMonth.getDate();
+        
+        // Vider le calendrier
+        calendarDays.innerHTML = '';
+        
+        // Ajouter les jours du mois précédent
+        for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+            const dayNumber = daysInPrevMonth - i;
+            const dayElement = createDayElement(dayNumber, true);
+            calendarDays.appendChild(dayElement);
+        }
+        
+        // Ajouter les jours du mois actuel
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = createDayElement(day, false);
+            calendarDays.appendChild(dayElement);
+        }
+        
+        // Ajouter les jours du mois suivant pour compléter la grille
+        const totalCells = calendarDays.children.length;
+        const remainingCells = 42 - totalCells; // 6 semaines * 7 jours = 42 cellules
+        
+        for (let day = 1; day <= remainingCells; day++) {
+            const dayElement = createDayElement(day, true);
+            calendarDays.appendChild(dayElement);
+        }
+    }
+    
+    function createDayElement(dayNumber, isOtherMonth) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        
+        if (isOtherMonth) {
+            dayElement.classList.add('other-month');
+        }
+        
+        // Vérifier si c'est aujourd'hui
+        const today = new Date();
+        if (!isOtherMonth && 
+            dayNumber === today.getDate() && 
+            currentDate.getMonth() === today.getMonth() && 
+            currentDate.getFullYear() === today.getFullYear()) {
+            dayElement.classList.add('today');
+        }
+        
+        // Créer le contenu du jour
+        const dayContent = document.createElement('div');
+        dayContent.className = 'calendar-day-number';
+        dayContent.textContent = dayNumber;
+        dayElement.appendChild(dayContent);
+        
+        // Ajouter les événements
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'calendar-events';
+        
+        if (!isOtherMonth) {
+            const events = getEventsForDay(dayNumber);
+            events.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.className = `calendar-event ${event.type}-${event.status || 'project'}`;
+                eventElement.textContent = event.name;
+                eventElement.title = event.name;
+                eventElement.onclick = () => window.location.href = event.url;
+                eventsContainer.appendChild(eventElement);
+            });
+        }
+        
+        dayElement.appendChild(eventsContainer);
+        return dayElement;
+    }
+    
+    function getEventsForDay(day) {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        
+        const events = [];
+        
+        // Ajouter les projets
+        calendarData.projects.forEach(project => {
+            if (project.startDate === dateStr || (project.endDate && project.endDate === dateStr)) {
+                events.push({
+                    ...project,
+                    type: 'project'
+                });
+            }
+        });
+        
+        // Ajouter les tâches
+        calendarData.tasks.forEach(task => {
+            if (task.date === dateStr) {
+                events.push({
+                    ...task,
+                    type: 'task'
+                });
+            }
+        });
+        
+        return events.slice(0, 3); // Limiter à 3 événements par jour
+    }
+    
+    function changeMonth(direction) {
+        currentDate.setMonth(currentDate.getMonth() + direction);
+        generateCalendar();
+    }
+    
+    function goToToday() {
+        currentDate = new Date();
+        generateCalendar();
+    }
+    
+    // Initialiser le calendrier au chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        generateCalendar();
+    });
+</script>
 @endsection
