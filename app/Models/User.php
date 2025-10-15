@@ -27,7 +27,8 @@ class User extends Authenticatable
         'is_active',
         'is_premium',
         'stripe_customer_id',
-        'stripe_subscription_id'
+        'stripe_subscription_id',
+        'permissions'
     ];
 
     /**
@@ -53,6 +54,7 @@ class User extends Authenticatable
             'is_premium' => 'boolean',
             'is_admin' => 'boolean',
             'is_active' => 'boolean',
+            'permissions' => 'array',
         ];
     }
 
@@ -84,6 +86,72 @@ class User extends Authenticatable
     public function isUserIndependant()
     {
         return $this->role === 'user_independant' && !$this->company_id;
+    }
+
+    /**
+     * Check if user has a specific permission
+     */
+    public function hasPermission($permission)
+    {
+        // Les administrateurs d'entreprise ont tous les droits
+        if ($this->isAdminEntreprise()) {
+            return true;
+        }
+
+        // Les utilisateurs indépendants ont tous les droits sur leurs propres données
+        if ($this->isUserIndependant()) {
+            return true;
+        }
+
+        // Vérifier les permissions pour les employés d'entreprise
+        $permissions = $this->permissions ?? [];
+        return in_array($permission, $permissions);
+    }
+
+    /**
+     * Grant a permission to the user
+     */
+    public function grantPermission($permission)
+    {
+        $permissions = $this->permissions ?? [];
+        if (!in_array($permission, $permissions)) {
+            $permissions[] = $permission;
+            $this->update(['permissions' => $permissions]);
+        }
+    }
+
+    /**
+     * Revoke a permission from the user
+     */
+    public function revokePermission($permission)
+    {
+        $permissions = $this->permissions ?? [];
+        $permissions = array_values(array_filter($permissions, function($p) use ($permission) {
+            return $p !== $permission;
+        }));
+        $this->update(['permissions' => $permissions]);
+    }
+
+    /**
+     * Get available permissions for enterprise users
+     */
+    public static function getAvailablePermissions()
+    {
+        return [
+            'export_pdf' => 'Exporter des fichiers PDF',
+            'create_projects' => 'Créer des projets',
+            'manage_tasks' => 'Gérer les tâches',
+            'invite_users' => 'Inviter des utilisateurs',
+            'view_analytics' => 'Voir les analyses',
+        ];
+    }
+
+    /**
+     * Check if user can export PDF
+     */
+    public function canExportPdf()
+    {
+        return $this->hasPermission('export_pdf');
     }
 
     public function isPartOfCompany()

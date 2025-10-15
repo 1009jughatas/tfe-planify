@@ -235,4 +235,62 @@ class EntrepriseUserController extends Controller
         return redirect()->route('entreprise.utilisateurs.index')
             ->with('success', 'Invitation annulée avec succès.');
     }
+
+    /**
+     * Show user permissions management
+     */
+    public function showPermissions(User $user)
+    {
+        $currentUser = Auth::user();
+        $company = $currentUser->company;
+
+        // Vérifier que l'utilisateur appartient à l'entreprise
+        if ($user->company_id !== $company->id) {
+            abort(403, 'Accès non autorisé à cet utilisateur.');
+        }
+
+        // Empêcher l'auto-modification des permissions
+        if ($user->id === $currentUser->id) {
+            return back()->with('error', 'Vous ne pouvez pas modifier vos propres permissions.');
+        }
+
+        $availablePermissions = User::getAvailablePermissions();
+        $userPermissions = $user->permissions ?? [];
+
+        return view('entreprise.utilisateurs.permissions', compact(
+            'user', 
+            'availablePermissions', 
+            'userPermissions'
+        ));
+    }
+
+    /**
+     * Update user permissions
+     */
+    public function updatePermissions(Request $request, User $user)
+    {
+        $currentUser = Auth::user();
+        $company = $currentUser->company;
+
+        // Vérifier que l'utilisateur appartient à l'entreprise
+        if ($user->company_id !== $company->id) {
+            abort(403, 'Accès non autorisé à cet utilisateur.');
+        }
+
+        // Empêcher l'auto-modification des permissions
+        if ($user->id === $currentUser->id) {
+            return back()->with('error', 'Vous ne pouvez pas modifier vos propres permissions.');
+        }
+
+        $request->validate([
+            'permissions' => 'array',
+            'permissions.*' => 'string|in:export_pdf,create_projects,manage_tasks,invite_users,view_analytics'
+        ]);
+
+        $permissions = $request->permissions ?? [];
+        $user->update(['permissions' => $permissions]);
+
+        return redirect()->route('entreprise.utilisateurs.index')
+            ->with('success', 'Permissions de l\'utilisateur mises à jour avec succès.');
+    }
 }

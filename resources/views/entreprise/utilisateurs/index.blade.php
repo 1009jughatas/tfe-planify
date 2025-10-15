@@ -182,10 +182,19 @@
                                 <!-- Actions -->
                                 @if($user->id !== auth()->id())
                                     <div class="flex items-center space-x-2">
+                                        <!-- Bouton Permissions -->
+                                        <a href="{{ route('entreprise.utilisateurs.permissions', $user->id) }}" 
+                                           class="text-purple-600 hover:text-purple-800 p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                                           title="Gérer les permissions">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </a>
+                                        
+                                        <!-- Bouton Supprimer -->
                                         <form method="POST" action="{{ route('entreprise.utilisateurs.destroy', $user->id) }}" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                                            <button type="submit" class="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Supprimer l'utilisateur">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

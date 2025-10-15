@@ -97,6 +97,8 @@ Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntr
         Route::post('/utilisateurs/inviter', [EntrepriseUserController::class, 'sendInvitation'])->name('utilisateurs.inviter.store');
         Route::delete('/utilisateurs/{user}', [EntrepriseUserController::class, 'destroy'])->name('utilisateurs.destroy');
         Route::patch('/utilisateurs/{user}/role', [EntrepriseUserController::class, 'updateRole'])->name('utilisateurs.update-role');
+        Route::get('/utilisateurs/{user}/permissions', [EntrepriseUserController::class, 'showPermissions'])->name('utilisateurs.permissions');
+        Route::patch('/utilisateurs/{user}/permissions', [EntrepriseUserController::class, 'updatePermissions'])->name('utilisateurs.update-permissions');
         Route::delete('/invitations/{invitation}/cancel', [EntrepriseUserController::class, 'cancelInvitation'])->name('invitations.cancel');
         
         // Gestion des abonnements

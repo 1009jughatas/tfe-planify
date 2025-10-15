@@ -18,17 +18,29 @@ class ExportController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user || !$user->is_premium()) {
+        // Vérifier les permissions d'export PDF
+        if (!$user || !$user->canExportPdf()) {
             return response()->json([
-                'error' => 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs Premium.'
+                'error' => 'Accès refusé. Vous n\'avez pas l\'autorisation d\'exporter des fichiers PDF.'
             ], 403);
         }
 
-        $projects = Project::where('author_id', $user->id)
-            ->with(['tasks' => function($query) {
-                $query->with('comments');
-            }])
-            ->get();
+        // Récupérer les projets selon le type d'utilisateur
+        if ($user->isUserEntreprise() && $user->company_id) {
+            // Pour les employés d'entreprise, récupérer les projets de l'entreprise
+            $projects = Project::where('company_id', $user->company_id)
+                ->with(['tasks' => function($query) {
+                    $query->with('comments');
+                }])
+                ->get();
+        } else {
+            // Pour les utilisateurs indépendants, récupérer leurs propres projets
+            $projects = Project::where('author_id', $user->id)
+                ->with(['tasks' => function($query) {
+                    $query->with('comments');
+                }])
+                ->get();
+        }
 
         $data = [
             'user' => $user,
@@ -51,17 +63,29 @@ class ExportController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user || !$user->is_premium()) {
+        // Vérifier les permissions d'export PDF
+        if (!$user || !$user->canExportPdf()) {
             return response()->json([
-                'error' => 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs Premium.'
+                'error' => 'Accès refusé. Vous n\'avez pas l\'autorisation d\'exporter des fichiers PDF.'
             ], 403);
         }
 
-        $tasks = Task::whereHas('project', function($query) use ($user) {
-                $query->where('author_id', $user->id);
-            })
-            ->with(['project', 'comments'])
-            ->get();
+        // Récupérer les tâches selon le type d'utilisateur
+        if ($user->isUserEntreprise() && $user->company_id) {
+            // Pour les employés d'entreprise, récupérer les tâches de l'entreprise
+            $tasks = Task::whereHas('project', function($query) use ($user) {
+                    $query->where('company_id', $user->company_id);
+                })
+                ->with(['project', 'comments'])
+                ->get();
+        } else {
+            // Pour les utilisateurs indépendants, récupérer leurs propres tâches
+            $tasks = Task::whereHas('project', function($query) use ($user) {
+                    $query->where('author_id', $user->id);
+                })
+                ->with(['project', 'comments'])
+                ->get();
+        }
 
         $data = [
             'user' => $user,
@@ -84,17 +108,29 @@ class ExportController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user || !$user->is_premium()) {
+        // Vérifier les permissions d'export PDF
+        if (!$user || !$user->canExportPdf()) {
             return response()->json([
-                'error' => 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs Premium.'
+                'error' => 'Accès refusé. Vous n\'avez pas l\'autorisation d\'exporter des fichiers PDF.'
             ], 403);
         }
 
-        $projects = Project::where('author_id', $user->id)
-            ->with(['tasks' => function($query) {
-                $query->with('comments');
-            }])
-            ->get();
+        // Récupérer les projets selon le type d'utilisateur
+        if ($user->isUserEntreprise() && $user->company_id) {
+            // Pour les employés d'entreprise, récupérer les projets de l'entreprise
+            $projects = Project::where('company_id', $user->company_id)
+                ->with(['tasks' => function($query) {
+                    $query->with('comments');
+                }])
+                ->get();
+        } else {
+            // Pour les utilisateurs indépendants, récupérer leurs propres projets
+            $projects = Project::where('author_id', $user->id)
+                ->with(['tasks' => function($query) {
+                    $query->with('comments');
+                }])
+                ->get();
+        }
 
         $stats = [
             'total_projects' => $projects->count(),
