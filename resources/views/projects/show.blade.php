@@ -240,45 +240,6 @@
 
             <!-- Sidebar -->
             <div class="space-y-6">
-                <!-- Statut du projet -->
-                <div class="modern-card">
-                    <div class="modern-card-header">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            <i class="fas fa-tasks text-primary-600 mr-2"></i>
-                            Statut du Projet
-                        </h3>
-                    </div>
-                    <div class="modern-card-body">
-                        <div class="flex items-center space-x-3">
-                            <span class="badge-{{ 
-                                $project->status == 'completed' ? 'success' :
-                                ($project->status == 'active' ? 'primary' :
-                                ($project->status == 'on-hold' ? 'warning' :
-                                ($project->status == 'cancelled' ? 'danger' : 'secondary')))
-                            }}">
-                                @switch($project->status)
-                                    @case('planning')
-                                        📋 En planification
-                                        @break
-                                    @case('active')
-                                        🚀 Actif
-                                        @break
-                                    @case('on-hold')
-                                        ⏸️ En pause
-                                        @break
-                                    @case('completed')
-                                        ✅ Terminé
-                                        @break
-                                    @case('cancelled')
-                                        ❌ Annulé
-                                        @break
-                                    @default
-                                        📋 En planification
-                                @endswitch
-                            </span>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Informations générales -->
                 <div class="modern-card">
