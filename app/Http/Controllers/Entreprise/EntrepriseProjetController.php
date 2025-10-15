@@ -217,9 +217,22 @@ class EntrepriseProjetController extends Controller
 
     public function updateStatus(Request $request, Project $projet)
     {
+        \Log::info('Project updateStatus Debug', [
+            'user_id' => auth()->id(),
+            'user_role' => auth()->user()->role,
+            'project_id' => $projet->id,
+            'project_status' => $projet->status,
+            'request_data' => $request->all()
+        ]);
+
         $user = Auth::user();
         
         if (!$user->isAdminEntreprise()) {
+            \Log::error('Non-admin trying to update project status', [
+                'user_id' => $user->id,
+                'user_role' => $user->role,
+                'project_id' => $projet->id
+            ]);
             abort(403, 'Seuls les administrateurs peuvent modifier le statut des projets.');
         }
 
@@ -227,18 +240,40 @@ class EntrepriseProjetController extends Controller
 
         // Vérifier que le projet appartient à l'entreprise
         if ($projet->company_id !== $company->id) {
+            \Log::error('Project does not belong to company', [
+                'project_company_id' => $projet->company_id,
+                'user_company_id' => $company->id,
+                'project_id' => $projet->id
+            ]);
             abort(403, 'Accès non autorisé à ce projet.');
         }
 
-        $request->validate([
-            'status' => 'required|in:planning,active,on-hold,completed,cancelled'
-        ]);
+        try {
+            $request->validate([
+                'status' => 'required|in:planning,active,on-hold,completed,cancelled'
+            ]);
 
-        $projet->update([
-            'status' => $request->status,
-        ]);
+            $projet->update([
+                'status' => $request->status,
+            ]);
 
-        return redirect()->route('entreprise.projets.show', $projet->id)
-            ->with('success', 'Statut du projet mis à jour avec succès.');
+            \Log::info('Project status updated successfully', [
+                'project_id' => $projet->id,
+                'new_status' => $request->status,
+                'user_id' => $user->id
+            ]);
+
+            return redirect()->route('entreprise.projets.show', $projet->id)
+                ->with('success', 'Statut du projet mis à jour avec succès.');
+        } catch (\Exception $e) {
+            \Log::error('Error updating project status', [
+                'project_id' => $projet->id,
+                'error' => $e->getMessage(),
+                'user_id' => $user->id
+            ]);
+            
+            return redirect()->route('entreprise.projets.show', $projet->id)
+                ->with('error', 'Erreur lors de la mise à jour du statut du projet.');
+        }
     }
 }
