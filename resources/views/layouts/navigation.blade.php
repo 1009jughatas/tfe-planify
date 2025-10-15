@@ -34,36 +34,39 @@
     <!-- Navigation -->
     <nav class="p-6 space-y-6">
         <!-- 🏠 ACCUEIL -->
-        @if(Auth::user() && Auth::user()->isPartOfCompany())
-            <!-- Routes entreprise -->
-            <div>
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
-                <a href="{{ route('entreprise.dashboard') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                   onclick="closeMenu()">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                        <i class="fas fa-home text-sm"></i>
-                    </div>
-                    <span class="text-sm font-medium">Dashboard</span>
-                </a>
-            </div>
-        @else
-            <!-- Routes indépendant -->
-            <div>
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
-                <a href="{{ route('dashboard') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                   onclick="closeMenu()">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                        <i class="fas fa-home text-sm"></i>
-                    </div>
-                    <span class="text-sm font-medium">Dashboard</span>
-                </a>
-            </div>
+        @if(Auth::user() && !Auth::user()->is_super_admin())
+            @if(Auth::user() && Auth::user()->isPartOfCompany())
+                <!-- Routes entreprise -->
+                <div>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
+                    <a href="{{ route('entreprise.dashboard') }}" 
+                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                       onclick="closeMenu()">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                            <i class="fas fa-home text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                </div>
+            @else
+                <!-- Routes indépendant -->
+                <div>
+                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Accueil</h3>
+                    <a href="{{ route('dashboard') }}" 
+                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                       onclick="closeMenu()">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('dashboard') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                            <i class="fas fa-home text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                </div>
+            @endif
         @endif
 
         <!-- 📋 PROJETS -->
         @auth
+        @if(!Auth::user()->is_super_admin())
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Projets</h3>
             @if(Auth::user() && Auth::user()->isPartOfCompany())
@@ -88,6 +91,7 @@
                 </a>
             @endif
         </div>
+        @endif
         @endauth
 
         <!-- 🛡️ ADMINISTRATION (Admin entreprise uniquement) -->
