@@ -387,7 +387,7 @@
                 $('#updateStatusBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Mise à jour...');
 
                 $.ajax({
-                    url: `/tasks/${taskId}/update-status`,
+                    url: `{{ $task->project->company_id ? '/entreprise/tasks/' : '/tasks/' }}${taskId}/update-status`,
                     method: 'PATCH',
                     data: {
                         _token: '{{ csrf_token() }}',
