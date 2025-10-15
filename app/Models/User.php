@@ -88,6 +88,11 @@ class User extends Authenticatable
         return $this->role === 'user_independant' && !$this->company_id;
     }
 
+    public function is_super_admin()
+    {
+        return $this->role === 'super_admin';
+    }
+
     /**
      * Check if user has a specific permission
      */
