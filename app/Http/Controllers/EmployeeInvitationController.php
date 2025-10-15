@@ -82,7 +82,8 @@ class EmployeeInvitationController extends Controller
             $invitation = CompanyInvitation::createInvitation(
                 $company->id,
                 $validated['email'],
-                $validated['role']
+                $validated['role'],
+                $user->id
             );
 
             // Stocker les informations supplémentaires
@@ -295,12 +296,25 @@ class EmployeeInvitationController extends Controller
      */
     private function sendInvitationEmail(CompanyInvitation $invitation)
     {
-        // TODO: Implémenter l'envoi d'email avec Laravel Mail
-        // Pour l'instant, on log juste l'URL d'invitation
-        \Log::info('Invitation envoyée', [
-            'email' => $invitation->email,
-            'company' => $invitation->company->name,
-            'url' => $invitation->invitation_url,
-        ]);
+        try {
+            Mail::send('emails.company-invitation', [
+                'invitation' => $invitation,
+                'company' => $invitation->company,
+                'invitedBy' => $invitation->invitedBy,
+                'acceptUrl' => route('invitations.accept', $invitation->token)
+            ], function ($message) use ($invitation) {
+                $message->to($invitation->email)
+                    ->subject('Invitation à rejoindre ' . $invitation->company->name . ' sur Planify');
+            });
+
+            \Log::info('Invitation email envoyée', [
+                'email' => $invitation->email,
+                'company' => $invitation->company->name,
+                'url' => route('invitations.accept', $invitation->token),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erreur envoi email invitation: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

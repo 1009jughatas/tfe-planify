@@ -18,6 +18,10 @@ class CompanyInvitation extends Model
         'expires_at',
         'accepted_at',
         'accepted_by',
+        'invited_by',
+        'position',
+        'department',
+        'status',
     ];
 
     protected $casts = [
@@ -36,15 +40,22 @@ class CompanyInvitation extends Model
         return $this->belongsTo(User::class, 'accepted_by');
     }
 
+    public function invitedBy()
+    {
+        return $this->belongsTo(User::class, 'invited_by');
+    }
+
     // Méthodes utilitaires
-    public static function createInvitation($companyId, $email, $role = 'member')
+    public static function createInvitation($companyId, $email, $role = 'user_entreprise', $invitedBy = null)
     {
         return self::create([
             'company_id' => $companyId,
             'email' => $email,
             'role' => $role,
-            'token' => Str::random(40),
+            'invited_by' => $invitedBy,
+            'token' => Str::random(60),
             'expires_at' => now()->addDays(7), // Expire dans 7 jours
+            'status' => 'pending',
         ]);
     }
 
@@ -63,6 +74,7 @@ class CompanyInvitation extends Model
         $this->update([
             'accepted_at' => now(),
             'accepted_by' => $user->id,
+            'status' => 'accepted',
         ]);
     }
 

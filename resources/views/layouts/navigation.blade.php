@@ -117,14 +117,27 @@
         @auth
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Projets</h3>
-            <a href="{{ route('projects.index') }}" 
-               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('projects.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-               @click="sidebarOpen = false">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('projects.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                    <i class="fas fa-project-diagram text-sm"></i>
-                </div>
-                <span class="text-sm font-medium">Mes Projets</span>
-            </a>
+            @if(Auth::user() && Auth::user()->isPartOfCompany())
+                <!-- Routes entreprise -->
+                <a href="{{ route('entreprise.projets.index') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.projets.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.projets.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-project-diagram text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Projets Entreprise</span>
+                </a>
+            @else
+                <!-- Routes indépendant -->
+                <a href="{{ route('projects.index') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('projects.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('projects.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                        <i class="fas fa-project-diagram text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Mes Projets</span>
+                </a>
+            @endif
         </div>
         @endauth
 
@@ -154,6 +167,47 @@
                     <i class="fas fa-shield-alt text-sm"></i>
                 </div>
                 <span class="text-sm font-medium">Panneau Admin</span>
+            </a>
+        </div>
+        @endif
+
+        <!-- 👥 GESTION UTILISATEURS (Admin Entreprise) -->
+        @if (Auth::user() && Auth::user()->isAdminEntreprise())
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Gestion Utilisateurs</h3>
+            <div class="space-y-1">
+                <a href="{{ route('entreprise.utilisateurs.index') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.utilisateurs.*') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-white text-green-700 border border-green-200 hover:bg-green-50' }}"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.utilisateurs.*') ? 'bg-green-200 text-green-700' : 'bg-green-100 text-green-600' }}">
+                        <i class="fas fa-users text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Liste des Employés</span>
+                </a>
+                
+                <a href="{{ route('entreprise.utilisateurs.inviter') }}" 
+                   class="flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-green-700 border border-green-200 hover:bg-green-50"
+                   @click="sidebarOpen = false">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-green-100 text-green-600">
+                        <i class="fas fa-user-plus text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium">Inviter un Employé</span>
+                </a>
+            </div>
+        </div>
+        @endif
+
+        <!-- 💳 GESTION ABONNEMENTS (Admin Entreprise) -->
+        @if (Auth::user() && Auth::user()->isAdminEntreprise())
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Abonnements</h3>
+            <a href="{{ route('entreprise.abonnement.index') }}" 
+               class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.abonnement.*') ? 'bg-yellow-50 text-yellow-700 border border-yellow-200' : 'bg-white text-yellow-700 border border-yellow-200 hover:bg-yellow-50' }}"
+               @click="sidebarOpen = false">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.abonnement.*') ? 'bg-yellow-200 text-yellow-700' : 'bg-yellow-100 text-yellow-600' }}">
+                    <i class="fas fa-credit-card text-sm"></i>
+                </div>
+                <span class="text-sm font-medium">Gestion Abonnement</span>
             </a>
         </div>
         @endif
@@ -197,14 +251,27 @@
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
             <div class="space-y-1">
-                <a href="{{ route('profile.edit') }}" 
-                   class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
-                   @click="sidebarOpen = false">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
-                        <i class="fas fa-user text-sm"></i>
-                    </div>
-                    <span class="text-sm font-medium">Mon Profil</span>
-                </a>
+                @if(Auth::user() && Auth::user()->isPartOfCompany())
+                    <!-- Routes entreprise -->
+                    <a href="{{ route('entreprise.profile.edit') }}" 
+                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                       @click="sidebarOpen = false">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('entreprise.profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Mon Profil</span>
+                    </a>
+                @else
+                    <!-- Routes indépendant -->
+                    <a href="{{ route('profile.edit') }}" 
+                       class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
+                       @click="sidebarOpen = false">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 {{ request()->routeIs('profile.*') ? 'bg-blue-200 text-blue-700' : 'bg-gray-100 text-gray-600' }}">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                        <span class="text-sm font-medium">Mon Profil</span>
+                    </a>
+                @endif
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

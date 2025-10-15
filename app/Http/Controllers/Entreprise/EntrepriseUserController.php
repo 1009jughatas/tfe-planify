@@ -118,15 +118,17 @@ class EntrepriseUserController extends Controller
         }
 
         // Créer l'invitation
-        $token = Str::random(60);
-        $invitation = CompanyInvitation::create([
-            'email' => $request->email,
-            'company_id' => $company->id,
-            'invited_by' => $user->id,
-            'role' => $request->role,
-            'token' => $token,
-            'expires_at' => now()->addDays(7),
-            'status' => 'pending'
+        $invitation = CompanyInvitation::createInvitation(
+            $company->id,
+            $request->email,
+            $request->role,
+            $user->id
+        );
+
+        // Mettre à jour les informations supplémentaires
+        $invitation->update([
+            'position' => 'Employé',
+            'department' => 'Général',
         ]);
 
         // Envoyer l'email d'invitation
@@ -135,7 +137,7 @@ class EntrepriseUserController extends Controller
                 'invitation' => $invitation,
                 'company' => $company,
                 'invitedBy' => $user,
-                'acceptUrl' => route('invitations.accept', $token)
+                'acceptUrl' => route('invitations.accept', $invitation->token)
             ], function ($message) use ($request, $company) {
                 $message->to($request->email)
                     ->subject('Invitation à rejoindre ' . $company->name . ' sur Planify');

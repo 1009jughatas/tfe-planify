@@ -34,13 +34,19 @@
                 <!-- Navigation -->
                 <nav class="hidden md:flex items-center space-x-4">
                     @auth
-                        <a href="{{ Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="text-gray-600 hover:text-gray-900 font-medium">Dashboard</a>
+                        <a href="{{ Auth::user() && Auth::user()->isPartOfCompany() ? route('entreprise.dashboard') : route('dashboard') }}" class="text-gray-600 hover:text-gray-900 font-medium">Dashboard</a>
                         <a href="{{ url('/projects') }}" class="text-gray-600 hover:text-gray-900 font-medium">Projets</a>
                     @else
                         <!-- Bouton Connexion Indépendant -->
                         <a href="{{ route('login.indep') }}" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
                             <i class="fas fa-user mr-2"></i>
                             Connexion Indépendant
+                        </a>
+                        
+                        <!-- Bouton Connexion Employé -->
+                        <a href="{{ route('entreprise.login') }}?type=employee" class="flex items-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                            <i class="fas fa-users mr-2"></i>
+                            Connexion Employé
                         </a>
                         
                         <!-- Bouton Connexion Entreprise -->
@@ -70,7 +76,7 @@
                 </p>
                 
                 <!-- Boutons d'action principaux -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                     <a href="{{ route('entreprise.register') }}" class="btn-primary-modern px-8 py-4 text-lg font-semibold">
                         <i class="fas fa-building mr-2"></i>
                         Créer mon Entreprise
@@ -82,6 +88,31 @@
                     <a href="{{ route('premium.show') }}" class="btn-premium-modern px-8 py-4 text-lg font-semibold">
                         <i class="fas fa-crown mr-2"></i>
                         Découvrir Premium
+                    </a>
+                </div>
+                
+                <!-- Séparateur -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center">
+                        <div class="flex-1 h-px bg-gray-300"></div>
+                        <span class="px-4 text-sm text-gray-500 bg-gray-50">Ou connectez-vous</span>
+                        <div class="flex-1 h-px bg-gray-300"></div>
+                    </div>
+                </div>
+                
+                <!-- Boutons de connexion -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                    <a href="{{ route('entreprise.login') }}?type=employee" class="inline-flex items-center justify-center px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-users mr-3 text-xl"></i>
+                        Connexion Employé
+                    </a>
+                    <a href="{{ route('entreprise.login') }}" class="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-building mr-3 text-xl"></i>
+                        Connexion Entreprise
+                    </a>
+                    <a href="{{ route('login.indep') }}" class="inline-flex items-center justify-center px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-user mr-3 text-xl"></i>
+                        Connexion Indépendant
                     </a>
                 </div>
                 

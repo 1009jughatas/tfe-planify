@@ -7,15 +7,37 @@
             <div class="mx-auto h-12 w-auto flex justify-center">
                 <img class="h-12 w-auto" src="{{ asset('images/logo.png') }}" alt="Planify">
             </div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Connexion Entreprise
-            </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Ou
-                <a href="{{ route('entreprise.register') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    créez un compte entreprise
-                </a>
-            </p>
+            @if(request()->get('type') === 'employee')
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Connexion Employé
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Connectez-vous à votre compte employé d'entreprise
+                </p>
+                <div class="mt-4 bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-purple-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-purple-700">
+                                <strong>Employé ?</strong> Utilisez les identifiants fournis par votre entreprise.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Connexion Entreprise
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Ou
+                    <a href="{{ route('entreprise.register') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        créez un compte entreprise
+                    </a>
+                </p>
+            @endif
+            
             <p class="mt-2 text-center text-xs text-gray-500">
                 Vous travaillez seul ?
                 <a href="{{ route('login.indep') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
@@ -48,7 +70,7 @@
                     <label for="email" class="sr-only">Adresse email</label>
                     <input id="email" name="email" type="email" autocomplete="email" required 
                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
-                           placeholder="Adresse email entreprise" value="{{ old('email') }}">
+                           placeholder="{{ request()->get('type') === 'employee' ? 'Adresse email employé' : 'Adresse email entreprise' }}" value="{{ old('email') }}">
                 </div>
                 <div>
                     <label for="password" class="sr-only">Mot de passe</label>

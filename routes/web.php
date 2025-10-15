@@ -76,6 +76,11 @@ Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntr
     // Gestion des projets
     Route::resource('projets', EntrepriseProjetController::class);
     
+    // Profile Routes - Entreprise
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
     // Gestion des utilisateurs (Admin seulement)
     Route::middleware('ensureUserIsAdminEntreprise')->group(function () {
         Route::get('/utilisateurs', [EntrepriseUserController::class, 'index'])->name('utilisateurs.index');
@@ -160,6 +165,7 @@ Route::get('/create-test-entreprise', function () {
     $company = \App\Models\Company::firstOrCreate(
         ['name' => 'Test Entreprise SARL'],
         [
+            'slug' => 'test-entreprise-sarl',
             'email' => 'contact@test-entreprise.com',
             'plan' => 'starter',
             'user_limit' => 5,
@@ -249,25 +255,10 @@ Route::middleware(['auth', 'verified', IsIndependant::class])->group(function ()
 });
 
 // ========================================
-// ROUTES ENTREPRISE (PROTÉGÉES)
+// ROUTES ENTREPRISE (ANCIENNES - SUPPRIMÉES)
 // ========================================
-Route::middleware(['auth', 'verified', IsEntreprise::class])->prefix('entreprise')->name('entreprise.')->group(function () {
-    // Dashboard entreprise
-    Route::get('/dashboard', [DashboardController::class, 'entrepriseDashboard'])->name('dashboard');
-
-    // Routes communes aux employés et admins d'entreprise
-    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-    Route::get('/projects/{project}/tasks', [ProjectController::class, 'tasks'])->name('projects.tasks');
-    Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
-    Route::post('/tasks/{task}/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-
-    // Profile Routes - Entreprise
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Les routes entreprise ont été déplacées vers les nouveaux contrôleurs
+// Voir plus bas dans le fichier pour les nouvelles routes
 
 // ========================================
 // ROUTES ADMIN ENTREPRISE (PROTÉGÉES)
