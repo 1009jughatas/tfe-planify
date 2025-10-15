@@ -267,7 +267,7 @@
                                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                     <div class="flex-1">
                                         <p class="text-sm font-medium text-gray-900">{{ Str::limit($project->name, 25) }}</p>
-                                        <p class="text-xs text-gray-500">Par {{ $project->author->name }}</p>
+                                        <p class="text-xs text-gray-500">Par {{ $project->author ? $project->author->name : 'Utilisateur supprimé' }}</p>
                                     </div>
                                     <div class="text-right">
                                         <span class="px-2 py-1 text-xs font-medium rounded-full

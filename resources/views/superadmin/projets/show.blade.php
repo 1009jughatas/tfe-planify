@@ -47,7 +47,13 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Créateur</label>
-                                <p class="text-gray-900">{{ $project->author->name }} ({{ $project->author->email }})</p>
+                                <p class="text-gray-900">
+                                    @if($project->author)
+                                        {{ $project->author->name }} ({{ $project->author->email }})
+                                    @else
+                                        Utilisateur supprimé
+                                    @endif
+                                </p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
@@ -207,28 +213,39 @@
                                 <i class="fas fa-user text-gray-600"></i>
                             </div>
                             <div>
-                                <h3 class="text-sm font-semibold text-gray-900">{{ $project->author->name }}</h3>
-                                <p class="text-sm text-gray-500">{{ $project->author->email }}</p>
+                                @if($project->author)
+                                    <h3 class="text-sm font-semibold text-gray-900">{{ $project->author->name }}</h3>
+                                    <p class="text-sm text-gray-500">{{ $project->author->email }}</p>
+                                @else
+                                    <h3 class="text-sm font-semibold text-gray-900">Utilisateur supprimé</h3>
+                                    <p class="text-sm text-gray-500">Compte non disponible</p>
+                                @endif
                             </div>
                         </div>
-                        <div class="space-y-2 text-sm text-gray-600">
-                            <div class="flex justify-between">
-                                <span>Rôle:</span>
-                                <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $project->author->role)) }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Inscrit le:</span>
-                                <span class="font-medium">{{ $project->author->created_at->format('d/m/Y') }}</span>
-                            </div>
-                            @if($project->author->is_premium)
+                        @if($project->author)
+                            <div class="space-y-2 text-sm text-gray-600">
                                 <div class="flex justify-between">
-                                    <span>Statut:</span>
-                                    <span class="font-medium text-yellow-600">
-                                        <i class="fas fa-crown mr-1"></i>Premium
-                                    </span>
+                                    <span>Rôle:</span>
+                                    <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $project->author->role)) }}</span>
                                 </div>
-                            @endif
-                        </div>
+                                <div class="flex justify-between">
+                                    <span>Inscrit le:</span>
+                                    <span class="font-medium">{{ $project->author->created_at->format('d/m/Y') }}</span>
+                                </div>
+                                @if($project->author->is_premium)
+                                    <div class="flex justify-between">
+                                        <span>Statut:</span>
+                                        <span class="font-medium text-yellow-600">
+                                            <i class="fas fa-crown mr-1"></i>Premium
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <p class="text-gray-500">Informations utilisateur non disponibles</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
