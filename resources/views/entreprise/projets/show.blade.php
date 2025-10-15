@@ -60,7 +60,7 @@
                             Tâches ({{ $projet->tasks->count() }})
                         </h3>
                         @if(auth()->user()->isAdminEntreprise())
-                            <a href="{{ route('entreprise.tasks.create', ['project' => $projet->id]) }}" class="btn-primary-modern">
+                            <a href="{{ route('entreprise.tasks.create', ['project' => $projet->id]) }}" class="btn-primary-modern" id="nouvelle-tache-btn" onclick="handleTaskCreation(event, {{ $projet->id }})">
                                 <i class="fas fa-plus mr-2"></i>
                                 Nouvelle tâche
                             </a>
@@ -273,4 +273,19 @@
         @apply inline-flex items-center px-4 py-2 bg-white text-gray-700 font-medium rounded-lg shadow-sm border border-gray-300 hover:shadow-md hover:scale-105 transition-all duration-200;
     }
 </style>
+
+<script>
+function handleTaskCreation(event, projectId) {
+    // Empêcher le comportement par défaut
+    event.preventDefault();
+    
+    // Construire l'URL correcte pour l'entreprise
+    const correctUrl = `/entreprise/projects/${projectId}/tasks/create`;
+    
+    console.log('Redirection vers:', correctUrl);
+    
+    // Rediriger vers la bonne URL
+    window.location.href = correctUrl;
+}
+</script>
 @endsection
