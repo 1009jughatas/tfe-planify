@@ -184,6 +184,7 @@
         @endif
 
         <!-- 👤 MON COMPTE -->
+        @auth
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
             <div class="space-y-1">
@@ -207,6 +208,7 @@
                 </form>
             </div>
         </div>
+        @endauth
 
         <!-- ⚙️ PARAMÈTRES -->
         @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->is_admin() || Auth::user()->isPartOfCompany()))
