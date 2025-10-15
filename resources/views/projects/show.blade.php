@@ -437,6 +437,40 @@
             </div>
         @endif
 
+        <!-- Changement de statut du projet -->
+        <div class="modern-card mb-8">
+            <div class="modern-card-header">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="fas fa-exchange-alt text-primary-600 mr-2"></i>
+                    Gestion du Statut du Projet
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">Modifiez le statut de ce projet</p>
+            </div>
+            <div class="modern-card-body">
+                <div class="space-y-4">
+                    <div>
+                        <label for="project-status" class="form-label-modern">Statut du projet</label>
+                        <select id="project-status" class="input-modern" data-project-id="{{ $project->id }}" data-original-status="{{ $project->status }}">
+                            <option value="planning" @if($project->status == 'planning') selected @endif>📋 En planification</option>
+                            <option value="active" @if($project->status == 'active') selected @endif>🚀 Actif</option>
+                            <option value="on-hold" @if($project->status == 'on-hold') selected @endif>⏸️ En pause</option>
+                            <option value="completed" @if($project->status == 'completed') selected @endif>✅ Terminé</option>
+                            <option value="cancelled" @if($project->status == 'cancelled') selected @endif>❌ Annulé</option>
+                        </select>
+                    </div>
+                    
+                    <button id="updateProjectStatusBtn" class="btn-primary-modern w-full">
+                        <i class="fas fa-check mr-2"></i>
+                        Mettre à Jour le Statut
+                    </button>
+                    
+                    <p class="text-xs text-gray-500 text-center" id="projectStatusHelp">
+                        Sélectionnez un nouveau statut et cliquez sur "Mettre à Jour"
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- Liste des tâches -->
         <div class="modern-card">
             <div class="modern-card-header">
@@ -531,4 +565,111 @@
             overflow: hidden;
         }
     </style>
+
+    <script>
+        $(document).ready(function () {
+            console.log('JavaScript chargé pour la page de projet');
+            let originalProjectStatus = $('#project-status').data('original-status');
+            console.log('Statut original du projet:', originalProjectStatus);
+            
+            // Vérifier si l'élément existe
+            if ($('#updateProjectStatusBtn').length === 0) {
+                console.error('❌ Élément #updateProjectStatusBtn non trouvé');
+                return;
+            }
+            console.log('✅ Élément #updateProjectStatusBtn trouvé');
+            
+            // Gérer la validation du statut du projet
+            $('#updateProjectStatusBtn').click(function (e) {
+                e.preventDefault();
+                console.log('🎯 BOUTON PROJET CLIQUÉ !');
+                let projectId = $('#project-status').data('project-id');
+                let newStatus = $('#project-status').val();
+                let selectElement = $('#project-status');
+                
+                // Vérifier si le statut a vraiment changé
+                if (newStatus === originalProjectStatus) {
+                    showNotification('Aucun changement détecté. Le statut est déjà : ' + newStatus, 'info');
+                    return;
+                }
+
+                // Désactiver les contrôles pendant la requête
+                selectElement.prop('disabled', true);
+                $('#updateProjectStatusBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Mise à jour...');
+
+                $.ajax({
+                    url: `{{ $project->company_id ? '/entreprise/projects/' : '/projects/' }}${projectId}/update-status`,
+                    method: 'PATCH',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        status: newStatus
+                    },
+                    success: function (response) {
+                        showNotification('Statut du projet mis à jour avec succès !', 'success');
+                        originalProjectStatus = newStatus;
+                        
+                        // Recharger la page après un court délai
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    },
+                    error: function (xhr, status, error) {
+                        // Réactiver les contrôles
+                        selectElement.prop('disabled', false);
+                        $('#updateProjectStatusBtn').prop('disabled', false).html('<i class="fas fa-check mr-2"></i>Mettre à Jour le Statut');
+                        
+                        let errorMessage = 'Erreur lors de la mise à jour du statut du projet.';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage = xhr.responseJSON.error;
+                        }
+                        showNotification(errorMessage, 'error');
+                    }
+                });
+            });
+
+            function showNotification(message, type) {
+                let bgColor, textColor, icon;
+                
+                switch(type) {
+                    case 'success':
+                        bgColor = 'bg-green-500';
+                        textColor = 'text-white';
+                        icon = 'check';
+                        break;
+                    case 'error':
+                        bgColor = 'bg-red-500';
+                        textColor = 'text-white';
+                        icon = 'exclamation';
+                        break;
+                    case 'info':
+                        bgColor = 'bg-blue-500';
+                        textColor = 'text-white';
+                        icon = 'info-circle';
+                        break;
+                    default:
+                        bgColor = 'bg-gray-500';
+                        textColor = 'text-white';
+                        icon = 'info';
+                }
+                
+                const notification = $(`
+                    <div class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${bgColor} ${textColor}">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-${icon}"></i>
+                            <span>${message}</span>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(notification);
+                
+                // Supprimer la notification après 3 secondes
+                setTimeout(function() {
+                    notification.fadeOut(function() {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+        });
+    </script>
 </x-app-layout>
