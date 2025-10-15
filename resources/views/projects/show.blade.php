@@ -440,33 +440,87 @@
         <!-- Changement de statut du projet -->
         <div class="modern-card mb-8">
             <div class="modern-card-header">
-                <h3 class="text-lg font-semibold text-gray-900">
-                    <i class="fas fa-exchange-alt text-primary-600 mr-2"></i>
-                    Gestion du Statut du Projet
+                <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <i class="fas fa-tasks text-primary-600 mr-2"></i>
+                    Statut du Projet
                 </h3>
-                <p class="text-sm text-gray-600 mt-1">Modifiez le statut de ce projet</p>
             </div>
             <div class="modern-card-body">
-                <div class="space-y-4">
-                    <div>
-                        <label for="project-status" class="form-label-modern">Statut du projet</label>
-                        <select id="project-status" class="input-modern" data-project-id="{{ $project->id }}" data-original-status="{{ $project->status }}">
-                            <option value="planning" @if($project->status == 'planning') selected @endif>📋 En planification</option>
-                            <option value="active" @if($project->status == 'active') selected @endif>🚀 Actif</option>
-                            <option value="on-hold" @if($project->status == 'on-hold') selected @endif>⏸️ En pause</option>
-                            <option value="completed" @if($project->status == 'completed') selected @endif>✅ Terminé</option>
-                            <option value="cancelled" @if($project->status == 'cancelled') selected @endif>❌ Annulé</option>
-                        </select>
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-project-diagram text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900">{{ $project->name }}</h4>
+                                <p class="text-sm text-gray-600">Gérez le statut de votre projet</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm text-gray-500">Statut actuel</span>
+                            <div class="mt-1">
+                                <span class="badge-{{ 
+                                    $project->status == 'completed' ? 'success' :
+                                    ($project->status == 'active' ? 'primary' :
+                                    ($project->status == 'on-hold' ? 'warning' :
+                                    ($project->status == 'cancelled' ? 'danger' : 'secondary')))
+                                }} text-sm font-medium">
+                                    @switch($project->status)
+                                        @case('planning')
+                                            📋 En planification
+                                            @break
+                                        @case('active')
+                                            🚀 Actif
+                                            @break
+                                        @case('on-hold')
+                                            ⏸️ En pause
+                                            @break
+                                        @case('completed')
+                                            ✅ Terminé
+                                            @break
+                                        @case('cancelled')
+                                            ❌ Annulé
+                                            @break
+                                        @default
+                                            📋 En planification
+                                    @endswitch
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     
-                    <button id="updateProjectStatusBtn" class="btn-primary-modern w-full">
-                        <i class="fas fa-check mr-2"></i>
-                        Mettre à Jour le Statut
-                    </button>
-                    
-                    <p class="text-xs text-gray-500 text-center" id="projectStatusHelp">
-                        Sélectionnez un nouveau statut et cliquez sur "Mettre à Jour"
-                    </p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="project-status" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-exchange-alt mr-1"></i>
+                                Nouveau statut
+                            </label>
+                            <select id="project-status" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white shadow-sm" 
+                                    data-project-id="{{ $project->id }}" 
+                                    data-original-status="{{ $project->status }}">
+                                <option value="planning" @if($project->status == 'planning') selected @endif>📋 En planification</option>
+                                <option value="active" @if($project->status == 'active') selected @endif>🚀 Actif</option>
+                                <option value="on-hold" @if($project->status == 'on-hold') selected @endif>⏸️ En pause</option>
+                                <option value="completed" @if($project->status == 'completed') selected @endif>✅ Terminé</option>
+                                <option value="cancelled" @if($project->status == 'cancelled') selected @endif>❌ Annulé</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <button id="updateProjectStatusBtn" 
+                                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                <i class="fas fa-check mr-2"></i>
+                                Mettre à Jour le Statut
+                            </button>
+                            
+                            <div class="text-xs text-gray-500 flex items-center">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Le statut sera mis à jour immédiatement
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
