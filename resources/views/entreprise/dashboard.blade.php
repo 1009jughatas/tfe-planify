@@ -795,6 +795,8 @@
         const month = currentDate.getMonth() + 1;
         const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         
+        console.log('Recherche d\'événements pour le jour:', dateStr);
+        
         const events = [];
         
         // Ajouter les projets
@@ -807,9 +809,13 @@
             }
         });
         
-        // Ajouter les tâches
+        // Ajouter les tâches - gérer les dates avec heure
         calendarData.tasks.forEach(task => {
-            if (task.date === dateStr) {
+            // Extraire seulement la partie date (YYYY-MM-DD) de la date complète
+            const taskDate = task.date.split(' ')[0]; // Prendre seulement la partie date
+            console.log('Comparaison tâche:', task.name, 'Date tâche:', taskDate, 'Date recherchée:', dateStr);
+            
+            if (taskDate === dateStr) {
                 events.push({
                     ...task,
                     type: 'task'
@@ -817,6 +823,7 @@
             }
         });
         
+        console.log('Événements trouvés pour', dateStr, ':', events);
         return events.slice(0, 3); // Limiter à 3 événements par jour
     }
     
@@ -835,6 +842,17 @@
         console.log('Données du calendrier:', calendarData);
         console.log('Projets:', calendarData.projects);
         console.log('Tâches:', calendarData.tasks);
+        console.log('Mois actuel:', currentDate.getMonth() + 1, 'Année:', currentDate.getFullYear());
+        
+        // Vérifier si les tâches sont dans le mois actuel
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
+        const tasksInCurrentMonth = calendarData.tasks.filter(task => {
+            const taskDate = new Date(task.date);
+            return taskDate.getMonth() + 1 === currentMonth && taskDate.getFullYear() === currentYear;
+        });
+        console.log('Tâches dans le mois actuel:', tasksInCurrentMonth);
+        
         generateCalendar();
     });
 </script>
