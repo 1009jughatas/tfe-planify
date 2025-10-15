@@ -150,9 +150,6 @@
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-                    @else
-                        <!-- Pour les utilisateurs indépendants, assigner automatiquement à eux-mêmes -->
-                        <input type="hidden" name="assigned_to" value="{{ Auth::id() }}">
                     @endif
 
                     <!-- Boutons -->

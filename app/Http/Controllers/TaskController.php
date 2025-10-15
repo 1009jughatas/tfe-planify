@@ -83,19 +83,12 @@ class TaskController extends Controller
             'status' => 'nullable|string|in:todo,in-progress,done,blocked',
         ]);
 
-        // Vérifier que l'utilisateur assigné fait partie du projet
-        if ($request->assigned_to) {
-            if ($user->isPartOfCompany()) {
-                // Pour les projets d'entreprise, vérifier que l'utilisateur assigné appartient à la même entreprise
-                $assignedUser = \App\Models\User::find($request->assigned_to);
-                if (!$assignedUser || $assignedUser->company_id !== $user->company_id) {
-                    return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit appartenir à votre entreprise.']);
-                }
-            } else {
-                // Pour les projets indépendants, vérifier l'ancienne logique
-                if (!$project->participants->contains($request->assigned_to)) {
-                    return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit faire partie du projet.']);
-                }
+        // Vérifier que l'utilisateur assigné fait partie du projet (seulement pour les entreprises)
+        if ($request->assigned_to && $user->isPartOfCompany()) {
+            // Pour les projets d'entreprise, vérifier que l'utilisateur assigné appartient à la même entreprise
+            $assignedUser = \App\Models\User::find($request->assigned_to);
+            if (!$assignedUser || $assignedUser->company_id !== $user->company_id) {
+                return back()->withErrors(['assigned_to' => 'L\'utilisateur assigné doit appartenir à votre entreprise.']);
             }
         }
 
