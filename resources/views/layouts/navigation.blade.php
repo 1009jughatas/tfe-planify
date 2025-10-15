@@ -134,8 +134,9 @@
 
         <!-- 👤 MON COMPTE -->
         @auth
-        <div>
-            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Mon Compte</h3>
+        <div style="border: 5px solid green !important; background: lime !important; padding: 10px !important;">
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2" style="color: black !important; font-size: 16px !important;">Mon Compte - DEBUG VISIBLE</h3>
+            <p style="color: black !important; font-size: 14px !important; background: white !important; padding: 5px !important; border: 2px solid black !important;">Section Mon Compte chargée - Utilisateur: {{ Auth::user()->name }}</p>
             <div class="space-y-1">
                 <a href="{{ route('profile.edit') }}" 
                    class="flex items-center p-3 rounded-lg transition-all duration-200 {{ request()->routeIs('profile.*') ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50' }}"
@@ -146,13 +147,13 @@
                     <span class="text-sm font-medium">Mon Profil</span>
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" style="border: 3px solid purple !important; background: pink !important; padding: 5px !important;">
                     @csrf
-                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600">
+                    <button type="submit" class="w-full flex items-center p-3 rounded-lg transition-all duration-200 bg-white text-red-600 border border-red-200 hover:bg-red-50" @click="sidebarOpen = false" style="border: 3px solid black !important; background: cyan !important; color: black !important; font-size: 16px !important; font-weight: bold !important;">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-red-100 text-red-600" style="background: yellow !important; border: 2px solid red !important;">
                             <i class="fas fa-sign-out-alt text-sm"></i>
                         </div>
-                        <span class="text-sm font-medium">Se déconnecter</span>
+                        <span class="text-sm font-medium" style="color: black !important; font-size: 16px !important; font-weight: bold !important;">Se déconnecter</span>
                     </button>
                 </form>
             </div>
