@@ -146,7 +146,10 @@
                                                                         <i class="fas fa-list-ul mr-1"></i>
                                                                         Sous-tâches ({{ $taskSubtasks->count() }})
                                                                     </span>
-                                                                    <span class="text-xs text-gray-500">
+                                                                    <span class="text-xs text-gray-500 subtask-counter" 
+                                                                          data-task-id="{{ $task->id }}"
+                                                                          data-total="{{ $taskSubtasks->count() }}"
+                                                                          data-completed="{{ $taskSubtasks->where('status', 'completed')->count() }}">
                                                                         {{ $taskSubtasks->where('status', 'completed')->count() }}/{{ $taskSubtasks->count() }} terminées
                                                                     </span>
                                                                 </div>
@@ -673,6 +676,53 @@ $(document).ready(function () {
             });
         }, 3000);
     }
+    
+    // Écouter les changements de statut des tâches via localStorage ou events
+    function listenForTaskStatusUpdates() {
+        // Écouter les changements dans localStorage (si une tâche est mise à jour depuis une autre page)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'taskStatusUpdated') {
+                const data = JSON.parse(e.newValue);
+                updateSubtaskCounters(data.taskId, data.newStatus);
+            }
+        });
+        
+        // Écouter les événements personnalisés
+        window.addEventListener('taskStatusUpdated', function(e) {
+            updateSubtaskCounters(e.detail.taskId, e.detail.newStatus);
+        });
+    }
+    
+    function updateSubtaskCounters(taskId, newStatus) {
+        console.log('🔄 Mise à jour des compteurs pour la tâche:', taskId, 'nouveau statut:', newStatus);
+        
+        // Trouver tous les compteurs de sous-tâches pour cette tâche
+        $('.subtask-counter').each(function() {
+            const counter = $(this);
+            const counterTaskId = counter.data('task-id');
+            
+            if (counterTaskId == taskId) {
+                const total = counter.data('total');
+                let completed = counter.data('completed');
+                
+                // Mettre à jour le compteur selon le nouveau statut
+                if (newStatus === 'completed' || newStatus === 'done') {
+                    completed = Math.min(completed + 1, total);
+                } else if (newStatus === 'todo' || newStatus === 'in-progress' || newStatus === 'blocked') {
+                    completed = Math.max(completed - 1, 0);
+                }
+                
+                // Mettre à jour l'affichage
+                counter.text(`${completed}/${total} terminées`);
+                counter.data('completed', completed);
+                
+                console.log('✅ Compteur mis à jour:', `${completed}/${total} terminées`);
+            }
+        });
+    }
+    
+    // Initialiser l'écoute des changements
+    listenForTaskStatusUpdates();
 });
 </script>
 @endsection

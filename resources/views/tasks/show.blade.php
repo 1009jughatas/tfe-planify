@@ -436,6 +436,9 @@
                         // Mettre à jour le statut en temps réel sans recharger la page
                         updateTaskStatusDisplay(newStatus);
                         
+                        // Notifier les autres pages du changement de statut
+                        notifyOtherPages(taskId, newStatus);
+                        
                         // Réactiver les contrôles
                         selectElement.prop('disabled', false);
                         $('#updateStatusBtn').prop('disabled', false).html('<i class="fas fa-check mr-2"></i>Mettre à Jour le Statut');
@@ -528,6 +531,33 @@
                         element.text(currentCount + 1);
                     }
                 });
+            }
+            
+            function notifyOtherPages(taskId, newStatus) {
+                console.log('📢 Notification des autres pages:', taskId, newStatus);
+                
+                // Créer un événement personnalisé
+                const event = new CustomEvent('taskStatusUpdated', {
+                    detail: { taskId: taskId, newStatus: newStatus }
+                });
+                window.dispatchEvent(event);
+                
+                // Utiliser localStorage pour notifier les autres onglets
+                const notificationData = {
+                    taskId: taskId,
+                    newStatus: newStatus,
+                    timestamp: Date.now()
+                };
+                
+                try {
+                    localStorage.setItem('taskStatusUpdated', JSON.stringify(notificationData));
+                    // Supprimer immédiatement pour déclencher l'événement storage
+                    localStorage.removeItem('taskStatusUpdated');
+                } catch (e) {
+                    console.log('localStorage non disponible:', e);
+                }
+                
+                console.log('✅ Notifications envoyées');
             }
 
             function showNotification(message, type) {
