@@ -322,7 +322,7 @@
                     </div>
                     <div class="modern-card-body">
                         <div class="space-y-3">
-                            <form action="{{ route('tasks.destroy', $task->id) }}" 
+                            <form action="{{ $task->project->company_id ? route('entreprise.tasks.destroy', $task->id) : route('tasks.destroy', $task->id) }}" 
                                   method="POST" 
                                   onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible.')">
                                 @csrf

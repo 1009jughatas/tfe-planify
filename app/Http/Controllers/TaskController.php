@@ -227,9 +227,18 @@ class TaskController extends Controller
             abort(403, 'Accès non autorisé. Seuls les administrateurs ou l\'auteur peuvent supprimer cette tâche.');
         }
 
+        // Récupérer l'ID du projet avant de supprimer la tâche
+        $projectId = $task->project_id;
+        $isEnterpriseTask = $task->project->company_id;
+        
         $task->delete();
 
-        return redirect()->route('projects.tasks', $task->project_id)->with('success', 'Tâche supprimée avec succès.');
+        // Rediriger vers la bonne route selon le type de projet
+        if ($isEnterpriseTask) {
+            return redirect()->route('entreprise.projets.show', $projectId)->with('success', 'Tâche supprimée avec succès.');
+        } else {
+            return redirect()->route('projects.tasks', $projectId)->with('success', 'Tâche supprimée avec succès.');
+        }
     }
 
     public function updateStatus(Request $request, Task $task)
