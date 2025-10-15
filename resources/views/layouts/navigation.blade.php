@@ -202,7 +202,7 @@
         @endif
 
         <!-- 📄 EXPORT -->
-        @if (Auth::user() && (Auth::user()->is_premium() || Auth::user()->isPartOfCompany()))
+        @if (Auth::user() && Auth::user()->canExportPdf())
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Export</h3>
             <div class="space-y-1">
