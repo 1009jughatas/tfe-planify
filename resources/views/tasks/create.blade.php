@@ -42,7 +42,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('tasks.store', $project->id) }}" method="POST" class="space-y-6">
+                <form action="{{ $project->company_id ? route('entreprise.tasks.store', $project->id) : route('tasks.store', $project->id) }}" method="POST" class="space-y-6">
                     @csrf
                     <input type="hidden" name="parent_id" value="{{ $parent_id ?? '' }}">
                     
