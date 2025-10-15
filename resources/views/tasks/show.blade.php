@@ -490,7 +490,7 @@
             if (confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.')) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/comments/${commentId}`;
+                form.action = `{{ $task->project->company_id ? '/entreprise/comments/' : '/comments/' }}${commentId}`;
                 
                 const csrfToken = document.createElement('input');
                 csrfToken.type = 'hidden';

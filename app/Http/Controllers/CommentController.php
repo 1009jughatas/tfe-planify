@@ -37,11 +37,14 @@ class CommentController extends Controller
             abort(403, 'Vous ne pouvez supprimer que vos propres commentaires.');
         }
 
+        // Récupérer les informations avant de supprimer
         $taskId = $comment->task_id;
+        $isEnterpriseTask = $comment->task->project->company_id;
+        
         $comment->delete();
 
         // Rediriger vers la bonne route selon le type de projet
-        if ($comment->task->project->company_id) {
+        if ($isEnterpriseTask) {
             return redirect()->route('entreprise.tasks.show', $taskId)->with('success', 'Commentaire supprimé avec succès.');
         } else {
             return redirect()->route('tasks.show', $taskId)->with('success', 'Commentaire supprimé avec succès.');
