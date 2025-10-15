@@ -114,7 +114,12 @@
                                 @if($project->priority === 'high') bg-red-100 text-red-800
                                 @elseif($project->priority === 'medium') bg-yellow-100 text-yellow-800
                                 @else bg-green-100 text-green-800 @endif">
-                                Priorité {{ ucfirst($project->priority) }}
+                                @switch($project->priority)
+                                    @case('high') 🔴 Haute @break
+                                    @case('medium') 🟡 Moyenne @break
+                                    @case('low') 🔵 Faible @break
+                                    @default 🔵 Faible
+                                @endswitch
                             </span>
                         </div>
                     </div>

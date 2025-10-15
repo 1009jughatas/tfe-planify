@@ -41,13 +41,13 @@
                             }}">
                                 @switch($project->priority)
                                     @case('high')
-                                        🔴 Priorité élevée
+                                        🔴 Haute
                                         @break
                                     @case('medium')
-                                        🟡 Priorité moyenne
+                                        🟡 Moyenne
                                         @break
                                     @case('low')
-                                        🔵 Priorité faible
+                                        🔵 Faible
                                         @break
                                 @endswitch
                             </span>
