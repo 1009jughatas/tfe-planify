@@ -143,6 +143,9 @@ Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntr
         Route::delete('/abonnement', [EntrepriseSubscriptionController::class, 'cancel'])->name('abonnement.cancel');
         Route::get('/abonnement/success', [EntrepriseSubscriptionController::class, 'success'])->name('abonnement.success');
         Route::get('/abonnement/portal', [EntrepriseSubscriptionController::class, 'portal'])->name('abonnement.portal');
+        
+        // API pour les statistiques des projets
+        Route::get('/projets/{projet}/stats', [EntrepriseProjetController::class, 'getStats'])->name('projets.stats');
         Route::post('/abonnement/webhook', [EntrepriseSubscriptionController::class, 'webhook'])->name('abonnement.webhook');
     });
     

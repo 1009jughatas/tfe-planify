@@ -774,11 +774,8 @@ function updateProjectStatistics() {
     
     // Faire une requête AJAX pour récupérer les nouvelles statistiques
     $.ajax({
-        url: '{{ route("entreprise.projets.show", $projet->id) }}',
+        url: '{{ route("entreprise.projets.stats", $projet->id) }}',
         method: 'GET',
-        data: {
-            refresh_stats: true
-        },
         success: function(data) {
             // Mettre à jour l'affichage avec les données JSON
             $('#total-tasks-count').text(data.total_tasks);
@@ -803,3 +800,7 @@ function updateProjectStatistics() {
 }
 </script>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/task-status-updater.js') }}"></script>
+@endpush

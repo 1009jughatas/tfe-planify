@@ -611,4 +611,6 @@
             }
         }
     </script>
+    
+    <script src="{{ asset('js/task-status-updater.js') }}"></script>
 </x-app-layout>

@@ -287,4 +287,33 @@ class EntrepriseProjetController extends Controller
                 ->with('error', 'Erreur lors de la mise à jour du statut du projet.');
         }
     }
+
+    public function getStats(Project $projet)
+    {
+        $user = Auth::user();
+        $company = $user->company;
+        
+        if (!$company || $projet->company_id !== $company->id) {
+            abort(403, 'Accès non autorisé à ce projet.');
+        }
+
+        // Filtrer les tâches selon les permissions de l'utilisateur
+        $visibleTasks = $projet->tasks->filter(function($task) use ($user) {
+            return $user->can('view', $task);
+        });
+
+        $totalTasks = $visibleTasks->count();
+        $completedTasks = $visibleTasks->where('status', 'completed')->count();
+        $inProgressTasks = $visibleTasks->where('status', 'in-progress')->count();
+        $pendingTasks = $visibleTasks->where('status', 'pending')->count();
+        $progress = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+
+        return response()->json([
+            'total_tasks' => $totalTasks,
+            'completed_tasks' => $completedTasks,
+            'in_progress_tasks' => $inProgressTasks,
+            'pending_tasks' => $pendingTasks,
+            'progress_percentage' => $progress
+        ]);
+    }
 }
