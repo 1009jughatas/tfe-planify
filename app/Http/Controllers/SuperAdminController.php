@@ -28,12 +28,16 @@ class SuperAdminController extends Controller
             'independants' => User::where('role', 'user_independant')->count(),
             'admin_entreprise' => User::where('role', 'admin_entreprise')->count(),
             'user_entreprise' => User::where('role', 'user_entreprise')->count(),
+            'premium_users' => User::where('is_premium', true)->count(),
             'total_companies' => Company::count(),
             'active_companies' => Company::where('status', 'active')->count(),
             'total_projects' => Project::count(),
+            'completed_projects' => Project::where('status', 'completed')->count(),
             'total_tasks' => Task::count(),
+            'completed_tasks' => Task::where('status', 'completed')->count(),
             'total_tickets' => TicketSupport::count(),
             'open_tickets' => TicketSupport::where('statut', 'ouvert')->count(),
+            'monthly_revenue' => Company::where('status', 'active')->sum('monthly_price') ?? 0,
         ];
 
         // Utilisateurs récents
@@ -49,13 +53,13 @@ class SuperAdminController extends Controller
             ->get();
 
         // Tickets récents
-        $recent_tickets = TicketSupport::with(['user', 'repondPar'])
+        $recent_tickets = TicketSupport::with('user')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
         // Projets récents
-        $recent_projects = Project::with(['author', 'company'])
+        $recent_projects = Project::with(['user', 'company'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
