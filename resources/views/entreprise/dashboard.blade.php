@@ -667,17 +667,15 @@
             @endforeach
         ],
         tasks: [
-            @foreach($recentTasks as $task)
-                @if($task->deadline)
-                    {
-                        id: {{ $task->id }},
-                        name: '{{ addslashes($task->name) }}',
-                        date: '{{ $task->deadline }}',
-                        status: '{{ $task->status }}',
-                        url: '{{ route('entreprise.tasks.show', $task->id) }}',
-                        type: 'task'
-                    },
-                @endif
+            @foreach($calendarTasks as $task)
+                {
+                    id: {{ $task->id }},
+                    name: '{{ addslashes($task->title) }}',
+                    date: '{{ $task->due_date }}',
+                    status: '{{ $task->status }}',
+                    url: '{{ route('entreprise.tasks.show', $task->id) }}',
+                    type: 'task'
+                },
             @endforeach
         ]
     };
@@ -818,6 +816,9 @@
     
     // Initialiser le calendrier au chargement de la page
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('Données du calendrier:', calendarData);
+        console.log('Projets:', calendarData.projects);
+        console.log('Tâches:', calendarData.tasks);
         generateCalendar();
     });
 </script>

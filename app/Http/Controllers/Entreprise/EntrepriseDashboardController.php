@@ -100,6 +100,21 @@ class EntrepriseDashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Tâches pour le calendrier - toutes les tâches avec dates d'échéance
+        $calendarTasksQuery = Task::where('company_id', $company->id)
+            ->whereNotNull('due_date')
+            ->with(['project', 'assignedUser']);
+        
+        // Pour les employés, ne montrer que leurs propres tâches
+        if ($user->isUserEntreprise()) {
+            $calendarTasksQuery->where(function($query) use ($user) {
+                $query->where('author_id', $user->id)
+                      ->orWhere('assigned_to', $user->id);
+            });
+        }
+        
+        $calendarTasks = $calendarTasksQuery->orderBy('due_date', 'asc')->get();
+
         // Projets avec échéances proches
         $upcomingDeadlines = Project::where('company_id', $company->id)
             ->whereNotNull('end_date')
@@ -140,6 +155,7 @@ class EntrepriseDashboardController extends Controller
             'maxUsers',
             'recentProjects',
             'recentTasks',
+            'calendarTasks',
             'upcomingDeadlines',
             'overdueTasks'
         ));
