@@ -121,6 +121,7 @@
         @endif
 
         <!-- 🆘 SUPPORT -->
+        @if(!Auth::user()->is_super_admin())
         <div>
             <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Support</h3>
             <div class="space-y-1">
@@ -134,6 +135,7 @@
                 </a>
             </div>
         </div>
+        @endif
 
         <!-- 📄 EXPORT -->
         @if (Auth::user() && Auth::user()->canExportPdf())
