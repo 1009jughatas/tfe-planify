@@ -20,6 +20,7 @@ class Company extends Model
         'plan',
         'monthly_price',
         'user_limit',
+        'max_users',
         'status',
         'trial_ends_at',
         'subscription_ends_at',

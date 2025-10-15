@@ -106,6 +106,7 @@ Route::prefix('entreprise')->name('entreprise.')->middleware(['auth', 'checkEntr
         Route::get('/abonnement', [EntrepriseSubscriptionController::class, 'index'])->name('abonnement.index');
         Route::patch('/abonnement', [EntrepriseSubscriptionController::class, 'update'])->name('abonnement.update');
         Route::delete('/abonnement', [EntrepriseSubscriptionController::class, 'cancel'])->name('abonnement.cancel');
+        Route::get('/abonnement/success', [EntrepriseSubscriptionController::class, 'success'])->name('abonnement.success');
     });
     
     // Routes de préférences pour les utilisateurs d'entreprise

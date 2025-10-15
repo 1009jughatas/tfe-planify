@@ -110,6 +110,15 @@
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-900">Plans Disponibles</h2>
             <p class="text-sm text-gray-600">Choisissez le plan qui correspond le mieux aux besoins de votre entreprise</p>
+            <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div class="flex items-start space-x-2">
+                    <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                    <div class="text-sm text-blue-700">
+                        <strong>💳 Paiement sécurisé :</strong> Vous serez redirigé vers Stripe pour effectuer le paiement de manière sécurisée. 
+                        Votre abonnement sera activé automatiquement après validation du paiement.
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -160,8 +169,9 @@
                                     @method('PATCH')
                                     <input type="hidden" name="plan" value="{{ $planKey }}">
                                     <button type="submit" class="w-full btn-primary-modern">
-                                        <i class="fas fa-arrow-up mr-2"></i>
+                                        <i class="fas fa-credit-card mr-2"></i>
                                         {{ $planKey === 'starter' ? 'Passer à' : 'Mettre à niveau vers' }} {{ $plan['name'] }}
+                                        <span class="ml-2 text-sm">({{ $plan['price'] }}€/mois)</span>
                                     </button>
                                 </form>
                             @endif
