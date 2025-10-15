@@ -96,8 +96,6 @@
                         @if($company->stripe_subscription_id)
                             <p><strong>Statut:</strong> <span class="text-green-600">Actif</span></p>
                             <p><strong>Prochaine facturation:</strong> {{ now()->addMonth()->format('d/m/Y') }}</p>
-                        @else
-                            <p><strong>Statut:</strong> <span class="text-orange-600">Plan gratuit</span></p>
                         @endif
                     </div>
                 </div>
@@ -309,8 +307,6 @@
                             <p><strong>Statut:</strong> <span class="text-green-600">Actif</span></p>
                             <p><strong>Prochaine facturation:</strong> {{ now()->addMonth()->format('d/m/Y') }}</p>
                             <p><strong>ID Abonnement:</strong> <code class="text-xs bg-gray-100 px-1 rounded">{{ $company->stripe_subscription_id }}</code></p>
-                        @else
-                            <p><strong>Statut:</strong> <span class="text-orange-600">Plan gratuit</span></p>
                         @endif
                     </div>
                 </div>
