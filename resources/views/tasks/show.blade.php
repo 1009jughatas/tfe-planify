@@ -365,13 +365,22 @@
         }
     </style>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+            console.log('JavaScript chargé pour la page de tâche');
             let originalStatus = $('#status').data('original-status');
+            console.log('Statut original:', originalStatus);
+            
+            // Vérifier si l'élément existe
+            if ($('#updateStatusBtn').length === 0) {
+                console.error('Élément #updateStatusBtn non trouvé');
+                return;
+            }
+            console.log('Élément #updateStatusBtn trouvé');
             
             // Gérer la validation du statut
             $('#updateStatusBtn').click(function () {
+                console.log('Bouton de mise à jour cliqué');
                 let taskId = $('#status').data('task-id');
                 let newStatus = $('#status').val();
                 let selectElement = $('#status');
