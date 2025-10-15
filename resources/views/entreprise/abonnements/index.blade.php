@@ -138,7 +138,13 @@
                                 <span class="text-4xl font-bold text-gray-900">{{ $plan['price'] }}€</span>
                                 <span class="text-gray-500">/mois</span>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">Jusqu'à {{ $plan['max_users'] }} utilisateurs</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                @if($plan['max_users'] === -1)
+                                    Utilisateurs illimités
+                                @else
+                                    Jusqu'à {{ $plan['max_users'] }} utilisateurs
+                                @endif
+                            </p>
                         </div>
 
                         <div class="space-y-3 mb-6">
@@ -158,7 +164,7 @@
                                     <i class="fas fa-lock mr-2"></i>
                                     Trop d'utilisateurs
                                 </button>
-                            @elseif($planKey !== 'starter' && $currentUsers > $plan['max_users'])
+                            @elseif($planKey !== 'starter' && $plan['max_users'] !== -1 && $currentUsers > $plan['max_users'])
                                 <button disabled class="w-full btn-secondary-modern opacity-50 cursor-not-allowed">
                                     <i class="fas fa-lock mr-2"></i>
                                     Trop d'utilisateurs

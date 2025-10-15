@@ -41,56 +41,42 @@ class EntrepriseSubscriptionController extends Controller
             ->where('status', 'completed')
             ->count();
 
-        // Plans disponibles
+        // Plans disponibles (identiques à la page d'accueil)
         $plans = [
             'starter' => [
                 'name' => 'Starter',
-                'price' => 19,
-                'max_users' => 5,
+                'price' => 399,
+                'max_users' => 10,
                 'stripe_price_id' => 'price_starter_monthly',
                 'features' => [
-                    'Jusqu\'à 5 utilisateurs',
+                    '10 utilisateurs',
                     'Projets illimités',
-                    'Tâches illimitées',
                     'Support email',
-                    'Stockage 10GB',
-                    'Export PDF basique'
+                    'Tableaux Kanban'
                 ]
             ],
-            'professional' => [
-                'name' => 'Professional',
-                'price' => 49,
+            'growth' => [
+                'name' => 'Growth',
+                'price' => 599,
                 'max_users' => 20,
-                'stripe_price_id' => 'price_professional_monthly',
+                'stripe_price_id' => 'price_growth_monthly',
                 'features' => [
-                    'Jusqu\'à 20 utilisateurs',
+                    '20 utilisateurs',
                     'Projets illimités',
-                    'Tâches illimitées',
                     'Support prioritaire',
-                    'Stockage 100GB',
-                    'Export PDF avancé',
-                    'Rapports détaillés',
-                    'Intégrations API',
-                    'Gestion des permissions'
+                    'Statistiques avancées'
                 ]
             ],
             'enterprise' => [
                 'name' => 'Enterprise',
-                'price' => 99,
-                'max_users' => 100,
+                'price' => 999,
+                'max_users' => -1, // Illimité
                 'stripe_price_id' => 'price_enterprise_monthly',
                 'features' => [
-                    'Jusqu\'à 100 utilisateurs',
+                    'Utilisateurs illimités',
                     'Projets illimités',
-                    'Tâches illimitées',
-                    'Support dédié 24/7',
-                    'Stockage illimité',
-                    'Export PDF personnalisé',
-                    'Rapports personnalisés',
-                    'Intégrations avancées',
-                    'SSO et sécurité avancée',
-                    'API complète',
-                    'Formation personnalisée'
+                    'Support dédié',
+                    'Fonctionnalités premium'
                 ]
             ]
         ];
@@ -101,7 +87,7 @@ class EntrepriseSubscriptionController extends Controller
 
         // Vérifier si un changement de plan est nécessaire
         $needsUpgrade = $currentUsers >= $maxUsers;
-        $canDowngrade = $currentUsers <= ($plans['starter']['max_users'] ?? 5);
+        $canDowngrade = $currentUsers <= ($plans['starter']['max_users'] ?? 10);
 
         return view('entreprise.abonnements.index', compact(
             'company',
@@ -130,7 +116,7 @@ class EntrepriseSubscriptionController extends Controller
         }
 
         $request->validate([
-            'plan' => 'required|in:starter,professional,enterprise'
+            'plan' => 'required|in:starter,growth,enterprise'
         ]);
 
         $newPlan = $request->plan;
@@ -138,33 +124,33 @@ class EntrepriseSubscriptionController extends Controller
 
         // Vérifier si le nouveau plan peut accueillir tous les utilisateurs actuels
         $planLimits = [
-            'starter' => 5,
-            'professional' => 20,
-            'enterprise' => 100
+            'starter' => 10,
+            'growth' => 20,
+            'enterprise' => -1 // Illimité
         ];
 
-        if ($currentUsers > $planLimits[$newPlan]) {
+        if ($planLimits[$newPlan] !== -1 && $currentUsers > $planLimits[$newPlan]) {
             return back()->with('error', 'Impossible de passer au plan ' . ucfirst($newPlan) . '. Vous avez trop d\'utilisateurs (' . $currentUsers . '). Veuillez supprimer des utilisateurs ou choisir un plan supérieur.');
         }
 
-        // Plans avec prix Stripe
+        // Plans avec prix Stripe (identiques à la page d'accueil)
         $plans = [
             'starter' => [
                 'name' => 'Starter',
-                'price' => 19,
-                'max_users' => 5,
+                'price' => 399,
+                'max_users' => 10,
                 'stripe_price_id' => 'price_starter_monthly'
             ],
-            'professional' => [
-                'name' => 'Professional',
-                'price' => 49,
+            'growth' => [
+                'name' => 'Growth',
+                'price' => 599,
                 'max_users' => 20,
-                'stripe_price_id' => 'price_professional_monthly'
+                'stripe_price_id' => 'price_growth_monthly'
             ],
             'enterprise' => [
                 'name' => 'Enterprise',
-                'price' => 99,
-                'max_users' => 100,
+                'price' => 999,
+                'max_users' => -1, // Illimité
                 'stripe_price_id' => 'price_enterprise_monthly'
             ]
         ];
@@ -187,7 +173,7 @@ class EntrepriseSubscriptionController extends Controller
                         'currency' => 'eur',
                         'product_data' => [
                             'name' => 'Plan ' . $plan['name'] . ' - ' . $company->name,
-                            'description' => 'Abonnement mensuel pour ' . $plan['max_users'] . ' utilisateurs',
+                            'description' => 'Abonnement mensuel' . ($plan['max_users'] === -1 ? ' (utilisateurs illimités)' : ' pour ' . $plan['max_users'] . ' utilisateurs'),
                         ],
                         'unit_amount' => $plan['price'] * 100, // Prix en centimes
                         'recurring' => [
@@ -226,9 +212,14 @@ class EntrepriseSubscriptionController extends Controller
                 
                 if ($company) {
                     // Mettre à jour le plan de l'entreprise
+                    $maxUsers = $session->metadata->max_users;
+                    if ($maxUsers == -1) {
+                        $maxUsers = 999999; // Valeur très élevée pour représenter l'illimité
+                    }
+                    
                     $company->update([
                         'plan' => strtolower($session->metadata->plan),
-                        'max_users' => $session->metadata->max_users,
+                        'max_users' => $maxUsers,
                         'stripe_subscription_id' => $session->subscription,
                         'stripe_customer_id' => $session->customer
                     ]);
@@ -274,7 +265,7 @@ class EntrepriseSubscriptionController extends Controller
             // Passer au plan gratuit
             $company->update([
                 'plan' => 'starter',
-                'max_users' => 2, // Plan gratuit limité
+                'max_users' => 10, // Plan starter avec 10 utilisateurs
                 'stripe_subscription_id' => null
             ]);
 
@@ -287,7 +278,7 @@ class EntrepriseSubscriptionController extends Controller
             // Même en cas d'erreur Stripe, on passe au plan gratuit
             $company->update([
                 'plan' => 'starter',
-                'max_users' => 2,
+                'max_users' => 10,
                 'stripe_subscription_id' => null
             ]);
 
