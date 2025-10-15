@@ -101,6 +101,15 @@ class EntrepriseSubscriptionController extends Controller
         if ($company->max_users) {
             $currentPlanData['max_users'] = $company->max_users;
         }
+        
+        // Debug: Log des données pour vérification
+        \Log::info('Données d\'abonnement', [
+            'company_id' => $company->id,
+            'plan' => $company->plan,
+            'monthly_price' => $company->monthly_price,
+            'max_users' => $company->max_users,
+            'current_plan_data' => $currentPlanData
+        ]);
 
         // Vérifier si un changement de plan est nécessaire
         $needsUpgrade = $currentUsers >= $maxUsers;
