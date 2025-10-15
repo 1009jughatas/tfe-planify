@@ -29,10 +29,10 @@ class SecurityHeaders
         // Content Security Policy
         $response->headers->set('Content-Security-Policy', 
             "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com; " .
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com; " .
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://code.jquery.com https://unpkg.com; " .
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " .
             "img-src 'self' data: https:; " .
-            "font-src 'self' https://fonts.bunny.net https://cdnjs.cloudflare.com; " .
+            "font-src 'self' https://fonts.bunny.net https://cdnjs.cloudflare.com https://fonts.gstatic.com; " .
             "connect-src 'self'; " .
             "frame-ancestors 'self';"
         );
