@@ -99,15 +99,20 @@ class AuthIndepController extends Controller
 
             $user = Auth::user();
             
-            // Vérifier que l'utilisateur est bien un indépendant
-            if ($user->role !== 'user_independant' || $user->company_id) {
+            // Vérifier que l'utilisateur est bien un indépendant ou un super admin
+            if (($user->role !== 'user_independant' && !$user->is_super_admin()) || $user->company_id) {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Ce compte ne correspond pas à un utilisateur indépendant.',
                 ])->onlyInput('email');
             }
 
-            return redirect()->intended(route('dashboard'));
+            // Rediriger selon le rôle
+            if ($user->is_super_admin()) {
+                return redirect()->intended(route('superadmin.dashboard'));
+            } else {
+                return redirect()->intended(route('dashboard'));
+            }
         }
 
         return back()->withErrors([

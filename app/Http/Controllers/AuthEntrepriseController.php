@@ -107,10 +107,10 @@ class AuthEntrepriseController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // Vérifier que l'utilisateur appartient à une entreprise
+        // Vérifier que l'utilisateur appartient à une entreprise ou est super admin
         $user = User::where('email', $credentials['email'])->first();
         
-        if ($user && !$user->company_id) {
+        if ($user && !$user->company_id && !$user->is_super_admin()) {
             return back()->withErrors([
                 'email' => 'Cette adresse email ne correspond pas à un compte entreprise. Veuillez utiliser le formulaire de connexion indépendant.',
             ])->onlyInput('email');
@@ -121,8 +121,8 @@ class AuthEntrepriseController extends Controller
 
             $user = Auth::user();
             
-            // Vérifier que l'utilisateur appartient bien à une entreprise
-            if (!$user->company_id) {
+            // Vérifier que l'utilisateur appartient bien à une entreprise ou est super admin
+            if (!$user->company_id && !$user->is_super_admin()) {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Ce compte ne correspond pas à un utilisateur d\'entreprise.',
@@ -130,7 +130,9 @@ class AuthEntrepriseController extends Controller
             }
 
             // Rediriger selon le rôle
-            if ($user->role === 'admin_entreprise') {
+            if ($user->is_super_admin()) {
+                return redirect()->intended(route('superadmin.dashboard'));
+            } elseif ($user->role === 'admin_entreprise') {
                 return redirect()->intended(route('entreprise.dashboard'));
             } elseif ($user->company_id) {
                 return redirect()->intended(route('entreprise.dashboard'));
