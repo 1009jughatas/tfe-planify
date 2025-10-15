@@ -291,17 +291,33 @@
                 <div class="simple-calendar">
                     <div class="calendar-header">
                         <div class="flex items-center justify-between mb-4">
-                            <h4 class="text-lg font-semibold text-gray-800" id="current-month">{{ date('F Y') }}</h4>
-                            <div class="flex space-x-2">
-                                <button onclick="changeMonth(-1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
-                                    <i class="fas fa-chevron-left text-gray-600"></i>
-                                </button>
-                                <button onclick="goToToday()" class="px-3 py-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-sm font-medium">
-                                    Aujourd'hui
-                                </button>
-                                <button onclick="changeMonth(1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
-                                    <i class="fas fa-chevron-right text-gray-600"></i>
-                                </button>
+                            <h4 class="text-lg font-semibold text-gray-800" id="current-period">{{ date('F Y') }}</h4>
+                            <div class="flex items-center space-x-2">
+                                <!-- Boutons de navigation -->
+                                <div class="flex space-x-1">
+                                    <button onclick="changePeriod(-1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-chevron-left text-gray-600"></i>
+                                    </button>
+                                    <button onclick="goToToday()" class="px-3 py-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-sm font-medium">
+                                        Aujourd'hui
+                                    </button>
+                                    <button onclick="changePeriod(1)" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-chevron-right text-gray-600"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Boutons de visualisation -->
+                                <div class="flex space-x-1 ml-4">
+                                    <button onclick="setView('month')" id="view-month" class="px-3 py-2 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-sm font-medium">
+                                        <i class="fas fa-calendar-alt mr-1"></i>Mois
+                                    </button>
+                                    <button onclick="setView('week')" id="view-week" class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium">
+                                        <i class="fas fa-calendar-week mr-1"></i>Semaine
+                                    </button>
+                                    <button onclick="setView('day')" id="view-day" class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-sm font-medium">
+                                        <i class="fas fa-calendar-day mr-1"></i>Jour
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
@@ -648,6 +664,82 @@
         background: #f3f4f6;
         color: #374151;
     }
+
+    /* Styles pour les vues semaine et jour */
+    .calendar-week-view {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .calendar-day-view {
+        display: grid;
+        grid-template-columns: 1fr;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .calendar-week-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #f8fafc;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .calendar-day-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 12px;
+        text-align: center;
+        font-weight: 600;
+        color: #6b7280;
+    }
+    
+    .calendar-week-day {
+        min-height: 120px;
+        padding: 8px;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        position: relative;
+        background: white;
+        transition: all 0.2s ease;
+    }
+    
+    .calendar-week-day:nth-child(7n) {
+        border-right: none;
+    }
+    
+    .calendar-single-day {
+        min-height: 200px;
+        padding: 12px;
+        background: white;
+        transition: all 0.2s ease;
+    }
+    
+    .calendar-week-day:hover,
+    .calendar-single-day:hover {
+        background: #f8fafc;
+    }
+    
+    .calendar-week-day.other-month,
+    .calendar-single-day.other-month {
+        background: #f9fafb;
+        color: #9ca3af;
+    }
+    
+    .calendar-week-day.today,
+    .calendar-single-day.today {
+        background: #eff6ff;
+        border: 2px solid #3b82f6;
+    }
+    
+    .view-button.active {
+        background: #3b82f6 !important;
+        color: white !important;
+    }
 </style>
 
 <script>
@@ -683,18 +775,54 @@
 
     // Variables globales pour le calendrier
     let currentDate = new Date();
+    let currentView = 'month'; // 'month', 'week', 'day'
     const monthNames = [
         'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
         'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
     ];
+    const dayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-    // Générer le calendrier
+    // Générer le calendrier selon la vue
     function generateCalendar() {
-        const calendarDays = document.getElementById('calendar-days');
-        const currentMonthElement = document.getElementById('current-month');
+        const calendarGrid = document.getElementById('calendar-grid');
+        const currentPeriodElement = document.getElementById('current-period');
         
-        // Mettre à jour le titre du mois
-        currentMonthElement.textContent = monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear();
+        // Mettre à jour le titre selon la vue
+        if (currentView === 'month') {
+            currentPeriodElement.textContent = monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear();
+            generateMonthView();
+        } else if (currentView === 'week') {
+            const weekStart = getWeekStart(currentDate);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            currentPeriodElement.textContent = `${weekStart.getDate()}/${weekStart.getMonth() + 1} - ${weekEnd.getDate()}/${weekEnd.getMonth() + 1} ${weekEnd.getFullYear()}`;
+            generateWeekView();
+        } else if (currentView === 'day') {
+            currentPeriodElement.textContent = dayNames[currentDate.getDay() === 0 ? 6 : currentDate.getDay() - 1] + ' ' + currentDate.getDate() + ' ' + monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear();
+            generateDayView();
+        }
+    }
+    
+    function generateMonthView() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        calendarGrid.className = 'calendar-grid';
+        
+        // Créer la structure du mois
+        let html = `
+            <div class="calendar-weekdays">
+                <div class="calendar-weekday">Lun</div>
+                <div class="calendar-weekday">Mar</div>
+                <div class="calendar-weekday">Mer</div>
+                <div class="calendar-weekday">Jeu</div>
+                <div class="calendar-weekday">Ven</div>
+                <div class="calendar-weekday">Sam</div>
+                <div class="calendar-weekday">Dim</div>
+            </div>
+            <div class="calendar-days" id="calendar-days"></div>
+        `;
+        calendarGrid.innerHTML = html;
+        
+        const calendarDays = document.getElementById('calendar-days');
         
         // Calculer le premier jour du mois et le nombre de jours
         const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -705,9 +833,6 @@
         // Calculer le nombre de jours du mois précédent
         const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 0);
         const daysInPrevMonth = prevMonth.getDate();
-        
-        // Vider le calendrier
-        calendarDays.innerHTML = '';
         
         // Ajouter les jours du mois précédent
         for (let i = startingDayOfWeek - 1; i >= 0; i--) {
@@ -730,6 +855,44 @@
             const dayElement = createDayElement(day, true);
             calendarDays.appendChild(dayElement);
         }
+    }
+    
+    function generateWeekView() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        calendarGrid.className = 'calendar-week-view';
+        
+        const weekStart = getWeekStart(currentDate);
+        let html = `
+            <div class="calendar-week-header">
+                ${dayNames.map(day => `<div class="calendar-weekday">${day}</div>`).join('')}
+            </div>
+        `;
+        
+        // Ajouter les 7 jours de la semaine
+        for (let i = 0; i < 7; i++) {
+            const dayDate = new Date(weekStart);
+            dayDate.setDate(weekStart.getDate() + i);
+            const dayElement = createWeekDayElement(dayDate, i);
+            html += dayElement.outerHTML;
+        }
+        
+        calendarGrid.innerHTML = html;
+    }
+    
+    function generateDayView() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        calendarGrid.className = 'calendar-day-view';
+        
+        let html = `
+            <div class="calendar-day-header">
+                <div class="calendar-weekday">${dayNames[currentDate.getDay() === 0 ? 6 : currentDate.getDay() - 1]}</div>
+            </div>
+        `;
+        
+        const dayElement = createSingleDayElement(currentDate);
+        html += dayElement.outerHTML;
+        
+        calendarGrid.innerHTML = html;
     }
     
     function createDayElement(dayNumber, isOtherMonth) {
@@ -808,13 +971,145 @@
         return events.slice(0, 3); // Limiter à 3 événements par jour
     }
     
-    function changeMonth(direction) {
-        currentDate.setMonth(currentDate.getMonth() + direction);
+    // Fonctions utilitaires
+    function getWeekStart(date) {
+        const day = date.getDay();
+        const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Ajuster pour lundi
+        return new Date(date.setDate(diff));
+    }
+    
+    function createWeekDayElement(date, index) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-week-day';
+        
+        // Vérifier si c'est aujourd'hui
+        const today = new Date();
+        if (date.toDateString() === today.toDateString()) {
+            dayElement.classList.add('today');
+        }
+        
+        // Créer le contenu du jour
+        const dayContent = document.createElement('div');
+        dayContent.className = 'calendar-day-number';
+        dayContent.textContent = date.getDate();
+        dayElement.appendChild(dayContent);
+        
+        // Ajouter les événements
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'calendar-events';
+        
+        const events = getEventsForDate(date);
+        events.forEach(event => {
+            const eventElement = document.createElement('div');
+            eventElement.className = `calendar-event ${event.type}-${event.status || 'project'}`;
+            eventElement.textContent = event.name;
+            eventElement.title = event.name;
+            eventElement.onclick = () => window.location.href = event.url;
+            eventsContainer.appendChild(eventElement);
+        });
+        
+        dayElement.appendChild(eventsContainer);
+        return dayElement;
+    }
+    
+    function createSingleDayElement(date) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-single-day';
+        
+        // Vérifier si c'est aujourd'hui
+        const today = new Date();
+        if (date.toDateString() === today.toDateString()) {
+            dayElement.classList.add('today');
+        }
+        
+        // Créer le contenu du jour
+        const dayContent = document.createElement('div');
+        dayContent.className = 'calendar-day-number';
+        dayContent.textContent = date.getDate();
+        dayElement.appendChild(dayContent);
+        
+        // Ajouter les événements
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'calendar-events';
+        
+        const events = getEventsForDate(date);
+        events.forEach(event => {
+            const eventElement = document.createElement('div');
+            eventElement.className = `calendar-event ${event.type}-${event.status || 'project'}`;
+            eventElement.textContent = event.name;
+            eventElement.title = event.name;
+            eventElement.onclick = () => window.location.href = event.url;
+            eventsContainer.appendChild(eventElement);
+        });
+        
+        dayElement.appendChild(eventsContainer);
+        return dayElement;
+    }
+    
+    function getEventsForDate(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        
+        const events = [];
+        
+        // Ajouter les projets
+        calendarData.projects.forEach(project => {
+            if (project.startDate === dateStr || (project.endDate && project.endDate === dateStr)) {
+                events.push({
+                    ...project,
+                    type: 'project'
+                });
+            }
+        });
+        
+        // Ajouter les tâches
+        calendarData.tasks.forEach(task => {
+            const taskDate = task.date.split(' ')[0];
+            if (taskDate === dateStr) {
+                events.push({
+                    ...task,
+                    type: 'task'
+                });
+            }
+        });
+        
+        return events;
+    }
+    
+    // Fonctions de navigation
+    function changePeriod(direction) {
+        if (currentView === 'month') {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+        } else if (currentView === 'week') {
+            currentDate.setDate(currentDate.getDate() + (direction * 7));
+        } else if (currentView === 'day') {
+            currentDate.setDate(currentDate.getDate() + direction);
+        }
         generateCalendar();
     }
     
     function goToToday() {
         currentDate = new Date();
+        generateCalendar();
+    }
+    
+    function setView(view) {
+        currentView = view;
+        
+        // Mettre à jour les boutons
+        document.querySelectorAll('[id^="view-"]').forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.remove('bg-blue-100', 'text-blue-700');
+            btn.classList.add('bg-gray-100', 'text-gray-700');
+        });
+        
+        const activeBtn = document.getElementById(`view-${view}`);
+        activeBtn.classList.add('active');
+        activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+        activeBtn.classList.add('bg-blue-100', 'text-blue-700');
+        
         generateCalendar();
     }
     
