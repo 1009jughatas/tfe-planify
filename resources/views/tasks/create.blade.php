@@ -135,7 +135,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @if (!Auth::user()->is_premium() && !Auth::user()->is_admin())
+                            @if (Auth::user()->isUserIndependant() && !Auth::user()->is_premium() && !Auth::user()->is_admin())
                                 <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                                     <p class="text-sm text-yellow-700">
                                         <i class="fas fa-info-circle mr-1"></i>
