@@ -336,7 +336,7 @@ Route::middleware(['auth', 'verified', IsAdminEntreprise::class])->prefix('entre
     // Gestion des utilisateurs
     Route::get('/users', [CompanyAdminController::class, 'users'])->name('users');
     Route::get('/users/invite', [EmployeeInvitationController::class, 'showInviteForm'])->name('users.invite');
-    Route::post('/users/invite', [EmployeeInvitationController::class, 'sendInvitation'])->name('users.invite');
+    Route::post('/users/invite', [EmployeeInvitationController::class, 'sendInvitation'])->name('users.invite.send');
     Route::post('/users/invitations/{invitation}/resend', [EmployeeInvitationController::class, 'resendInvitation'])->name('users.resend');
     Route::delete('/users/invitations/{invitation}/cancel', [EmployeeInvitationController::class, 'cancelInvitation'])->name('users.cancel');
     Route::patch('/users/{user}/role', [CompanyAdminController::class, 'updateUserRole'])->name('users.role');
