@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'isAdminEntreprise' => \App\Http\Middleware\IsAdminEntreprise::class,
             'isUserEntreprise' => \App\Http\Middleware\IsUserEntreprise::class,
             'isSuperAdmin' => \App\Http\Middleware\IsSuperAdmin::class,
+            'superadmin' => \App\Http\Middleware\SuperAdminApi::class,
             'checkEntrepriseAccess' => \App\Http\Middleware\CheckEntrepriseAccess::class,
             'ensureUserIsAdminEntreprise' => \App\Http\Middleware\EnsureUserIsAdminEntreprise::class,
         ]);
