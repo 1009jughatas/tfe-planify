@@ -57,7 +57,7 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
     Route::post('/register', [AuthEntrepriseController::class, 'register']);
     
     // Connexion entreprise
-    Route::get('/login', [AuthEntrepriseController::class, 'showLogin']);
+    Route::get('/login', [AuthEntrepriseController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthEntrepriseController::class, 'login']);
     
     // Déconnexion entreprise
