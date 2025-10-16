@@ -69,7 +69,7 @@ Planify implémente un système de permissions à trois niveaux :
 - ✅ **Stocker et partager** des fichiers dans les tâches
 
 #### Fonctionnalités Avancées
-- ✅ **Tableau Kanban** : Organisation visuelle par glisser-déposer
+- ✅ **Interface moderne** : Organisation visuelle intuitive
 - ✅ **Statistiques** : Progression, pourcentage de tâches accomplies
 - ✅ **Rapports** : Deadlines, temps moyen de réalisation
 - ✅ **Export PDF** : Rapports de projets professionnels
@@ -111,7 +111,7 @@ Planify implémente un système de permissions à trois niveaux :
 #### Toutes les Fonctionnalités Premium
 - ✅ **Dispose de toutes** les permissions Premium
 - ✅ **Projets illimités** et fonctionnalités avancées
-- ✅ **Tableau Kanban**, statistiques, export PDF
+- ✅ **Interface moderne**, statistiques, export PDF
 - ✅ **Personnalisation** complète de l'interface
 
 #### Projets

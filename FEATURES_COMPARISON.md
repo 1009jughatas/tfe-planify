@@ -74,7 +74,7 @@
 - ✅ **Assignation** de tâches
 - ✅ **Statistiques** avancées (progression, pourcentage, temps moyen)
 - ✅ **Export PDF** des rapports
-- ✅ **Tableau Kanban** : Organisation visuelle par glisser-déposer
+- ✅ **Interface moderne** : Organisation visuelle intuitive
 - ✅ **Calendrier** complet avec deadlines
 - ✅ **Support prioritaire**
 - ✅ **Notifications** et rappels automatiques par email
