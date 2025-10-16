@@ -202,14 +202,12 @@ class EntrepriseSubscriptionController extends Controller
             \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
             \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Clé Stripe configurée');
 
-            // Si l'entreprise a déjà un abonnement Stripe, on utilise le portail client
-            if ($company->stripe_customer_id) {
-                return $this->redirectToCustomerPortal($company);
-            }
+            // Pour les changements de plan, on crée toujours une nouvelle session de paiement
+            // Le portail client Stripe sera utilisé pour d'autres actions (annulation, etc.)
 
             \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Création de la session Stripe');
             
-            $checkout_session = \Stripe\Checkout\Session::create([
+            $sessionData = [
                 'payment_method_types' => ['card'],
                 'line_items' => [[
                     'price_data' => [
@@ -228,13 +226,21 @@ class EntrepriseSubscriptionController extends Controller
                 'mode' => 'subscription',
                 'success_url' => route('entreprise.abonnement.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('entreprise.abonnement.index'),
-                'customer_email' => auth()->user()->email,
                 'metadata' => [
                     'company_id' => $company->id,
                     'plan' => $plan['name'],
                     'max_users' => $plan['max_users']
                 ]
-            ]);
+            ];
+
+            // Si l'entreprise a déjà un customer Stripe, l'utiliser
+            if ($company->stripe_customer_id) {
+                $sessionData['customer'] = $company->stripe_customer_id;
+            } else {
+                $sessionData['customer_email'] = auth()->user()->email;
+            }
+
+            $checkout_session = \Stripe\Checkout\Session::create($sessionData);
 
             \Log::info('EntrepriseSubscriptionController::createStripeCheckoutSession - Session créée avec succès', [
                 'session_id' => $checkout_session->id,
