@@ -30,6 +30,8 @@ Route::get('/', function () {
 });
 
 
+
+
 // ========================================
 // AUTHENTIFICATION INDÉPENDANTS
 // ========================================
@@ -39,7 +41,7 @@ Route::prefix('')->group(function () {
     Route::post('/register', [AuthIndepController::class, 'register']);
     
     // Connexion indépendant
-    Route::get('/login', [AuthIndepController::class, 'showLogin'])->name('login.indep');
+    Route::get('/login', [AuthIndepController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthIndepController::class, 'login']);
     
     // Déconnexion indépendant
@@ -55,7 +57,7 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
     Route::post('/register', [AuthEntrepriseController::class, 'register']);
     
     // Connexion entreprise
-    Route::get('/login', [AuthEntrepriseController::class, 'showLogin'])->name('login');
+    Route::get('/login', [AuthEntrepriseController::class, 'showLogin']);
     Route::post('/login', [AuthEntrepriseController::class, 'login']);
     
     // Déconnexion entreprise
