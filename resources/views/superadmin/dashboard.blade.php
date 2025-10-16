@@ -50,12 +50,12 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-project-diagram text-purple-600 text-lg"></i>
+                        <i class="fas fa-user text-purple-600 text-lg"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Projets</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $stats['total_projects'] }}</p>
-                        <p class="text-xs text-gray-500">{{ $stats['completed_projects'] }} terminés</p>
+                        <p class="text-sm font-medium text-gray-600">Utilisateurs Indépendants</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $stats['independants'] }}</p>
+                        <p class="text-xs text-gray-500">Utilisateurs libres</p>
                     </div>
                 </div>
             </div>

@@ -30,8 +30,6 @@ class SuperAdminController extends Controller
             'user_entreprise' => User::where('role', 'user_entreprise')->count(),
             'total_companies' => Company::count(),
             'active_companies' => Company::where('status', 'active')->count(),
-            'total_projects' => Project::count(),
-            'completed_projects' => Project::where('status', 'completed')->count(),
             'total_tickets' => TicketSupport::count(),
         ];
 
