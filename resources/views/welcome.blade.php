@@ -6,6 +6,14 @@
     <title>Planify - Plateforme SaaS de Gestion de Projets pour Entreprises</title>
     <meta name="description" content="Planify est la plateforme SaaS B2B ultime pour gérer vos projets d'équipe. Cloisonnement par entreprise, plans tarifaires flexibles, collaboration sécurisée. Découvrez nos solutions pour entreprises.">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('favicon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('favicon-512x512.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
