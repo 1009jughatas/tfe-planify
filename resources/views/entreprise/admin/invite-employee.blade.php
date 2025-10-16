@@ -96,7 +96,7 @@
                     <div class="flex justify-between">
                         <span class="text-sm text-gray-600">Utilisateurs</span>
                         <span class="text-sm font-medium text-gray-900">
-                            {{ $company->users->count() }} / {{ $company->user_limit ?: '∞' }}
+                            {{ $company->users->count() }} / {{ $company->max_users == -1 ? '∞' : $company->max_users }}
                         </span>
                     </div>
                     <div class="flex justify-between">

@@ -51,7 +51,7 @@ class EntrepriseDashboardController extends Controller
 
         // Utilisateurs de l'entreprise
         $totalUsers = User::where('company_id', $company->id)->count();
-        $maxUsers = $company->user_limit ?? 10; // Limite par défaut
+        $maxUsers = $company->max_users ?? 10; // Limite par défaut basée sur l'abonnement
 
         // Projets récents
         $recentProjects = Project::where('company_id', $company->id)

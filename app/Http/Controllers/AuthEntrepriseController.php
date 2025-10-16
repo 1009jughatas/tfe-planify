@@ -60,9 +60,9 @@ class AuthEntrepriseController extends Controller
 
         // Définir les prix et limites selon le plan (synchronisés avec la page d'accueil)
         $planConfig = [
-            'starter' => ['price' => 399, 'user_limit' => 10],
-            'growth' => ['price' => 599, 'user_limit' => 20],
-            'enterprise' => ['price' => 999, 'user_limit' => null],
+            'starter' => ['price' => 399, 'max_users' => 10],
+            'growth' => ['price' => 599, 'max_users' => 20],
+            'enterprise' => ['price' => 999, 'max_users' => -1],
         ];
 
         $selectedPlan = $planConfig[$validated['plan']];
@@ -77,7 +77,7 @@ class AuthEntrepriseController extends Controller
                 'password' => Hash::make($validated['password']),
                 'plan' => $validated['plan'],
                 'price' => $selectedPlan['price'],
-                'user_limit' => $selectedPlan['user_limit'],
+                'max_users' => $selectedPlan['max_users'],
             ]
         ]);
 
@@ -230,8 +230,7 @@ class AuthEntrepriseController extends Controller
                 'slug' => Str::slug($registrationData['company_name']),
                 'plan' => $registrationData['plan'],
                 'monthly_price' => $registrationData['price'],
-                'user_limit' => $registrationData['user_limit'],
-                'max_users' => $registrationData['user_limit'],
+                'max_users' => $registrationData['max_users'],
                 'status' => 'active',
                 'stripe_customer_id' => $sessionId ? $customer->id : null,
                 'stripe_subscription_id' => $sessionId ? $subscription->id : null,
