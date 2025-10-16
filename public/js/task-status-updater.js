@@ -40,7 +40,7 @@ class TaskStatusUpdater {
         // 4. Mettre à jour les statistiques du projet
         this.updateProjectStatistics(projectId);
         
-        // 5. Mettre à jour les listes de tâches (Kanban, etc.)
+        // 5. Mettre à jour les listes de tâches
         this.updateTaskLists(taskId, newStatus);
     }
 
@@ -121,26 +121,26 @@ class TaskStatusUpdater {
     }
 
     /**
-     * Met à jour les listes de tâches (Kanban, etc.)
+     * Met à jour les listes de tâches
      */
     updateTaskLists(taskId, newStatus) {
-        // Mettre à jour les compteurs dans les colonnes Kanban
-        this.updateKanbanCounters(newStatus);
+        // Mettre à jour les compteurs dans les colonnes
+        this.updateColumnCounters(newStatus);
         
         // Déplacer la tâche entre les colonnes si nécessaire
         this.moveTaskBetweenColumns(taskId, newStatus);
     }
 
     /**
-     * Met à jour les compteurs des colonnes Kanban
+     * Met à jour les compteurs des colonnes
      */
-    updateKanbanCounters(newStatus) {
+    updateColumnCounters(newStatus) {
         // Cette fonction sera implémentée selon les besoins spécifiques
-        console.log('🔄 Mise à jour des compteurs Kanban pour le statut:', newStatus);
+        console.log('🔄 Mise à jour des compteurs de colonnes pour le statut:', newStatus);
     }
 
     /**
-     * Déplace une tâche entre les colonnes Kanban
+     * Déplace une tâche entre les colonnes
      */
     moveTaskBetweenColumns(taskId, newStatus) {
         // Cette fonction sera implémentée selon les besoins spécifiques

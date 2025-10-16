@@ -52,7 +52,7 @@ class EntrepriseSubscriptionController extends Controller
                     '10 utilisateurs',
                     'Projets illimités',
                     'Support email',
-                    'Tableaux Kanban'
+                    'Interface moderne'
                 ]
             ],
             'growth' => [

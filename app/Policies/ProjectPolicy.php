@@ -180,24 +180,6 @@ class ProjectPolicy
         return $project->author_id === $user->id || $project->participants->contains($user->id);
     }
 
-    /**
-     * Determine if the user can access Kanban board.
-     */
-    public function viewKanban(User $user, Project $project): bool
-    {
-        // Super admin a toujours accès
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Cloisonnement par entreprise
-        if ($user->company_id !== $project->company_id) {
-            return false;
-        }
-
-        // L'auteur ou participant peut voir le Kanban
-        return $project->author_id === $user->id || $project->participants->contains($user->id);
-    }
 
     /**
      * Determine if the user can upload files to the project.

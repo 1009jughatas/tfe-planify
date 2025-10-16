@@ -167,14 +167,6 @@
                     <p class="text-gray-600">Gérez vos équipes, assignez des rôles, invitez des membres avec des permissions granulaires.</p>
                 </div>
 
-                <!-- Kanban -->
-                <div class="modern-card hover-lift text-center card-hover">
-                    <div class="feature-icon bg-gradient-to-br from-purple-500 to-purple-600">
-                        <i class="fas fa-columns text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Tableaux Kanban</h3>
-                    <p class="text-gray-600">Visualisez vos projets avec des tableaux Kanban intuitifs et personnalisables.</p>
-                </div>
 
                 <!-- Plans Flexibles -->
                 <div class="modern-card hover-lift text-center card-hover">
@@ -358,10 +350,6 @@
                                 <i class="fas fa-check text-green-500 mr-3"></i>
                                 <span>Support email</span>
                             </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check text-green-500 mr-3"></i>
-                                <span>Tableaux Kanban</span>
-                            </li>
                         </ul>
                     </div>
                     <div class="pt-6">
@@ -518,7 +506,7 @@
                         </div>
                     </div>
                     <p class="text-gray-700 mb-4">
-                        "Les tableaux Kanban sont exceptionnels. Mon équipe de 15 personnes 
+                        "L'interface est exceptionnelle. Mon équipe de 15 personnes 
                         travaille maintenant de manière beaucoup plus efficace."
                     </p>
                     <div class="flex text-yellow-400">
