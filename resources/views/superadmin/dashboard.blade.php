@@ -29,7 +29,7 @@
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Total Utilisateurs</p>
                         <p class="text-2xl font-bold text-gray-900">{{ $stats['total_users'] }}</p>
-                        <p class="text-xs text-gray-500">{{ $stats['premium_users'] }} premium</p>
+                        <p class="text-xs text-gray-500">{{ $stats['independants'] + $stats['admin_entreprise'] + $stats['user_entreprise'] }} total</p>
                     </div>
                 </div>
             </div>
@@ -68,62 +68,12 @@
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600">Tickets Support</p>
                         <p class="text-2xl font-bold text-gray-900">{{ $stats['total_tickets'] }}</p>
-                        <p class="text-xs text-gray-500">{{ $stats['open_tickets'] }} ouverts</p>
+                        <p class="text-xs text-gray-500">Total tickets</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Statistiques détaillées -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-blue-100 text-sm font-medium">Revenus Mensuels</p>
-                        <p class="text-2xl font-bold">{{ number_format($stats['monthly_revenue'], 0, ',', ' ') }}€</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-400 bg-opacity-30 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-euro-sign text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-sm p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-green-100 text-sm font-medium">Tâches Terminées</p>
-                        <p class="text-2xl font-bold">{{ $stats['completed_tasks'] }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-400 bg-opacity-30 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-check-circle text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-purple-100 text-sm font-medium">Utilisateurs Premium</p>
-                        <p class="text-2xl font-bold">{{ $stats['premium_users'] }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-purple-400 bg-opacity-30 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-crown text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl shadow-sm p-6 text-white">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-orange-100 text-sm font-medium">Tickets Ouverts</p>
-                        <p class="text-2xl font-bold">{{ $stats['open_tickets'] }}</p>
-                    </div>
-                    <div class="w-12 h-12 bg-orange-400 bg-opacity-30 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-exclamation-circle text-white text-lg"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Navigation rapide -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
