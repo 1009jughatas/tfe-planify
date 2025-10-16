@@ -44,8 +44,8 @@
                         Sur {{ $totalProjects }} total
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                    <i class="fas fa-project-diagram text-white text-lg"></i>
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-200">
+                    <img src="{{ asset('images/logo.png') }}" alt="Planify Logo" class="w-8 h-8 object-contain">
                 </div>
             </div>
         </div>
@@ -136,8 +136,8 @@
             <div class="modern-card-header">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-md">
-                            <i class="fas fa-project-diagram text-white"></i>
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center mr-3 shadow-md border border-gray-200">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-6 h-6 object-contain">
                         </div>
                         Projets Récents
                     </h3>
@@ -201,7 +201,7 @@
                     </div>
                 @else
                     <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-project-diagram text-4xl mb-3"></i>
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 mx-auto mb-3 opacity-50">
                         <p>Aucun projet créé</p>
                         @if(auth()->user()->isAdminEntreprise())
                             <a href="{{ route('entreprise.projets.create') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">

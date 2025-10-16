@@ -25,9 +25,7 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-sm">
-                        <i class="fas fa-project-diagram text-white text-lg"></i>
-                    </div>
+                    <img src="{{ asset('images/logo.png') }}" alt="Planify Logo" class="w-10 h-10 object-contain">
                     <span class="text-2xl font-bold text-gray-900">Planify</span>
                 </div>
                 
@@ -733,9 +731,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-project-diagram text-white text-sm"></i>
-                        </div>
+                        <img src="{{ asset('images/logo.png') }}" alt="Planify Logo" class="w-8 h-8 object-contain">
                         <span class="text-xl font-bold text-white">Planify</span>
                     </div>
                     <p class="text-gray-400">La plateforme SaaS de gestion de projets pour entreprises modernes.</p>

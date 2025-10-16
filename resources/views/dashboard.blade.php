@@ -115,8 +115,8 @@
                             En cours
                         </p>
                     </div>
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                        <i class="fas fa-project-diagram text-white text-lg"></i>
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-200">
+                        <img src="{{ asset('images/logo.png') }}" alt="Planify Logo" class="w-8 h-8 object-contain">
                     </div>
                 </div>
             </div>
@@ -279,7 +279,7 @@
                         <!-- Projets Actifs -->
                         <div class="mb-6">
                             <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-project-diagram text-blue-500 mr-2"></i>
+                                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-5 h-5 mr-2 object-contain">
                                 Mes Projets
                             </h4>
                             @if($projects->count() > 0)
@@ -333,7 +333,7 @@
                                 @endif
                             @else
                                 <div class="text-center py-8 text-gray-500">
-                                    <i class="fas fa-project-diagram text-4xl mb-3"></i>
+                                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 mx-auto mb-3 opacity-50">
                                     <p>Aucun projet créé</p>
                                     <a href="{{ route('projects.create') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                                         Créer votre premier projet
