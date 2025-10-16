@@ -44,8 +44,8 @@
                         Sur {{ $totalProjects }} total
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-200">
-                    <img src="{{ asset('images/logo.png') }}" alt="Planify Logo" class="w-8 h-8 object-contain">
+                <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-200">
+                    <img src="{{ asset('images/logo.png') }}" alt="Planify Logo" class="w-12 h-12 object-contain">
                 </div>
             </div>
         </div>
@@ -136,8 +136,8 @@
             <div class="modern-card-header">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center mr-3 shadow-md border border-gray-200">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-6 h-6 object-contain">
+                        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-md border border-gray-200">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
                         </div>
                         Projets Récents
                     </h3>
@@ -201,7 +201,7 @@
                     </div>
                 @else
                     <div class="text-center py-8 text-gray-500">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 mx-auto mb-3 opacity-50">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-16 h-16 mx-auto mb-3 opacity-50">
                         <p>Aucun projet créé</p>
                         @if(auth()->user()->isAdminEntreprise())
                             <a href="{{ route('entreprise.projets.create') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">

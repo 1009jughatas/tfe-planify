@@ -15,16 +15,16 @@
 <div id="sidebar" class="fixed top-0 left-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto hidden">
     <!-- Header -->
     <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-6 h-6 object-contain filter brightness-0 invert">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                        <img src="{{ asset('images/logo.png') }}" alt="Planify" class="w-8 h-8 object-contain filter brightness-0 invert">
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold">{{ Auth::user()->name ?? 'Utilisateur' }}</h2>
+                        <p class="text-sm text-blue-100">Dashboard</p>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="text-lg font-semibold">Planify</h2>
-                    <p class="text-sm text-blue-100">{{ Auth::user()->name ?? 'Utilisateur' }}</p>
-                </div>
-            </div>
             <button onclick="closeMenu()" class="text-white/80 hover:text-white">
                 <i class="fas fa-times text-xl"></i>
             </button>
