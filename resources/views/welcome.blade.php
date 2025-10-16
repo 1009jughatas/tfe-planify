@@ -85,10 +85,6 @@
                         <i class="fas fa-user mr-2"></i>
                         Inscription Indépendant
                     </a>
-                    <a href="{{ route('premium.show') }}" class="btn-premium-modern px-8 py-4 text-lg font-semibold">
-                        <i class="fas fa-crown mr-2"></i>
-                        Découvrir Premium
-                    </a>
                 </div>
                 
                 <!-- Séparateur -->
