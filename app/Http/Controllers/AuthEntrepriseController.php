@@ -106,6 +106,7 @@ class AuthEntrepriseController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
+        $isEmployeeLogin = $request->has('type') && $request->input('type') === 'employee';
 
         // Vérifier que l'utilisateur appartient à une entreprise ou est super admin
         $user = User::where('email', $credentials['email'])->first();

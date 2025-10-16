@@ -48,6 +48,9 @@
         
         <form class="mt-8 space-y-6" action="{{ route('entreprise.login') }}" method="POST">
             @csrf
+            @if(request()->get('type') === 'employee')
+                <input type="hidden" name="type" value="employee">
+            @endif
             
             @if ($errors->any())
                 <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
