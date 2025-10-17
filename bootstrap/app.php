@@ -11,7 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        $middleware->prepend(\App\Http\Middleware\SecurityHeaders::class);
         
         // Remplacer le middleware d'authentification par défaut
         $middleware->replace('auth', \App\Http\Middleware\Authenticate::class);
